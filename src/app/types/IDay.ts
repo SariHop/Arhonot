@@ -21,7 +21,6 @@ export const daySchemaZod = z.object({
         "Friday",
         "Saturday",
     ]),
-    looks: z.array(z.string()), 
     comments: z.string().optional(), 
     weather: z.string().min(10, "Weather description is required"), 
 });
