@@ -11,7 +11,6 @@ export default interface IUser extends Document{
     dateOfBirth: Date;
     city: string;
     sensitive: string;
-    parents: ObjectId[];
     userDays: ObjectId[];
 } 
 
@@ -50,7 +49,6 @@ export const userSchemaZod = z.object({
         { message: "City must be one of the valid cities in Israel" }
     ),
     sensitive: z.enum(["cold", "heat", "none"]),
-    parents: z.array(z.any()).max(2, "A user can have a maximum of 2 parents"),
     userDays: z.array(z.any()), // ObjectId[] יכול להיות אימות מותאם אם נדרש
 });
 
