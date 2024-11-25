@@ -2,8 +2,8 @@
 import IUser from "@/app/types/IUser";
 import mongoose, { Model, Schema, Types } from "mongoose";
 
-const AlertSchema : Schema<IUser> = new Schema({
-    children: {type: [Types.ObjectId], required:true},
+const UserSchema : Schema<IUser> = new Schema({
+    children: {type: [Types.ObjectId], required:true, ref: "User" },
     passsword: { type: String, required: true,minlength: 8, maxlength: 12, match: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,12}$/},
     email: { type: String, required: true, match: /\S+@\S+\.\S+/},
     age: { type: Number, required: true, min: 0, max: 120},
@@ -21,9 +21,8 @@ const AlertSchema : Schema<IUser> = new Schema({
     }
 },
     sensitive: { type: String, required: true, enum: ["cold", "heat", "none"]},
-    parents: {type: [Types.ObjectId], required:true, max: 2},
-    userDays: {type: [Types.ObjectId], required:true},
+    userDays: {type: [Types.ObjectId], required:true, ref: "Day" },
 })
 
-const User:Model<IUser> =mongoose.models.User || mongoose.model<IUser>('User',AlertSchema)
+const User:Model<IUser> =mongoose.models.User || mongoose.model<IUser>('User',UserSchema)
 export default User;
