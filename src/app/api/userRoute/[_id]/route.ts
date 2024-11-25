@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connect from "@/app/lib/db/mongoDB";
-import Users from "@/app/lib/models/userSchema";
+import User from "@/app/lib/models/userSchema";
 
 export async function GET(
   request: NextRequest,
@@ -18,7 +18,7 @@ export async function GET(
         { status: 400 }
       );
     }
-    const user = await Users.findById(_id);
+    const user = await User.findById(_id);
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
@@ -56,11 +56,11 @@ export async function DELETE(
         { status: 400 }
       );
     }
-    const user = await Users.findById(_id);
+    const user = await User.findById(_id);
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-    await Users.findByIdAndDelete(_id);
+    await User.findByIdAndDelete(_id);
     return NextResponse.json(
       { success: true, message: "User deleted successfully" },
       { status: 200 }
@@ -95,14 +95,14 @@ export async function PUT(
         { status: 400 }
       );
     }
-    const existingUser = await Users.findById(_id);
+    const existingUser = await User.findById(_id);
     if (!existingUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     const body = await request.json();
 
-    const updatedUser = await Users.findByIdAndUpdate(_id, body, {
+    const updatedUser = await User.findByIdAndUpdate(_id, body, {
       new: true, // מחזיר את המסמך המעודכן
       runValidators: true, // מפעיל ולידציות על הנתונים החדשים
     });

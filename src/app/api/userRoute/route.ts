@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import connect from "@/app/lib/db/mongoDB";
-import Users from "@/app/lib/models/userSchema";
 import User from "@/app/lib/models/userSchema";
 
 export async function GET() {
   try {
     await connect();
-    const users = await Users.find({});
+    const users = await User.find({});
     return NextResponse.json({ message: "success", data: users });
   } catch (error: unknown) {
     console.error("Error fetching users:", error);
