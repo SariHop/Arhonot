@@ -1,5 +1,6 @@
 import { Document, ObjectId } from "mongoose";
 import {z} from 'zod'
+import { fetchCities } from "../services/categoriesService";
 
 export default interface IUser extends Document{
     children: ObjectId[];
@@ -43,8 +44,8 @@ export const userSchemaZod = z.object({
     city: z.string().refine(
         async (city) => {
             // Fetch the list of cities from the API and validate.
-            const cities:string[] = [];
-            return cities.includes(city);
+            const cities = fetchCities();
+            return (await cities).includes(city);
         },
         { message: "City must be one of the valid cities in Israel" }
     ),
