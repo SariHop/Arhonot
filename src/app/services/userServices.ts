@@ -54,7 +54,8 @@ export const signin = async (email: string, password: string) => {
     const encryptedPassword = await hashPassword(password)
     try {
         console.log(email, encryptedPassword)
-        // const response = await axios.post(`${apiUrl}`, formData);
+        const response = await axios.post("/api/signIn", { email, password: encryptedPassword });
+        console.log(response)
         // if (response.ok) {
         //     // Handle successful login (e.g., redirect)
         //     console.log('Login successful');
