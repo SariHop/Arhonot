@@ -8,5 +8,5 @@ const AlertSchema: Schema<IAlert> = new Schema({
     readen: { type: Boolean, required: true },
 });
 
-const Alart:Model<IAlert> =mongoose.models.Alart || mongoose.model<IAlert>('Alert',AlertSchema)
-export default Alart;
+const Alert:Model<IAlert> =mongoose.models.Alart || mongoose.model<IAlert>('Alert',AlertSchema)
+export default Alert;

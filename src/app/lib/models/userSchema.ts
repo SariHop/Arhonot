@@ -14,7 +14,7 @@ const UserSchema : Schema<IUser> = new Schema({
     }, "Date of birth cannot be in the future"] },
     city: { type: String, required: true, validate: {
         validator: async function(value: string) {
-            const cities: string[] = [];
+            const cities: string[] = ['ירושלים'];
             return cities.includes(value);
         },
         message: "City must be one of the valid cities in Israel",
