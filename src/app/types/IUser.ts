@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 export default interface IUser extends Document {
     children: ObjectId[];
-    passsword: string;
+    password: string;
     email: string;
     age: number;
     userName: string;
@@ -39,7 +39,7 @@ export const userSchemaZod = z.object({
     city: z.string().refine(
         async (city) => {
             // Fetch the list of cities from the API and validate.
-            const cities: string[] = ['jerusalem'];
+            const cities: string[] = ["ירושלים"];
             return cities.includes(city);
         },
         { message: "City must be one of the valid cities in Israel" }

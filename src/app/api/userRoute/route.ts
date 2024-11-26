@@ -27,6 +27,8 @@ export async function POST(request: NextRequest) {
   try {
     await connect();
     const body = await request.json();
+    console.log("body:")
+    console.log(body);
     const newUser = new User(body);
     console.log(newUser);
     

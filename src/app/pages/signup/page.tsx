@@ -138,12 +138,16 @@ const SignUp = () => {
           </label>
           <input
             type="date"
-            id="dateOfBirth"
-            name="dateOfBirth"
-            value={formData.dateOfBirth.toISOString().split('T')[0]} // המרה לפורמט המתאים
-            onChange={handleChange}
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md bg-white text-gray-800 focus:ring-indigo-500 focus:border-indigo-500"
+            value={
+              formData.dateOfBirth
+                ? new Date(formData.dateOfBirth).toISOString().split('T')[0]
+                : ''
+            }
+            onChange={(e) =>
+              setFormData({ ...formData, dateOfBirth: new Date(e.target.value) })
+            }
           />
+
 
           {errors.dateOfBirth && (
             <p className="text-red-500 text-sm">{errors.dateOfBirth}</p>
