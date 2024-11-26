@@ -1,10 +1,7 @@
 import { Document, ObjectId } from "mongoose";
-<<<<<<< HEAD
-import { z } from 'zod'
-=======
+
 import {z} from 'zod'
 import { fetchCities } from "../services/categoriesService";
->>>>>>> 751f08e66cdfbf8495611f25eb1a871ccd29e8f2
 
 export default interface IUser extends Document {
     children: ObjectId[];
