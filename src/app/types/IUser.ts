@@ -1,7 +1,7 @@
 import { Document, ObjectId } from "mongoose";
-import {z} from 'zod'
+import { z } from 'zod'
 
-export default interface IUser extends Document{
+export default interface IUser extends Document {
     children: ObjectId[];
     passsword: string;
     email: string;
@@ -12,13 +12,10 @@ export default interface IUser extends Document{
     city: string;
     sensitive: string;
     userDays: ObjectId[];
-} 
-
-
+}
 
 export const userSchemaZod = z.object({
-    children: z.array(z.any()), 
-    passsword: z
+    password: z
         .string()
         .min(8, "Password must be at least 8 characters")
         .max(12, "Password cannot exceed 12 characters")
@@ -26,11 +23,10 @@ export const userSchemaZod = z.object({
         .regex(/[a-z]/, "Password must contain at least one lowercase letter")
         .regex(/\d/, "Password must contain at least one number")
         .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
+    confirmPassword: z.string()
+        .min(8, "Confirm Password must be at least 8 characters") // לפי דרישת אורך דומה לסיסמה
+        .max(12, "Confirm Password cannot exceed 12 characters"),
     email: z.string().email("Invalid email format"),
-    age: z
-        .number()
-        .positive("Age must be a positive number")
-        .max(120, "Age cannot exceed 120"),
     userName: z
         .string()
         .regex(/^[A-Za-z]+$/, "Username must contain only letters")
@@ -43,17 +39,19 @@ export const userSchemaZod = z.object({
     city: z.string().refine(
         async (city) => {
             // Fetch the list of cities from the API and validate.
-            const cities:string[] = [];
+            const cities: string[] = ['jerusalem'];
             return cities.includes(city);
         },
         { message: "City must be one of the valid cities in Israel" }
     ),
     sensitive: z.enum(["cold", "heat", "none"]),
-    userDays: z.array(z.any()), // ObjectId[] יכול להיות אימות מותאם אם נדרש
-});
+})
+    .refine((data) => data.password === data.confirmPassword, {
+        message: "Passwords must match",
+        path: ["confirmPassword"], // מציין את השדה שבו נופלת השגיאה
+    });
 
-
-export type IUserType = z.infer<typeof userSchemaZod> 
+export type IUserType = z.infer<typeof userSchemaZod>
 
 export type IUserTypeWithId = z.infer<typeof userSchemaZod> & {
     _id: string;

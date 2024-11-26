@@ -1,14 +1,6 @@
 "use client"
 import { useState } from 'react';
-
-async function hashPassword(password: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-  return hashHex;
-}
+import { signin } from '../../services/userServices'
 
 export default function SignInPage() {
   const [email, setEmail] = useState('');
@@ -24,26 +16,16 @@ export default function SignInPage() {
     }
 
     try {
-      const hashedPassword = await hashPassword(password);
-
-      const response = await fetch('/api/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password: hashedPassword }),
-      });
-
-      if (response.ok) {
-        // Handle successful login (e.g., redirect)
-        console.log('Login successful');
+      // קריאה לפונקציה signin
+      await signin(email, password);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        // אם error הוא אובייקט מסוג Error, קח את message שלו
+        setError(error.message || 'Login failed');
       } else {
-        const { message } = await response.json();
-        setError(message || 'Login failed');
+        // אם error הוא לא אובייקט מסוג Error, הצג הודעת שגיאה כללית
+        setError('An unexpected error occurred.');
       }
-    } catch (error) {
-      console.error('Error during login:', error);
-      setError('An unexpected error occurred.');
     }
   };
 
