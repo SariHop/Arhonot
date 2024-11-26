@@ -9,12 +9,14 @@ const UploadButton = () => {
     <div className='w-32 m-10'>
       <CldUploadWidget
         signatureEndpoint="/api/sign-cloudinary-params"
+
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET}
         options={{ sources: ['local', 'camera', 'url', 'google_drive'] }}
-        
-        onSuccess={(result) => {
+
+        onSuccess={(result, options) => {
           if (result.info && typeof result.info === 'object' && 'public_id' in result.info) {
             setPublicID(result.info.public_id as string);
+            options.close()
           }
         }}
       >
@@ -26,7 +28,7 @@ const UploadButton = () => {
           );
         }}
       </CldUploadWidget>
-      
+
       {/* send this public id in props to save in DB */}
       {publicID && (
         <CldImage
