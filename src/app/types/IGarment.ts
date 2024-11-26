@@ -1,5 +1,6 @@
 import { Document, ObjectId } from "mongoose";
 import { z } from 'zod';
+import { fetchSeasons, fetchTypes } from "../services/categoriesService";
 
 export default interface IGarment extends Document {
     userId: ObjectId;
@@ -9,13 +10,23 @@ export default interface IGarment extends Document {
     category: string;
 }
 
-const validSeasons = ["חורף", "אביב", "קיץ", "סתיו"] as const; 
-const validCategories = ["חולצה", "מכנסיים", "שוליים", "מעיל", "סוודר", "שמלה", "חצאית"] as const;  
 
 export const garmentSchemaZod = z.object({
     desc: z.string().optional(), // אפשרות להיות ריק או לא להימסר
-    season: z.enum(validSeasons, { message: "Season must be one of the valid seasons" }), 
-    category: z.enum(validCategories, { message: "Category must be one of the valid categories" }),
+    season: z.string().refine(
+        async (season) => {
+          const validSeasons = await fetchSeasons();
+          return validSeasons.includes(season);
+        },
+        { message: "Invalid season" }
+      ),
+      category: z.string().refine(
+        async (category) => {
+          const validCategories = await fetchTypes();
+          return validCategories.includes(category);
+        },
+        { message: "Invalid category" }
+      ),
 });
 
 export type IGarmentType = z.infer<typeof garmentSchemaZod>;

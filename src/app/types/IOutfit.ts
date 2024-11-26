@@ -1,29 +1,40 @@
 import { Document, ObjectId } from "mongoose";
-import {z} from 'zod'
+import { z } from "zod";
+import { fetchSeasons, fetchTypes } from "../services/categoriesService";
 
-export default interface IOutfit extends Document{
-    userId: ObjectId;
-    clothesId: ObjectId[];
-    desc: string;
-    season: string;
-    category: string;
-    img: string;
+// ממשק IOutfit
+export default interface IOutfit extends Document {
+  userId: ObjectId;
+  clothesId: ObjectId[];
+  desc: string;
+  season: string;
+  category: string;
+  img: string;
 }
 
-
-const validSeasons = ["חורף", "אביב", "קיץ", "סתיו"] as const;
-const validCategories = ["חולצה", "מכנסיים", "שוליים", "מעיל", "סוודר", "שמלה", "חצאית"] as const;
-
+// סכמת Zod
 export const outfitSchemaZod = z.object({
-    desc: z.string().optional(), // desc אופציונלי
-    season: z.enum(validSeasons, { message: "Season must be one of the valid seasons" }), // עונות תקניות
-    category: z.enum(validCategories, { message: "Category must be one of the valid categories" }), // קטגוריות תקניות
-    img: z.string().url({ message: "img must be a valid URL" }), // אימות URL לתמונה
+  desc: z.string().optional(), // desc אופציונלי
+  season: z.string().refine(
+    async (season) => {
+      const validSeasons = await fetchSeasons();
+      return validSeasons.includes(season);
+    },
+    { message: "Invalid season" }
+  ),
+  category: z.string().refine(
+    async (category) => {
+      const validCategories = await fetchTypes();
+      return validCategories.includes(category);
+    },
+    { message: "Invalid category" }
+  ),
+  img: z.string().url({ message: "Invalid image URL" }), // אימות URL לתמונה
 });
 
-export type IAlertType = z.infer<typeof outfitSchemaZod> 
+// סוגים
+export type IAlertType = z.infer<typeof outfitSchemaZod>;
 
-export type IAlertTypeWithId = z.infer<typeof outfitSchemaZod> & {
-    _id: string;
+export type IAlertTypeWithId = IAlertType & {
+  _id: string;
 };
-

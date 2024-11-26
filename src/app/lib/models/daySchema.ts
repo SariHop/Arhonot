@@ -17,8 +17,8 @@ const daySchema: Schema<IDay> = new Schema({
         required: true,
     }, 
     looks: { type: [Types.ObjectId], required: true, ref: "Outfit"  }, 
-    comments: { type: String }, // שדה אופציונלי
-    weather: { type: String, required: true, minlength: 10 }, // מזג אוויר, אורך מינימום 10 תווים
+    comments: { type: String , required:false}, // שדה אופציונלי
+    weather: { type: String, required: true, minlength: 10 }, 
 });
 
 
