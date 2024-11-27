@@ -5,7 +5,7 @@ import { FilePond } from "react-filepond";
 import "filepond/dist/filepond.min.css";
 import { removeBackground } from "@/app/services/imageService"
 import Image from 'next/image'
-import { FilePondFile, FilePondInitialFile } from 'filepond'
+import { FilePondFile } from 'filepond'
 
 const UploadImage = () => {
   const [files, setFiles] = useState<File[]>([]);
