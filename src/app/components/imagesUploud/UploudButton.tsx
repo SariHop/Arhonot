@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { FilePond, registerPlugin } from "react-filepond";
+import { FilePond } from "react-filepond";
 import "filepond/dist/filepond.min.css";
 import { removeBackground } from "@/app/services/imageService"
 import Image from 'next/image'
@@ -26,7 +26,8 @@ const UploadImage = () => {
         onupdatefiles={setFiles}
         allowMultiple={false}
         server={{
-          process: (fieldName, file, metadata, load, error, progress, abort) => {
+          // process: (fieldName, file, metadata, load, error, progress, abort) => {
+            process: (fieldName, file, metadata, load) => {
             const actualFile = file as unknown as File;
             handleProcess(actualFile);
             load(file.name);
