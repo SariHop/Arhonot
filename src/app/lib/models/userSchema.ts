@@ -4,7 +4,7 @@ import mongoose, { Model, Schema, Types } from "mongoose";
 
 const UserSchema : Schema<IUser> = new Schema({
     children: {type: [Types.ObjectId], required:true, ref: "User" },
-    passsword: { type: String, required: true,minlength: 8, maxlength: 12, match: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,12}$/},
+    password: { type: String, required: true, minlength: 8},
     email: { type: String, required: true, match: /\S+@\S+\.\S+/},
     age: { type: Number, required: true, min: 0, max: 120},
     userName: { type: String, required: true, match: /^[A-Za-z]{2,}$/},
