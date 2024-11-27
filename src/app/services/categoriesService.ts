@@ -24,6 +24,17 @@ export const fetchTypes =async () => {
 }
 
 
+export const fetchTags =async () => {
+    try {
+        const response = await axios.get(`${apiUrl}/categories`);
+        return response.data.tags;
+    } catch (error) {
+        console.error("Error getting tags:", error);
+        throw error;
+    }
+}
+
+
 export const fetchCities =async () => {
     try {
         const response = await axios.get(`${apiUrl}/cities`);

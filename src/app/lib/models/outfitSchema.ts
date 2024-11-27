@@ -1,16 +1,22 @@
+import { fetchSeasons, fetchTypes } from "@/app/services/categoriesService";
 import IOutfit from "@/app/types/IOutfit";
 import mongoose, { Model, Schema, Types } from "mongoose";
 
-// רשימת העונות והקטגוריות
-const validSeasons = ["חורף", "אביב", "קיץ", "סתיו"] as const;
-const validCategories = ["חולצה", "מכנסיים", "שוליים", "מעיל", "סוודר", "שמלה", "חצאית"] as const;
 
 const OutfitSchema: Schema<IOutfit> = new Schema({
     userId: { type: Types.ObjectId, required: true, ref: "User" }, 
     clothesId: { type: [Types.ObjectId], required: true, ref: "Garment" }, 
     desc: { type: String, required: false }, 
-    season: { type: String, enum: validSeasons, required: true }, 
-    category: { type: String, enum: validCategories, required: true },
+    season: { type: String, validate: {
+        validator: async function(value: string) {
+            const validSeasons = await fetchSeasons();
+            return validSeasons.includes(value);
+        }, message: "Season must be one of the valid seasons" }, required: true }, 
+    category: { type: String, validate: {
+        validator: async function(value: string) {
+            const validCategories = await fetchTypes();
+            return validCategories.includes(value);
+        }, message: "Category must be one of the valid categories"}, required: true },
     img: { type: String, required: true, match: /^https?:\/\/.+/ }, 
 });
 

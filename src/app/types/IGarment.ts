@@ -1,13 +1,18 @@
 import { Document, ObjectId } from "mongoose";
 import { z } from 'zod';
-import { fetchSeasons, fetchTypes } from "../services/categoriesService";
+import { fetchSeasons, fetchTags, fetchTypes } from "../services/categoriesService";
 
 export default interface IGarment extends Document {
     userId: ObjectId;
     img: string;
     desc: string;
     season: string;
+    range: number;
     category: string;
+    color: string
+    link: string
+    price: number;
+    tags: string[];
 }
 
 
@@ -19,14 +24,25 @@ export const garmentSchemaZod = z.object({
           return validSeasons.includes(season);
         },
         { message: "Invalid season" }
-      ),
-      category: z.string().refine(
+      ), 
+    category: z.string().refine(
         async (category) => {
           const validCategories = await fetchTypes();
           return validCategories.includes(category);
         },
         { message: "Invalid category" }
       ),
+    range: z.number().min(1, { message: "Range must be at least 1" }).max(7, { message: "Range must be at most 7" }),
+    color: z.string().optional(), // אופציונלי
+    link: z.string().url({ message: "Invalid URL format" }).optional(), // לינק חוקי
+    price: z.number().optional(), // מספר אופציונלי
+    tags: z.array(z.string()).refine(
+        async (tags) => {
+            const validTags = await fetchTags(); // פונקציה שמחזירה מערך ערכים חוקיים
+            return tags.every(tag => validTags.includes(tag));
+        },
+        { message: "Some tags are invalid" }
+    ),
 });
 
 export type IGarmentType = z.infer<typeof garmentSchemaZod>;
