@@ -5,9 +5,10 @@ import { FilePond } from "react-filepond";
 import "filepond/dist/filepond.min.css";
 import { removeBackground } from "@/app/services/imageService"
 import Image from 'next/image'
+import { FilePondFile, FilePondInitialFile } from 'filepond'
 
 const UploadImage = () => {
-  const [files, setFiles] = useState<any[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
   const [fileWithNoBG, setFileWithNoBG] = useState<string | null>(null);
 
   const handleProcess = async (file: File) => {
@@ -23,7 +24,10 @@ const UploadImage = () => {
     <div style={{ maxWidth: "500px", margin: "0 auto" }}>
       <FilePond
         files={files}
-        onupdatefiles={setFiles}
+        // https://github.com/pqina/react-filepond/issues/245
+        onupdatefiles={(fileItems: FilePondFile[]) => {
+          setFiles(fileItems.map((f: FilePondFile) => f.file as File));
+        }}
         allowMultiple={false}
         server={{
           // process: (fieldName, file, metadata, load, error, progress, abort) => {
