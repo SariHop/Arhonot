@@ -1,4 +1,5 @@
 
+import { fetchSeasons, fetchTags, fetchTypes } from "@/app/services/categoriesService";
 import IGarment from "@/app/types/IGarment";
 import mongoose, { Model, Schema, Types } from "mongoose";
 
@@ -9,15 +10,56 @@ const GarmentSchema: Schema<IGarment> = new Schema({
     season: { 
         type: String, 
         required: true, 
-        enum: ["חורף", "אביב", "קיץ", "סתיו"],  // עונות חובה
+        validate: {
+            validator: async function(value: string) {
+                const validSeasons = await fetchSeasons();
+                return validSeasons.includes(value);
+            },
         message: "Season must be one of the valid seasons" 
+        }
     },
     category: { 
         type: String, 
         required: true, 
-        enum: ["חולצה", "מכנסיים", "שוליים", "מעיל", "סוודר", "שמלה", "חצאית"],  // קטגוריות חובה
+        validate: {
+            validator: async function(value: string) {
+                const validCategries = await fetchTypes();
+                return validCategries.includes(value);
+            },
         message: "Category must be one of the valid categories"
+        }
     },
+    range: { 
+        type: Number, 
+        min: 1, 
+        max: 7, 
+        required: true, 
+        message: "Range must be between 1 and 7"
+    },
+    color: { 
+        type: String, 
+        required: false 
+    },
+    link: { 
+        type: String, 
+        match: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i, 
+        required: false 
+    },
+    price: { 
+        type: Number, 
+        required: false 
+    },
+    tags: { 
+        type: [String], 
+        required: false,
+        validate: {
+            validator: async function(tags: string[]) {
+                const validTags = await fetchTags(); // Assuming fetchTags fetches valid tags
+                return tags.every(tag => validTags.includes(tag));
+            },
+            message: "Some tags are invalid"
+        }
+    }
 })
 
 const Garment:Model<IGarment> = mongoose.models.Garment || mongoose.model<IGarment>('Garment',GarmentSchema)
