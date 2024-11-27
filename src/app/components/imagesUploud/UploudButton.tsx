@@ -1,27 +1,52 @@
-"use client"
-import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
+"use client";
 
-const UploudButton = () => {
-    const [triggerOptions, setTriggerOptions] = useState(false)
-    const router = useRouter()
+import React, { useState } from "react";
+import { FilePond, registerPlugin } from "react-filepond";
+import "filepond/dist/filepond.min.css";
+import { removeBackground } from "@/app/services/imageService"
+import Image from 'next/image'
 
-    return (
-        <div>
-            <button type="button" className="button-icon" onClick={() => { setTriggerOptions(true) }}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-            </button>
+const UploadImage = () => {
+  const [files, setFiles] = useState<any[]>([]);
+  const [fileWithNoBG, setFileWithNoBG] = useState<string | null>(null);
 
-            {triggerOptions &&
-                // ליצור מודל
-                <div className='button-select-div-wrap'>
-                    <button className='button-select' onClick={() => { router.push('/pages/uploud/fromcamere') }}>צלם תמונה</button>
-                    <button className='button-select' onClick={() => { router.push('/pages/uploud/fromlocal') }}>העלה תמונה מהמחשב</button>
-                </div>}
-        </div>
-    )
-}
+  const handleProcess = async (file: File) => {
+    const formData = new FormData();
+    formData.append("image_file", file);
+    formData.append("size", "auto");
 
-export default UploudButton
+    const removeBG = await removeBackground(formData) as string
+    setFileWithNoBG(removeBG)
+  };
+
+  return (
+    <div style={{ maxWidth: "500px", margin: "0 auto" }}>
+      <FilePond
+        files={files}
+        onupdatefiles={setFiles}
+        allowMultiple={false}
+        server={{
+          process: (fieldName, file, metadata, load, error, progress, abort) => {
+            const actualFile = file as unknown as File;
+            handleProcess(actualFile);
+            load(file.name);
+          },
+        }}
+        name="file"
+        labelIdle='Drag & Drop your file or <span class="filepond--label-action">Browse</span>'
+      />
+
+      {
+        fileWithNoBG ?
+          <Image
+            src={fileWithNoBG}
+            width={500}
+            height={500}
+            alt="Picture of the author"
+          /> : <h6>העלה תמונה</h6>
+      }
+    </div>
+  );
+};
+
+export default UploadImage;

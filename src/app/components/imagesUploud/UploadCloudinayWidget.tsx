@@ -8,7 +8,7 @@ const UploadButton = () => {
   return (
     <div className='w-32 m-10'>
       <CldUploadWidget
-        signatureEndpoint="/api/sign-cloudinary-params"
+        signatureEndpoint="/api/cloudinary/sign-cloudinary-params"
 
         uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_PRESET}
         options={{ sources: ['local', 'camera', 'url', 'google_drive'] }}
