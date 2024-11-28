@@ -56,7 +56,7 @@ export const userSchemaZod = z.object({
 
 export type IUserType = z.infer<typeof userSchemaZod>
 
-export type IUserTypeWithId = z.infer<typeof userSchemaZod> & {
+export type IUserTypeWithId = Omit<z.infer<typeof userSchemaZod>, 'confirmPassword'> & {
     _id: string;
 };
 

@@ -1,40 +1,53 @@
-'use client'
-import { BellOutlined, CalendarOutlined, PlusOutlined, ProductOutlined, SkinOutlined, UserOutlined } from '@ant-design/icons'
-import { Dropdown, MenuProps, message, Space } from 'antd';
-import { useRouter } from 'next/navigation';
-import React from 'react'
-
-
-
-
-
+"use client";
+import {
+  BellOutlined,
+  CalendarOutlined,
+  PlusOutlined,
+  ProductOutlined,
+  SkinOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { Badge, Dropdown, MenuProps, message, Space } from "antd";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { useAlertsCounter } from "../store/alertsCunterStore";
 
 
 const NavBar = () => {
+  const AlertsCounter: number = useAlertsCounter((state) => state.alertsCounter);
   const router = useRouter();
-  
-  const onClick: MenuProps['onClick'] = ({ key }) => { 
-    router.push(`/pages/${key==='1'? 'add-garment': 'add-outfit'}`);
+
+  const onClick: MenuProps["onClick"] = ({ key }) => {
+    router.push(`/pages/${key === "1" ? "add-garment" : "add-outfit"}`);
     message.info(`Click on item ${key}`);
   };
- 
-  
-  const items: MenuProps['items'] = [
+
+  const items: MenuProps["items"] = [
     {
       label: <SkinOutlined />,
-      key: '1',
+      key: "1",
     },
     {
-      label: <><SkinOutlined /><PlusOutlined /></>,
-      key: '2',
+      label: (
+        <>
+          <SkinOutlined />
+          <PlusOutlined />
+        </>
+      ),
+      key: "2",
     },
   ];
 
-  
   return (
     <div className="fixed bottom-0 left-0 w-full border-t-2 h-[10vh] flex justify-between items-center shadow-md pr-6 pl-6">
-      <UserOutlined className="text-3xl hover:text-blue-600" onClick={()=> router.push('/pages/user-details')}/>
-      <ProductOutlined className="text-3xl hover:text-blue-600" onClick={()=> router.push('/pages/gallery')}/>
+      <UserOutlined
+        className="text-3xl hover:text-blue-600"
+        onClick={() => router.push("/pages/user-details")}
+      />
+      <ProductOutlined
+        className="text-3xl hover:text-blue-600"
+        onClick={() => router.push("/pages/gallery")}
+      />
       <Dropdown menu={{ items, onClick }}>
         <a onClick={(e) => e.preventDefault()}>
           <Space>
@@ -44,10 +57,18 @@ const NavBar = () => {
           </Space>
         </a>
       </Dropdown>
-      <CalendarOutlined className="text-3xl hover:text-blue-600" onClick={()=> router.push('/pages/calender')}/>
-      <BellOutlined className="text-3xl hover:text-blue-600" onClick={()=> router.push('/pages/alerts')}/>
+      <CalendarOutlined
+        className="text-3xl hover:text-blue-600"
+        onClick={() => router.push("/pages/calender")}
+      />
+      <Badge size="default" color="gold" count={AlertsCounter} offset={[0, 2]}>
+        <BellOutlined
+          className="text-3xl hover:text-blue-600"
+          onClick={() => router.push("/pages/alerts")}
+        />
+      </Badge>
     </div>
-  )
-}
+  );
+};
 
-export default NavBar
+export default NavBar;
