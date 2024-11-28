@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { FilePond } from "react-filepond";
 import { FilePondFile } from 'filepond'
 import "filepond/dist/filepond.min.css";
-import { removeBackground } from "@/app/services/imageService"
+import { removeBackground } from "@/app/services/image/removeBG"
 import Modal from "@/app/components/imagesUploud/ModalImage";
 
 const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }) => {
@@ -26,8 +26,15 @@ const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }
       formData.append("image_file", file);
       formData.append("size", "auto");
       openModal();
-      const removeBG = await removeBackground(formData) as string;
-      setFileWithNoBG(removeBG);
+      try {
+        const removeBG = await removeBackground(formData) as string;
+        setFileWithNoBG(removeBG);
+      } catch {
+        // הודעת שגיאה יפה
+        closeModal()
+      }
+
+      
 
     } catch (error) {
       console.log("Error removing background:", error);
@@ -61,7 +68,7 @@ const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }
           isOpen={isModalOpen}
           onClose={closeModal}
           fileWithNoBG={fileWithNoBG}
-          setCloudinary={ setCloudinary}
+          setCloudinary={setCloudinary}
         />}
 
     </div>

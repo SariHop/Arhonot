@@ -1,7 +1,7 @@
 "use client"
 import React, { FC } from 'react';
 import Image from 'next/image'
-import { cloudinaryUploud } from '@/app/services/imageService';
+import { cloudinaryUploud } from '@/app/services/image/saveToCloudinary';
 
 // תיקיה
 interface ModalProps {
