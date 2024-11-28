@@ -7,7 +7,7 @@ type AlertsCounterStore = {
 }
 
 export const useAlertsCounter = create<AlertsCounterStore>()((set) => ({
-  alertsCounter: 0,
+  alertsCounter: 3,
   increase: () => set((state) => ({ alertsCounter: state.alertsCounter + 1 })),
   decrease: () => set((state) => ({ alertsCounter: state.alertsCounter - 1 })),
 }));
