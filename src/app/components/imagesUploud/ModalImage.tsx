@@ -20,8 +20,8 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose, fileWithNoBG, setCloudinary })
         if (fileWithNoBG != null) {
             const data = await cloudinaryUploud(fileWithNoBG)
             console.log("התשובה שהמודל קיבל", data)
-            //  setCloudinary(data)
-
+            // Jייב בדיקה שהתשובה לא NUךך ושגיאה
+             setCloudinary(data.imageUrl)
         }
         onClose()
     }

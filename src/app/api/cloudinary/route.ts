@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 
+// Cloudinary configuration
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
   api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
@@ -9,44 +10,28 @@ cloudinary.config({
 
 export async function POST(request: NextRequest) {
   try {
-
     const body = await request.json();
-    console.log("בתוך השרת גוף הבקשה",body)
-    // שליפת הנתונים מהבקשה
-    // const data = await request.formData();
-    // const file: File | null = data.get('file') as unknown as File;
 
-    // if (!file) {
-    //   return NextResponse.json({ success: false, error: 'File not provided' });
-    // }
+    if (!body.imageurl) {
+      return NextResponse.json({ success: false, error: 'Image URL not provided' });
+    }
 
-    // // קריאת הקובץ ל-Buffer
-    // const bytes = await file.arrayBuffer();
-    // const buffer = Buffer.from(bytes);
+    console.log("Uploading image to Cloudinary from base64...");
 
-    // // החזרת הבטחה כדי להמתין להעלאה
-    // const uploadResult = await new Promise((resolve, reject) => {
-    //   const uploadStream = cloudinary.uploader.upload_stream(
-    //     { folder: 'uploads' }, // אפשר להגדיר תיקייה ב-Cloudinary
-    //     (error, result) => {
-    //       if (error) {
-    //         reject(error);
-    //       } else {
-    //         resolve(result);
-    //       }
-    //     }
-    //   );
+    // Upload the base64 image to Cloudinary
+    const uploadResult = await cloudinary.uploader.upload(body.imageurl, {
+      folder: 'Arhonot', // Optional: specify a folder in Cloudinary
+    });
 
-    //   // כתיבת ה-Buffer לזרם ההעלאה
-    //   uploadStream.end(buffer);
-    // });
+    console.log("Upload successful:", uploadResult);
 
-    // console.log(uploadResult)
-    // return NextResponse.json({ success: true, uploadResult });
-    return NextResponse.json({ success: true, body: body });
-
+    return NextResponse.json({
+      success: true,
+      imageUrl: uploadResult.secure_url,
+      publicID: uploadResult.public_id
+    });
   } catch (error) {
-    console.error(error);
+    console.error("Error during upload:", error);
     return NextResponse.json({ success: false, error: 'Upload failed' });
   }
 }
