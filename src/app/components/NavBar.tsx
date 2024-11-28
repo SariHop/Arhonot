@@ -7,7 +7,7 @@ import {
   SkinOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Badge, Dropdown, MenuProps, message, Space, Tooltip } from "antd";
+import { Badge, Dropdown, MenuProps, message, Tooltip } from "antd";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useAlertsCounter } from "../store/alertsCunterStore";
