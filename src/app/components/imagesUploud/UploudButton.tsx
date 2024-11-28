@@ -1,15 +1,21 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from 'next/image'
 import { FilePond } from "react-filepond";
+import { FilePondFile } from 'filepond'
 import "filepond/dist/filepond.min.css";
 import { removeBackground } from "@/app/services/imageService"
-import Image from 'next/image'
-import { FilePondFile } from 'filepond'
+import Modal from "@/app/components/imagesUploud/ModalImage";
 
 const UploadImage = () => {
+
   const [files, setFiles] = useState<File[]>([]);
   const [fileWithNoBG, setFileWithNoBG] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   const handleProcess = async (file: File) => {
     const formData = new FormData();
@@ -18,6 +24,7 @@ const UploadImage = () => {
 
     const removeBG = await removeBackground(formData) as string
     setFileWithNoBG(removeBG)
+    openModal()
   };
 
   return (
@@ -30,8 +37,7 @@ const UploadImage = () => {
         }}
         allowMultiple={false}
         server={{
-          // process: (fieldName, file, metadata, load, error, progress, abort) => {
-            process: (fieldName, file, metadata, load) => {
+          process: (fieldName, file, metadata, load) => {
             const actualFile = file as unknown as File;
             handleProcess(actualFile);
             load(file.name);
@@ -42,13 +48,18 @@ const UploadImage = () => {
       />
 
       {
-        fileWithNoBG ?
+        fileWithNoBG &&
+        <Modal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+        >
           <Image
             src={fileWithNoBG}
             width={500}
             height={500}
             alt="Picture of the author"
-          /> : <h6>העלה תמונה</h6>
+          />
+        </Modal>
       }
     </div>
   );
