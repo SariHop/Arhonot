@@ -5,13 +5,12 @@ import axios from "axios";
 export async function removeBackground(imageFormData: FormData): Promise<string | null> {
   try {
     const apiRemoveBackgroundKey = process.env.API_REMOVE_BACKGROUND_API;
-    console.log(apiRemoveBackgroundKey);
 
     const response = await axios.post("https://api.remove.bg/v1.0/removebg", imageFormData, {
       headers: {
-        "X-Api-Key": apiRemoveBackgroundKey, 
+        "X-Api-Key": apiRemoveBackgroundKey,
       },
-      responseType: "arraybuffer", 
+      responseType: "arraybuffer",
     });
 
     // יצירת URL מתוך התמונה המעובדת
@@ -30,6 +29,29 @@ export async function removeBackground(imageFormData: FormData): Promise<string 
       console.error("Unknown error occurred while removing background");
     }
 
-    return null;  // מחזיר null במקרה של שגיאה
+    return null;
   }
 }
+
+// פונקציה שמקבלת URL ומחזירה את הניתוב של הקובת בשרת
+export async function cloudinaryUploud(imageurl: string): Promise<string | null> {
+  try {
+    // console.log("מה שיישלח לשרת", imageurl)
+
+    // invalid url
+    const response = await axios.post("/api/cloudinary", imageurl)
+    return response.data;
+
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      console.error("Error ", error.response?.data || error.message);
+    } else if (error instanceof Error) {
+      console.error("Error ", error.message);
+    } else {
+      console.error("Unknown error occurred ");
+    }
+    return null;
+  }
+}
+
+

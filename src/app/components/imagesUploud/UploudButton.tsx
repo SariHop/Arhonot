@@ -1,31 +1,40 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from 'next/image'
 import { FilePond } from "react-filepond";
 import { FilePondFile } from 'filepond'
 import "filepond/dist/filepond.min.css";
 import { removeBackground } from "@/app/services/imageService"
 import Modal from "@/app/components/imagesUploud/ModalImage";
 
-const UploadImage = () => {
+const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }) => {
 
   const [files, setFiles] = useState<File[]>([]);
   const [fileWithNoBG, setFileWithNoBG] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setFileWithNoBG(null);
+    setFiles([]);
+  };
 
   const handleProcess = async (file: File) => {
-    const formData = new FormData();
-    formData.append("image_file", file);
-    formData.append("size", "auto");
+    try {
+      const formData = new FormData();
+      formData.append("image_file", file);
+      formData.append("size", "auto");
+      openModal();
+      const removeBG = await removeBackground(formData) as string;
+      setFileWithNoBG(removeBG);
 
-    const removeBG = await removeBackground(formData) as string
-    setFileWithNoBG(removeBG)
-    openModal()
+    } catch (error) {
+      console.log("Error removing background:", error);
+      // react tostify output
+    }
   };
+
 
   return (
     <div style={{ maxWidth: "500px", margin: "0 auto" }}>
@@ -47,20 +56,14 @@ const UploadImage = () => {
         labelIdle='Drag & Drop your file or <span class="filepond--label-action">Browse</span>'
       />
 
-      {
-        fileWithNoBG &&
+      {isModalOpen &&
         <Modal
           isOpen={isModalOpen}
           onClose={closeModal}
-        >
-          <Image
-            src={fileWithNoBG}
-            width={500}
-            height={500}
-            alt="Picture of the author"
-          />
-        </Modal>
-      }
+          fileWithNoBG={fileWithNoBG}
+          setCloudinary={ setCloudinary}
+        />}
+
     </div>
   );
 };

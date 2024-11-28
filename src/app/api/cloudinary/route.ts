@@ -9,37 +9,41 @@ cloudinary.config({
 
 export async function POST(request: NextRequest) {
   try {
+
+    const body = await request.json();
+    console.log("בתוך השרת גוף הבקשה",body)
     // שליפת הנתונים מהבקשה
-    const data = await request.formData();
-    const file: File | null = data.get('file') as unknown as File;
+    // const data = await request.formData();
+    // const file: File | null = data.get('file') as unknown as File;
 
-    if (!file) {
-      return NextResponse.json({ success: false, error: 'File not provided' });
-    }
+    // if (!file) {
+    //   return NextResponse.json({ success: false, error: 'File not provided' });
+    // }
 
-    // קריאת הקובץ ל-Buffer
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    // // קריאת הקובץ ל-Buffer
+    // const bytes = await file.arrayBuffer();
+    // const buffer = Buffer.from(bytes);
 
-    // החזרת הבטחה כדי להמתין להעלאה
-    const uploadResult = await new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        { folder: 'uploads' }, // אפשר להגדיר תיקייה ב-Cloudinary
-        (error, result) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        }
-      );
+    // // החזרת הבטחה כדי להמתין להעלאה
+    // const uploadResult = await new Promise((resolve, reject) => {
+    //   const uploadStream = cloudinary.uploader.upload_stream(
+    //     { folder: 'uploads' }, // אפשר להגדיר תיקייה ב-Cloudinary
+    //     (error, result) => {
+    //       if (error) {
+    //         reject(error);
+    //       } else {
+    //         resolve(result);
+    //       }
+    //     }
+    //   );
 
-      // כתיבת ה-Buffer לזרם ההעלאה
-      uploadStream.end(buffer);
-    });
+    //   // כתיבת ה-Buffer לזרם ההעלאה
+    //   uploadStream.end(buffer);
+    // });
 
-    console.log(uploadResult)
-    return NextResponse.json({ success: true, uploadResult });
+    // console.log(uploadResult)
+    // return NextResponse.json({ success: true, uploadResult });
+    return NextResponse.json({ success: true, body: body });
 
   } catch (error) {
     console.error(error);
