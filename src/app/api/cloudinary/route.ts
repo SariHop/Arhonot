@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     // Upload the base64 image to Cloudinary
     const uploadResult = await cloudinary.uploader.upload(body.imageurl, {
-      folder: 'Arhonot', // Optional: specify a folder in Cloudinary
+      folder: 'Arhonot', // specify a folder in Cloudinary
     });
 
     console.log("Upload successful:", uploadResult);
