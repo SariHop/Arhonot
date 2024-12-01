@@ -15,11 +15,11 @@ import { ZodError } from 'zod';
 
 interface GarmentFormProps {
 //   initialData?: IGarmentType; // נתונים עבור עריכה
-  userId: string; // מזהה המשתמש שיצר את הבגד
-  onSubmit: (data: IGarmentType) => void;
+//   userId: string; // מזהה המשתמש שיצר את הבגד
+//   onSubmit: (data: IGarmentType) => void;
 }
 
-const GarmentForm: React.FC<GarmentFormProps> = ({/* initialData,*/ userId }) => {
+const GarmentForm: React.FC<GarmentFormProps> = ({/* initialData, userId*/ }) => {
   const [formData, setFormData] = useState<IGarmentType>({
     // img: initialData?.img || "", // שדה התמונה
     desc:/* initialData?.desc ||*/ "",
@@ -111,7 +111,7 @@ const GarmentForm: React.FC<GarmentFormProps> = ({/* initialData,*/ userId }) =>
     e.preventDefault();
     const isValid = await validateForm();
     if (isValid) {
-      const garmentWithUserId = { ...formData, userId };
+      const garmentWithUserId = { ...formData, /*userId */};
 
       try {
         await createGarment(garmentWithUserId);
