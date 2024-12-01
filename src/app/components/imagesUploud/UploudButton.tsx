@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { FilePond } from "react-filepond";
 import { FilePondFile } from 'filepond';
 import "filepond/dist/filepond.min.css";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { removeBackground } from "@/app/services/image/removeBG";
 import Modal from "@/app/components/imagesUploud/ModalImage";
@@ -23,7 +23,6 @@ const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }
   };
 
   const handleProcess = async (file: File) => {
-
     const formData = new FormData();
     formData.append("image_file", file);
     formData.append("size", "auto");
@@ -41,7 +40,7 @@ const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }
 
   return (
     <div style={{ maxWidth: "500px", margin: "0 auto" }}>
-      <ToastContainer />
+
       <FilePond
         files={files}
         // https://github.com/pqina/react-filepond/issues/245

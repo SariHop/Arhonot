@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import Image from 'next/image'
 import { cloudinaryUploud } from '@/app/services/image/saveToCloudinary';
 import { IModalProps } from '@/app/types/props';
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Modal: FC<IModalProps> = ({ isOpen, onClose, fileWithNoBG, setCloudinary }) => {
@@ -21,7 +21,7 @@ const Modal: FC<IModalProps> = ({ isOpen, onClose, fileWithNoBG, setCloudinary }
                     setCloudinary(data.imageUrl);
                 }
             } catch (error) {
-                toast.error("שגיאה בתהליך שמירת התמונה! נסה שנית");
+                toast.error("שגיאה בשמירת התמונה. נסה שנית!");
                 console.error(error)
             }
         }
@@ -31,7 +31,7 @@ const Modal: FC<IModalProps> = ({ isOpen, onClose, fileWithNoBG, setCloudinary }
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
             <div className="relative w-full h-full md:max-w-2xl md:h-auto p-4 bg-white rounded-lg shadow overflow-auto">
-                <ToastContainer />
+             
                 {/* Body */}
                 <div className="p-4 md:p-5 space-y-4 text-center h-64 flex items-center justify-center">
                     {fileWithNoBG ? (
