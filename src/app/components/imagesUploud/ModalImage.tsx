@@ -7,8 +7,10 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Modal: FC<IModalProps> = ({ isOpen, onClose, fileWithNoBG, setCloudinary }) => {
-    if (!isOpen) return null;
+
     const [progressUploud, setProgressUploud] = useState(false)
+
+    if (!isOpen) return null;
 
     const handleAccept = async () => {
         setProgressUploud(true)
