@@ -11,6 +11,7 @@ import { Badge, Dropdown, MenuProps, message, Tooltip } from "antd";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useAlertsCounter } from "../store/alertsCunterStore";
+import Image from 'next/image';
 
 const NavBar = () => {
   const AlertsCounter: number = useAlertsCounter(
@@ -54,7 +55,6 @@ const NavBar = () => {
 
   return (
     <div className="fixed bottom-0 bg-white left-0 w-full border-t-2 h-[10vh] flex justify-between items-center shadow-md pr-6 pl-6">
-      
       {/* פרטי משתמש */}
       <Tooltip title="פרטי משתמש">
         <UserOutlined
@@ -71,17 +71,16 @@ const NavBar = () => {
         />
       </Tooltip>
 
-
-{/* כפץתור הוספה מרכזי */}
+      {/* כפץתור הוספה מרכזי */}
       <Dropdown menu={{ items, onClick }} className="md:hidden">
         <a onClick={(e) => e.preventDefault()}>
-            <div className="rounded-full mb-16 p-4 border-t-2 bg-white">
-              <PlusOutlined className="text-4xl bg-blue-600 text-white p-2 rounded-full" />
-            </div>
+          <div className="rounded-full mb-16 p-4 border-t-2 bg-white">
+            <PlusOutlined className="text-4xl bg-blue-600 text-white p-2 rounded-full" />
+          </div>
         </a>
       </Dropdown>
 
-{/* הוסף בגד */}
+      {/* הוסף בגד */}
       <Tooltip title="הוסף בגד">
         <div
           className="hidden text-3xl hover:text-blue-600 md:flex"
@@ -99,8 +98,10 @@ const NavBar = () => {
           onClick={() => router.push("/pages/add-outfit")}
         >
           <SkinOutlined />
-          <img
+          <Image
             src="https://img.icons8.com/ios/50/skirt.png"
+            alt="Skirt Icon"
+            layout="intrinsic"
             className="size-8"
           />
           <PlusOutlined className="text-base" />
