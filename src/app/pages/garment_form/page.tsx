@@ -14,22 +14,22 @@ import { ZodError } from 'zod';
 
 
 interface GarmentFormProps {
-  initialData?: IGarmentType; // נתונים עבור עריכה
+//   initialData?: IGarmentType; // נתונים עבור עריכה
   userId: string; // מזהה המשתמש שיצר את הבגד
   onSubmit: (data: IGarmentType) => void;
 }
 
-const GarmentForm: React.FC<GarmentFormProps> = ({ initialData, userId }) => {
+const GarmentForm: React.FC<GarmentFormProps> = ({/* initialData,*/ userId }) => {
   const [formData, setFormData] = useState<IGarmentType>({
     // img: initialData?.img || "", // שדה התמונה
-    desc: initialData?.desc || "",
-    season: initialData?.season || "",
-    range: initialData?.range || 1,
-    category: initialData?.category || "",
-    color: initialData?.color || "",
-    link: initialData?.link || "",
-    price: initialData?.price || 0,
-    tags: initialData?.tags || [],
+    desc:/* initialData?.desc ||*/ "",
+    season: /*initialData?.season ||*/ "",
+    range: /*initialData?.range ||*/ 1,
+    category:/* initialData?.category || */"",
+    color: /*initialData?.color || */"",
+    link:/* initialData?.link || */"",
+    price:/* initialData?.price ||*/ 0,
+    tags: /*initialData?.tags || */[],
   });
 
   const [seasons, setSeasons] = useState<string[]>([]);
@@ -139,7 +139,8 @@ const GarmentForm: React.FC<GarmentFormProps> = ({ initialData, userId }) => {
       className="max-w-4xl mx-auto p-4 bg-white rounded shadow-md space-y-4 mb-12"
     >
       <h1 className="text-2xl font-semibold text-center">
-        {initialData ? "Edit Garment" : "Create Garment"}
+       {/* {initialData ? "Edit Garment" : ""} */}
+       Create Garment
       </h1>
 
       <textarea
@@ -258,7 +259,8 @@ const GarmentForm: React.FC<GarmentFormProps> = ({ initialData, userId }) => {
         type="submit"
         className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
       >
-        {initialData ? "Update Garment" : "Create Garment"}
+        {/* {initialData ? "Update Garment" : ""} */}
+        Create Garment
       </button>
     </form>
   );
