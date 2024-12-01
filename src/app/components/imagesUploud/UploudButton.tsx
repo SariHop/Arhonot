@@ -1,13 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
-import { FilePond } from "react-filepond";
+import { FilePond, registerPlugin } from "react-filepond";
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import { FilePondFile } from 'filepond';
 import "filepond/dist/filepond.min.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { removeBackground } from "@/app/services/image/removeBG";
 import Modal from "@/app/components/imagesUploud/ModalImage";
+
+registerPlugin( FilePondPluginFileValidateType);
 
 const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }) => {
 
@@ -48,6 +51,8 @@ const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }
           setFiles(fileItems.map((f: FilePondFile) => f.file as File));
         }}
         allowMultiple={false}
+        acceptedFileTypes={["image/*"]}
+        labelIdle=' גרור ושחרר את הקובץ שלך או <span class="filepond--label-action">ייבא קובץ מקומי</span>'
         server={{
           process: (fieldName, file, metadata, load) => {
             const actualFile = file as unknown as File;
@@ -55,8 +60,6 @@ const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }
             load(file.name);
           },
         }}
-        name="file"
-        labelIdle=' גרור ושחרר את הקובץ שלך או <span class="filepond--label-action">ייבא קובץ מקומי</span>'
       />
 
       {isModalOpen && (

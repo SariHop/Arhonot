@@ -17,6 +17,7 @@
     "cloudinary": "^2.5.1",
     "crypto-js": "^4.2.0",
     "filepond": "^4.32.4",
+    "filepond-plugin-file-validate-type": "^1.2.9",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.2",
     "next": "14.2.17",
