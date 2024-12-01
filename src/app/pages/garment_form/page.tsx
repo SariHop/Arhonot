@@ -9,34 +9,38 @@ import {
 import { toast } from "react-toastify";
 import { createGarment } from "@/app/services/garmentService";
 // import useUserStore from "@/app/store/userStore";
-import { ZodError } from 'zod';
-
-
+import { ZodError } from "zod";
+import UploadImage from "@/app/components/imagesUploud/UploudButton";
+import Image from "next/image";
 
 interface GarmentFormProps {
-//   initialData?: IGarmentType; // נתונים עבור עריכה
-//   userId: string; // מזהה המשתמש שיצר את הבגד
-//   onSubmit: (data: IGarmentType) => void;
+  //   initialData?: IGarmentType; // נתונים עבור עריכה
+  //   userId: string; // מזהה המשתמש שיצר את הבגד
+  //   onSubmit: (data: IGarmentType) => void;
 }
 
-const GarmentForm: React.FC<GarmentFormProps> = ({/* initialData, userId*/ }) => {
+const GarmentForm: React.FC<GarmentFormProps> = (
+  {
+    /* initialData, userId*/
+  }
+) => {
   const [formData, setFormData] = useState<IGarmentType>({
     // img: initialData?.img || "", // שדה התמונה
-    desc:/* initialData?.desc ||*/ "",
+    desc: /* initialData?.desc ||*/ "",
     season: /*initialData?.season ||*/ "",
     range: /*initialData?.range ||*/ 1,
-    category:/* initialData?.category || */"",
-    color: /*initialData?.color || */"",
-    link:/* initialData?.link || */"",
-    price:/* initialData?.price ||*/ 0,
-    tags: /*initialData?.tags || */[],
+    category: /* initialData?.category || */ "",
+    color: /*initialData?.color || */ "",
+    link: /* initialData?.link || */ "",
+    price: /* initialData?.price ||*/ 0,
+    tags: /*initialData?.tags || */ [],
   });
 
   const [seasons, setSeasons] = useState<string[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
-
+  const [imageUrl, setImageUrl] = useState<string>("");
   useEffect(() => {
     Promise.all([fetchSeasons(), fetchTags(), fetchTypes()])
       .then(([fetchedSeasons, fetchedTags, fetchedCategories]) => {
@@ -65,13 +69,13 @@ const GarmentForm: React.FC<GarmentFormProps> = ({/* initialData, userId*/ }) =>
     setFormData((prev) => ({
       ...prev,
       [name]:
-      name === "price"
-        ? value === "" 
-          ? 0
-          : Number(value)
-        : name === "range"
-        ? Number(value) 
-        : value,
+        name === "price"
+          ? value === ""
+            ? 0
+            : Number(value)
+          : name === "range"
+          ? Number(value)
+          : value,
     }));
   };
 
@@ -97,7 +101,7 @@ const GarmentForm: React.FC<GarmentFormProps> = ({/* initialData, userId*/ }) =>
       if (error instanceof ZodError) {
         const validationErrors: Record<string, string> = {};
         error.errors.forEach((err) => {
-          if (err.path.length > 0 && typeof err.path[0] === 'string') {
+          if (err.path.length > 0 && typeof err.path[0] === "string") {
             validationErrors[err.path[0]] = err.message;
           }
         });
@@ -111,7 +115,7 @@ const GarmentForm: React.FC<GarmentFormProps> = ({/* initialData, userId*/ }) =>
     e.preventDefault();
     const isValid = await validateForm();
     if (isValid) {
-      const garmentWithUserId = { ...formData, /*userId */};
+      const garmentWithUserId = { ...formData /*userId */ };
 
       try {
         await createGarment(garmentWithUserId);
@@ -139,9 +143,19 @@ const GarmentForm: React.FC<GarmentFormProps> = ({/* initialData, userId*/ }) =>
       className="max-w-4xl mx-auto p-4 bg-white rounded shadow-md space-y-4 mb-12"
     >
       <h1 className="text-2xl font-semibold text-center">
-       {/* {initialData ? "Edit Garment" : ""} */}
-       Create Garment
+        {/* {initialData ? "Edit Garment" : ""} */}
+        Create Garment
       </h1>
+      <UploadImage setCloudinary={setImageUrl} />
+      {imageUrl && (
+        <Image
+          width="960"
+          height="600"
+          src={imageUrl}
+          sizes="100vw"
+          alt="Description of my image"
+        />
+      )}
 
       <textarea
         name="desc"

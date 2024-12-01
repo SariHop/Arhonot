@@ -103,6 +103,8 @@ const NavBar = () => {
             alt="Skirt Icon"
             layout="intrinsic"
             className="size-8"
+            width={50}
+            height={50}
           />
           <PlusOutlined className="text-base" />
         </div>
