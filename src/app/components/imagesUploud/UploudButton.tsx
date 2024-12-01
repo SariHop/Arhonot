@@ -2,26 +2,45 @@
 
 import React, { useState } from "react";
 import { FilePond } from "react-filepond";
+import { FilePondFile } from 'filepond';
 import "filepond/dist/filepond.min.css";
-import { removeBackground } from "@/app/services/imageService"
-import Image from 'next/image'
-import { FilePondFile } from 'filepond'
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { removeBackground } from "@/app/services/image/removeBG";
+import Modal from "@/app/components/imagesUploud/ModalImage";
 
-const UploadImage = () => {
+const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }) => {
+
   const [files, setFiles] = useState<File[]>([]);
   const [fileWithNoBG, setFileWithNoBG] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setFileWithNoBG(null);
+    setFiles([]);
+  };
 
   const handleProcess = async (file: File) => {
     const formData = new FormData();
     formData.append("image_file", file);
     formData.append("size", "auto");
-
-    const removeBG = await removeBackground(formData) as string
-    setFileWithNoBG(removeBG)
+    openModal();
+    try {
+      const removeBG = await removeBackground(formData) as string;
+      setFileWithNoBG(removeBG);
+    } catch (error) {
+      closeModal()
+      console.error("Error removing background:", error);
+      toast.error("שגיאה בעת הסרת הרקע. נסה שנית!");
+    }
   };
+
 
   return (
     <div style={{ maxWidth: "500px", margin: "0 auto" }}>
+
       <FilePond
         files={files}
         // https://github.com/pqina/react-filepond/issues/245
@@ -30,26 +49,24 @@ const UploadImage = () => {
         }}
         allowMultiple={false}
         server={{
-          // process: (fieldName, file, metadata, load, error, progress, abort) => {
-            process: (fieldName, file, metadata, load) => {
+          process: (fieldName, file, metadata, load) => {
             const actualFile = file as unknown as File;
             handleProcess(actualFile);
             load(file.name);
           },
         }}
         name="file"
-        labelIdle='Drag & Drop your file or <span class="filepond--label-action">Browse</span>'
+        labelIdle=' גרור ושחרר את הקובץ שלך או <span class="filepond--label-action">ייבא קובץ מקומי</span>'
       />
 
-      {
-        fileWithNoBG ?
-          <Image
-            src={fileWithNoBG}
-            width={500}
-            height={500}
-            alt="Picture of the author"
-          /> : <h6>העלה תמונה</h6>
-      }
+      {isModalOpen && (
+        <Modal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          fileWithNoBG={fileWithNoBG}
+          setCloudinary={setCloudinary}
+        />
+      )}
     </div>
   );
 };

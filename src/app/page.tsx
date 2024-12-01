@@ -1,8 +1,17 @@
+import React from 'react';
+import { ToastContainer} from "react-toastify";
 
-export default function Home() {
+const ExamplePage: React.FC = () => {
+
+
   return (
-    <div>
-      Header
+    <div className="p-4">
+      {/*react-toastify הצגת שגיאות עם שימוש בספריה */}
+      <ToastContainer />
+
+
     </div>
   );
-}
+};
+
+export default ExamplePage;
