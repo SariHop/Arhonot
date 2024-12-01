@@ -1,6 +1,6 @@
-import { Document, ObjectId } from "mongoose";
+import mongoose, { Document, ObjectId } from "mongoose";
 
-import {z} from 'zod'
+import { z } from 'zod'
 // import { fetchCities } from "../services/categoriesService";
 
 export default interface IUser extends Document {
@@ -14,6 +14,12 @@ export default interface IUser extends Document {
     city: string;
     sensitive: string;
     userDays: ObjectId[];
+}
+
+export interface IToken extends Document {
+    userId: mongoose.Types.ObjectId; // מצביע על ה-ObjectId של משתמש
+    token: string;
+    createdAt: Date;
 }
 
 export const userSchemaZod = z.object({

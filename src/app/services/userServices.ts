@@ -68,3 +68,24 @@ export const signin = async (email: string, password: string) => {
         throw new Error('An unexpected error occurred.');
     }
 }
+
+export const resetPassword = async (token: string, password: string) => {
+    // const secretKey = 'mySecretKey';
+    const encryptedPassword = await hashPassword(password)
+    try {
+        console.log(token, encryptedPassword)
+        const response = await axios.put(`/api/reset-password`, { token,password: encryptedPassword });
+        console.log(response)
+        // if (response.ok) {
+        //     // Handle successful login (e.g., redirect)
+        //     console.log('Login successful');
+        // } else {
+        //     const { message } = await response.json();
+        //     throw new Error(message || 'Login failed');
+        // }
+    } catch (error) {
+        console.log(error)
+        // console.error('Error during login:', error);
+        // throw new Error('An unexpected error occurred.');
+    }
+}

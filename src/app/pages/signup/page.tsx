@@ -5,7 +5,6 @@ import { ZodError } from 'zod'; // הייבוא של ZodError
 import { signup } from '@/app/services/userServices';
 
 const SignUp = () => {
-
   const [formData, setFormData] = useState<IUserType>({
     password: "",
     confirmPassword: "",
