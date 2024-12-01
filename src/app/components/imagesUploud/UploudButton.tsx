@@ -57,7 +57,7 @@ const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }
           },
         }}
         name="file"
-        labelIdle=' גרור ושחרר את הקובץ שלך או <span class="filepond--label-action">יבא קובץ מקומי</span>'
+        labelIdle=' גרור ושחרר את הקובץ שלך או <span class="filepond--label-action">ייבא קובץ מקומי</span>'
       />
 
       {isModalOpen && (
