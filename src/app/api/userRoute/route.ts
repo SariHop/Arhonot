@@ -50,8 +50,10 @@ export async function POST(request: NextRequest) {
 
       await newUser.validate();
       const savedUser = await newUser.save();
+      console.log("Saved User:", savedUser);
+
       return NextResponse.json(
-        { success: true, data: savedUser },
+        { success: true, data: savedUser.toObject()},
         { status: 201 }
       );
     } catch (error) {
