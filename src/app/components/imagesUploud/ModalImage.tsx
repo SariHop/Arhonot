@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, FC } from 'react';
+import React, { FC } from 'react';
 import Image from 'next/image'
 import { cloudinaryUploud } from '@/app/services/image/saveToCloudinary';
 import { IModalProps } from '@/app/types/props';
