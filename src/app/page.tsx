@@ -1,4 +1,4 @@
-"use state"
+"use client"
 import React, { useState } from 'react';
 import { ToastContainer } from "react-toastify";
 import Image from 'next/image';
