@@ -11,7 +11,6 @@ export default function ResetPasswordPage() {
         e.preventDefault();
         setIsLoading(true);
         setMessage('');
-
         try {
             const response = await fetch('/api/reset-password', {
                 method: 'POST',
@@ -32,14 +31,13 @@ export default function ResetPasswordPage() {
         } finally {
             setIsLoading(false);
         }
-
     };
 
     return (
         <div style={{ maxWidth: '400px', margin: '0 auto', padding: '2rem' }}>
-            <h1>Reset Password</h1>
+            <h1>שינוי סיסמא</h1>
             <form onSubmit={handleSubmit}>
-                <label htmlFor="email">Email Address:</label>
+                <label htmlFor="email">אימייל:</label>
                 <input
                     type="email"
                     id="email"
@@ -68,7 +66,7 @@ export default function ResetPasswordPage() {
                         cursor: isLoading ? 'not-allowed' : 'pointer',
                     }}
                 >
-                    {isLoading ? 'Sending...' : 'Send Reset Link'}
+                    {isLoading ? 'מתבצעת שליחה...' : 'שלחו לי קישור למייל'}
                 </button>
             </form>
             {message && (

@@ -37,7 +37,7 @@ export default function SignInPage() {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email
+              אמייל:
             </label>
             <input
               id="email"
@@ -50,7 +50,7 @@ export default function SignInPage() {
           </div>
           <div className="mb-4">
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
+              סיסמא:
             </label>
             <input
               id="password"
@@ -61,11 +61,21 @@ export default function SignInPage() {
               required
             />
           </div>
+          <div className="text-right my-4">
+            <a
+              href="/pages/reset-password"
+              className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+            >
+              שכחתי סיסמא
+            </a>
+          </div>
+
+
           <button
             type="submit"
             className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
-            Sign In
+            התחברות
           </button>
         </form>
       </div>

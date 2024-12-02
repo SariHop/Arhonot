@@ -1,4 +1,4 @@
-import { IUserType } from '../types/IUser'
+import { IUserType, ResetPasswordResponse } from '../types/IUser'
 import axios from 'axios';
 export const apiUrl = "/api/userRoute";
 
@@ -69,23 +69,40 @@ export const signin = async (email: string, password: string) => {
     }
 }
 
-export const resetPassword = async (token: string, password: string) => {
+export const resetPassword = async (token: string, password: string): Promise<ResetPasswordResponse> => {
     // const secretKey = 'mySecretKey';
     const encryptedPassword = await hashPassword(password)
     try {
-        console.log(token, encryptedPassword)
-        const response = await axios.put(`/api/reset-password`, { token,password: encryptedPassword });
-        console.log(response)
-        // if (response.ok) {
-        //     // Handle successful login (e.g., redirect)
-        //     console.log('Login successful');
-        // } else {
-        //     const { message } = await response.json();
-        //     throw new Error(message || 'Login failed');
-        // }
-    } catch (error) {
-        console.log(error)
-        // console.error('Error during login:', error);
-        // throw new Error('An unexpected error occurred.');
+        console.log("token   ", token, "en  ", encryptedPassword)
+        const response = await axios.put(`/api/reset-password`, { token: token, password: encryptedPassword });
+        console.log("response:", response);
+        if (response.status === 200) {
+            return { message: "Password reset successful" };
+        } else {
+            // אם יש שגיאה כלשהי שנחזקה בתגובה, מכניסים אותה לכאן
+            return { error: response.data.error || "Unexpected error occurred" };
+        }
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+            if (error.response) {
+                const { status, data } = error.response;
+                if (status === 400) {
+                    console.error("Validation error:", data.error);
+                    return data.error; // החזרת הודעת שגיאה ללקוח
+                } else if (status === 404) {
+                    console.error("User not found:", data.message);
+                    return data.message; // החזרת הודעת שגיאה ללקוח
+                } else if (status === 500) {
+                    console.error("Server error:", data.error);
+                    return "Internal server error. Please try again later.";
+                }
+            } else {
+                console.error("Request failed:", error.message);
+                return "Network error. Please check your connection.";
+            }
+        } else {
+            console.error("Unexpected error:", error);
+            return "An unexpected error occurred. Please try again.";
+        }
     }
 }

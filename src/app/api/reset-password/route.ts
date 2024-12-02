@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     });
 
     await transporter.sendMail({
-      from: '"Aronot" <aronot844@gmail.com>',
+      from: '"ArOnot" <aronot844@gmail.com>',
       to: email,
       subject: 'Reset Your Password',
       html: `
@@ -114,32 +114,14 @@ export async function POST(request: Request) {
   }
 }
 
-
-// export async function PUT(request: Request) {
-//   console.log("put");
-//   const { token, password } = await request.json();
-//   const myTOKEN = await Token.findOne({ token: token });
-//   const idToUpdate = myTOKEN?.userId
-//   console.log("token: ", myTOKEN?.userId);
-//   console.log(token, password);
-//   const saltRounds = 10;
-//   // יצירת ההצפנה
-//   const hashedPassword = await crypto.hash(password, saltRounds);
-//   const updatedUser = await User.findByIdAndUpdate(
-//     idToUpdate, // ID של המשתמש לעדכון
-//     { password: hashedPassword }, // שדה לעדכון
-//     { new: true } // מחזיר את המסמך המעודכן לאחר העדכון
-//   );
-//   console.log(updatedUser);
-//   return NextResponse.json({ message: 'password chaged succesfully!' });
-// }
-
 export async function PUT(request: Request) {
   try {
     console.log("Handling PUT request...");
 
     // שלב 1: קבלת נתונים מהבקשה
     const { token, password } = await request.json();
+    console.log("token:", token);
+    console.log("password:", password);
     if (!token || !password) {
       return NextResponse.json(
         { error: "Missing token or password" },
@@ -175,7 +157,7 @@ export async function PUT(request: Request) {
 
     if (!updatedUser) {
       return NextResponse.json(
-        { error: "User not found or update failed" },
+        { message: "User not found or update failed" },
         { status: 404 }
       );
     }
@@ -183,7 +165,10 @@ export async function PUT(request: Request) {
     console.log("User updated successfully:", updatedUser);
 
     // שלב 6: החזרת תשובה ללקוח
-    return NextResponse.json({ message: "Password changed successfully!" });
+    return NextResponse.json(
+      { message: "Password changed successfully!" }, 
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error occurred:", error);
     return NextResponse.json(
