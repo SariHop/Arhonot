@@ -1,13 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
-import { FilePond } from "react-filepond";
+import { FilePond, registerPlugin } from "react-filepond";
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import { FilePondFile } from 'filepond';
 import "filepond/dist/filepond.min.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { removeBackground } from "@/app/services/image/removeBG";
 import Modal from "@/app/components/imagesUploud/ModalImage";
+
+registerPlugin( FilePondPluginFileValidateType);
 
 const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }) => {
 
@@ -39,15 +42,17 @@ const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }
 
 
   return (
-    <div style={{ maxWidth: "500px", margin: "0 auto" }}>
+    <div style={{ maxWidth: "400px", margin: "0 auto" }}>
 
       <FilePond
         files={files}
-        // https://github.com/pqina/react-filepond/issues/245
+        // https://github.com/pqina/react0-filepond/issues/245
         onupdatefiles={(fileItems: FilePondFile[]) => {
           setFiles(fileItems.map((f: FilePondFile) => f.file as File));
         }}
         allowMultiple={false}
+        acceptedFileTypes={["image/*"]}
+        labelIdle=' <span class="filepond--label-action"> בחר תמונה </span>'
         server={{
           process: (fieldName, file, metadata, load) => {
             const actualFile = file as unknown as File;
@@ -55,8 +60,6 @@ const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }
             load(file.name);
           },
         }}
-        name="file"
-        labelIdle=' גרור ושחרר את הקובץ שלך או <span class="filepond--label-action">ייבא קובץ מקומי</span>'
       />
 
       {isModalOpen && (
