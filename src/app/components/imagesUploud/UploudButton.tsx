@@ -42,17 +42,17 @@ const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }
 
 
   return (
-    <div style={{ maxWidth: "500px", margin: "0 auto" }}>
+    <div style={{ maxWidth: "400px", margin: "0 auto" }}>
 
       <FilePond
         files={files}
-        // https://github.com/pqina/react-filepond/issues/245
+        // https://github.com/pqina/react0-filepond/issues/245
         onupdatefiles={(fileItems: FilePondFile[]) => {
           setFiles(fileItems.map((f: FilePondFile) => f.file as File));
         }}
         allowMultiple={false}
         acceptedFileTypes={["image/*"]}
-        labelIdle=' גרור ושחרר את הקובץ שלך או <span class="filepond--label-action">ייבא קובץ מקומי</span>'
+        labelIdle=' <span class="filepond--label-action"> בחר תמונה </span>'
         server={{
           process: (fieldName, file, metadata, load) => {
             const actualFile = file as unknown as File;
