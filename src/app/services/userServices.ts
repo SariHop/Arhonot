@@ -50,22 +50,23 @@ export const signup = async (formData: IUserType) => {
 };
 
 export const signin = async (email: string, password: string) => {
-    // const secretKey = 'mySecretKey';
-    const encryptedPassword = await hashPassword(password)
     try {
+        const encryptedPassword = await hashPassword(password)
         console.log(email, encryptedPassword)
         const response = await axios.post("/api/signIn", { email, password: encryptedPassword });
-        console.log(response)
-        // if (response.ok) {
-        //     // Handle successful login (e.g., redirect)
-        //     console.log('Login successful');
-        // } else {
-        //     const { message } = await response.json();
-        //     throw new Error(message || 'Login failed');
-        // }
+        console.log('Login successful:', response.data);
+        return response.data;
     } catch (error) {
         console.error('Error during login:', error);
-        throw new Error('An unexpected error occurred.');
+        if (axios.isAxiosError(error)) {
+            const message = error.response?.data?.message || "שגיאה לא צפויה";
+            const status = error.response?.status || 500;
+            // מחזירים את השגיאה בצורה מסודרת
+            return { success: false, message, status };
+        } else {
+            // אם מדובר בשגיאה שאינה קשורה ל-axios
+            return { success: false, message: "שגיאה פנימית במערכת", status: 500 };
+        }
     }
 }
 
@@ -106,3 +107,4 @@ export const resetPassword = async (token: string, password: string): Promise<Re
         }
     }
 }
+//Esty1234%
