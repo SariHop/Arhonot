@@ -12,11 +12,10 @@ import useUser from "@/app/store/userStore";
 import { ZodError } from "zod";
 import UploadImage from "@/app/components/imagesUploud/UploudButton";
 import Image from "next/image";
-// import { ChromePicker,ColorResult} from "react-color";
 import { ColorPicker } from "antd";
 
 const GarmentForm = () => {
-  const { _id, userName, email } = useUser((state) => state);
+  const { _id } = useUser((state) => state);
   console.log("User ID from store:", _id);
 
   const [formData, setFormData] = useState<IGarmentType>({

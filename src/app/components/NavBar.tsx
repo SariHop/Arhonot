@@ -101,7 +101,7 @@ const NavBar = () => {
           <Image
             src="https://img.icons8.com/ios/50/skirt.png"
             alt="Skirt Icon"
-            layout="intrinsic"
+            // layout="intrinsic"
             className="size-8"
             width={50}
             height={50}
