@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-import useUser from './userStore'
 
 
 type AlertsCounterStore = {

@@ -1,5 +1,5 @@
 "use client";
-import { Collapse, Typography, Divider, Button, Radio, Tabs } from "antd";
+import { Collapse, Typography, Divider, Button, Tabs } from "antd";
 import { useAlertsCounter } from "@/app/store/alertsCunterStore";
 import useUser from "@/app/store/userStore";
 import { IAlertTypeWithId } from "@/app/types/IAlert";
@@ -17,7 +17,7 @@ import {
   updateRequestReadable,
   updateRequestStatus,
 } from "@/app/services/ConnectionsServices";
-import TabPane from "antd/es/tabs/TabPane";
+
 
 const { Title } = Typography;
 
@@ -41,7 +41,7 @@ type ExtendedREquestType = {
   readen: boolean;
 };
 
-const page = () => {
+const Page = () => {
   const AlertsCounter: number = useAlertsCounter(
     (state) => state.alertsCounter
   );
@@ -49,7 +49,7 @@ const page = () => {
   const user = useUser();
   const [alerts, setAlerts] = useState<ExtendedItemType[]>([]);
   const [requests, setRequests] = useState<ExtendedREquestType[]>([]);
-  const [category, setCategory] = useState<string>("waiting"); // קטגוריה פעילה
+  // const [category, setCategory] = useState<string>("waiting"); // קטגוריה פעילה
 
   useEffect(() => {
     const fetchAlertsAndRequests = async () => {
@@ -61,7 +61,7 @@ const page = () => {
     };
 
     fetchAlertsAndRequests();
-  }, [user._id]);
+  }, []);//user._id
 
   //זה אמו להיות בquery?
   const getAlerts = async () => {
@@ -445,4 +445,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

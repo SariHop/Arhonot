@@ -1,5 +1,5 @@
 
-import mongoose, { Document, ObjectId, Types } from "mongoose";
+import mongoose, { Document, Types } from "mongoose";
 import { z } from 'zod'
 // import { fetchCities } from "../services/categoriesService";
 
