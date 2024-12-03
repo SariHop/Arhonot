@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Link from 'next/link';
 import { EyeInvisibleTwoTone, EyeTwoTone } from '@ant-design/icons';
 
+
 const SignUp = () => {
   const [formData, setFormData] = useState<IUserType>({
     password: "",
@@ -15,8 +16,9 @@ const SignUp = () => {
     email: "",
     userName: "",
     gender: "זכר",
-    dateOfBirth: new Date('10/10/2024'),
-    city: "jerusalem",
+    dateOfBirth: new Date('10/10/2000'),
+    age: 0,
+    city: "ירושלים",
     sensitive: "none"
   });
 
@@ -223,27 +225,105 @@ const SignUp = () => {
             />
             {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}
           </div>
+        </div>
+        {/* Confirm Password */}
+        <div className="mb-4">
+          <label
+            className="block text-sm font-medium text-gray-700"
+            htmlFor="confirmPassword"
+          >
+            Confirm Password
+          </label>
+          <input
+            id="confirmPassword"
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+          />
+          {errors.confirmPassword && (
+            <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
+          )}
+        </div>
 
-          {/* Sensitive */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700" htmlFor="sensitive">
-              Sensitive To:
-            </label>
-            <select
-              id="sensitive"
-              name='sensitive'
-              value={formData.sensitive}
-              onChange={handleChange}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option value="none">None</option>
-              <option value="cold">Cold</option>
-              <option value="heat">Heat</option>
-            </select>
-            {errors.sensitive && (
-              <p className="text-red-500 text-sm">{errors.sensitive}</p>
-            )}
-          </div>
+        {/* Date of Birth */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="dateOfBirth">
+            Date of Birth
+          </label>
+          <input
+            type="date"
+            value={
+              formData.dateOfBirth
+                ? new Date(formData.dateOfBirth).toISOString().split('T')[0]
+                : ''
+            }
+            onChange={(e) =>
+              setFormData({ ...formData, dateOfBirth: new Date(e.target.value) })
+            }
+          />
+
+
+          {errors.dateOfBirth && (
+            <p className="text-red-500 text-sm">{errors.dateOfBirth}</p>
+          )}
+        </div>
+
+        {/* Gender */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="gender">
+            Gender
+          </label>
+          <select
+            id="gender"
+            name='gender'
+            value={formData.gender}
+            onChange={handleChange}
+            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+          >
+            <option value="זכר">זכר</option>
+            <option value="נקבה">נקבה</option>
+          </select>
+          {errors.gender && (
+            <p className="text-red-500 text-sm">{errors.gender}</p>
+          )}
+        </div>
+
+        {/* City */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="city">
+            City
+          </label>
+          <input
+            id="city"
+            name='city'
+            value={formData.city}
+            onChange={handleChange}
+            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+          />
+          {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}
+        </div>
+
+        {/* Sensitive */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700" htmlFor="sensitive">
+            Sensitive To:
+          </label>
+          <select
+            id="sensitive"
+            name='sensitive'
+            value={formData.sensitive}
+            onChange={handleChange}
+            className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+          >
+            <option value="none">ללא</option>
+            <option value="cold">קור</option>
+            <option value="heat">חום</option>
+          </select>
+          {errors.sensitive && (
+            <p className="text-red-500 text-sm">{errors.sensitive}</p>
+          )}
         </div>
 
         {/* Submit */}
@@ -257,6 +337,7 @@ const SignUp = () => {
           התחברות
         </Link>
       </form>
+
     </div>
   );
 };

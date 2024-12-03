@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connect from "@/app/lib/db/mongoDB";
 import Garment from "@/app/lib/models/garmentSchema";
+import { fetchSeasons, fetchTags, fetchTypes } from "@/app/services/categoriesService";
 
 export async function GET() {
   try {
@@ -27,6 +28,20 @@ export async function POST(request: NextRequest) {
   try {
     await connect();
     const body = await request.json();
+
+    const validSeasons = await fetchSeasons();
+    const validCategories = await fetchTypes();
+    const validTags = await fetchTags();
+
+    if (!validSeasons.includes(body.season)) {
+      throw new Error("Invalid season value");
+    }
+    if (!validCategories.includes(body.category)) {
+      throw new Error("Invalid category value");
+    }
+    if (!body.tags.every((tag: string) => validTags.includes(tag))) {
+      throw new Error("Invalid tags value");
+    }
     const newgarment = new Garment(body);
     console.log(newgarment);
     

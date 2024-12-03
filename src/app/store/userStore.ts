@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { IUserTypeWithId } from '../types/IUser';
-
+import { create } from "zustand";
+import { UpdateUserTypeForStore, IUserTypeWithId } from "../types/IUser";
+import { Schema } from "mongoose";
 
 type UserStore = {
   _id: string | null;
@@ -12,33 +12,49 @@ type UserStore = {
   city: string;
   dateOfBirth: Date | null;
   sensitive: string;
-  children: string[];
-  userDays: string[];
-  setUser: (user: Partial<IUserTypeWithId>) => void;
+  children: Schema.Types.ObjectId[]; // שינה מ-string[] ל-ObjectId[]
+  userDays: Schema.Types.ObjectId[];
+  setUser: (user: Partial<UpdateUserTypeForStore>) => void;
   updateUser: (updatedFields: Partial<IUserTypeWithId>) => void;
   resetUser: () => void;
-}
+};
 
 const useUser = create<UserStore>((set) => ({
   _id: null,
-  userName: '',
-  password: '',
-  email: '',
+  userName: "",
+  password: "",
+  email: "",
   age: 0,
-  gender: '',
-  city: '',
+  gender: "",
+  city: "",
   dateOfBirth: null,
-  sensitive: 'none',
+  sensitive: "none",
   children: [],
   userDays: [],
-  
+
   // פונקציה לאיתחול יוזר חדש
-  setUser: (user) =>
-    set({
-      ...user,
-      _id: user._id ?? null,
-      dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth) : null,
-    }),
+  // setUser: (user) => set(() => ({ ...user })),
+  setUser: (user) => {
+    console.log("Setting user in store: ", user); // הוספתי פה הדפסה לבדוק
+
+    set(() => {
+      const newState = {
+        _id: user._id ?? null,
+        userName: user.userName || "",
+        password: user.password || "",
+        email: user.email || "",
+        age: user.age ?? 0,
+        gender: user.gender || "",
+        city: user.city || "",
+        dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth) : null,
+        sensitive: user.sensitive || "none",
+        children: user.children ?? [],
+        userDays: user.userDays ?? [],
+      };
+      console.log("Updated user:", newState);
+      return newState;
+    });
+  },
 
   // פונקציה לעדכון שדות יוזר קיימים
   updateUser: (updatedFields) =>
@@ -54,13 +70,13 @@ const useUser = create<UserStore>((set) => ({
   resetUser: () =>
     set({
       _id: null,
-      userName: '',
-      email: '',
+      userName: "",
+      email: "",
       age: 0,
-      gender: '',
-      city: '',
+      gender: "",
+      city: "",
       dateOfBirth: null,
-      sensitive: 'none',
+      sensitive: "none",
       children: [],
       userDays: [],
     }),
