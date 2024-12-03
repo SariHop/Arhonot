@@ -378,7 +378,7 @@ const Page = () => {
         <div className="h-full overflow-y-auto">
           <Collapse
             accordion
-            items={renderRequests("rejected").map(({ readen = 'true', ...rest }) => ({ readen, ...rest }))}
+            items={alerts.map(({ readen = "true", ...rest }) => ({ readen, ...rest }))}
             onChange={(key) => handlePanelAlertsChange(key)}
           />
         </div>
@@ -401,7 +401,7 @@ const Page = () => {
               children: (
                 <div className="h-full overflow-y-auto">
                   <Collapse
-                    items={renderRequests("rejected").map(({ readen = 'true', ...rest }) => ({ readen, ...rest }))}
+                    items={renderRequests("waiting").map(({ readen = 'true', ...rest }) => ({ readen, ...rest }))}
                     onChange={(key) => handlePanelRequestsChange(key)}
                   />
                 </div>
@@ -413,7 +413,7 @@ const Page = () => {
               children: (
                 <div className="h-full overflow-y-auto">
                   <Collapse
-                    items={renderRequests("rejected").map(
+                    items={renderRequests("accepted").map(
                       ({ readen = "true", ...rest }) => ({ readen, ...rest })
                     )}
                     onChange={(key) => handlePanelRequestsChange(key)}
