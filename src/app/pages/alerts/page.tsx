@@ -18,7 +18,6 @@ import {
   updateRequestStatus,
 } from "@/app/services/ConnectionsServices";
 
-
 const { Title } = Typography;
 
 type ExtendedItemType = {
@@ -61,7 +60,7 @@ const Page = () => {
     };
 
     fetchAlertsAndRequests();
-  }, []);//user._id
+  }, []); //user._id
 
   //זה אמו להיות בquery?
   const getAlerts = async () => {
@@ -71,7 +70,6 @@ const Page = () => {
         "674b74d0dc0ad6b3951e1671"
       );
 
-      
       alerts.map((alert: IAlertTypeWithId) =>
         returnAlerts.push({
           key: alert._id,
@@ -100,7 +98,6 @@ const Page = () => {
       const connections: IConnectionRequest[] = await fetchUsersConnectionReq(
         "674b74d0dc0ad6b3951e1671"
       );
-
 
       connections.forEach((connectionReq: IConnectionRequest) => {
         const { labelContent, childrenContent } = getConnectionRequestChildren(
@@ -221,7 +218,6 @@ const Page = () => {
     }
     console.log("clicked");
 
-
     const updatedAlerts = alerts.map((alert) => {
       if (alert.key === key && !alert.readen) {
         decreaseAlertCounter();
@@ -232,7 +228,6 @@ const Page = () => {
     });
     setAlerts(updatedAlerts);
 
-    
     // const updatedAlerts = await Promise.all(
     //   alerts.map(async (alert: ExtendedItemType) => {
     //     if (alert.key === key && !alert.readen) {
@@ -364,9 +359,7 @@ const Page = () => {
 
   return (
     <div className=" mb-[10vh] paging">
-      
       <div className=" p-6">
-  
         <Title level={3} className="">
           ההתרעות שלך
         </Title>
@@ -385,7 +378,7 @@ const Page = () => {
         <div className="h-full overflow-y-auto">
           <Collapse
             accordion
-            items={alerts.map(({ readen='true', ...rest }) => rest)}
+            items={renderRequests("rejected").map(({ readen = 'true', ...rest }) => ({ readen, ...rest }))}
             onChange={(key) => handlePanelAlertsChange(key)}
           />
         </div>
@@ -408,7 +401,7 @@ const Page = () => {
               children: (
                 <div className="h-full overflow-y-auto">
                   <Collapse
-                    items={renderRequests("waiting").map(({ readen='true', ...rest }) => rest)}
+                    items={renderRequests("rejected").map(({ readen = 'true', ...rest }) => ({ readen, ...rest }))}
                     onChange={(key) => handlePanelRequestsChange(key)}
                   />
                 </div>
@@ -420,7 +413,9 @@ const Page = () => {
               children: (
                 <div className="h-full overflow-y-auto">
                   <Collapse
-                    items={renderRequests("accepted").map(({ readen='true', ...rest }) => rest)}
+                    items={renderRequests("rejected").map(
+                      ({ readen = "true", ...rest }) => ({ readen, ...rest })
+                    )}
                     onChange={(key) => handlePanelRequestsChange(key)}
                   />
                 </div>
@@ -432,14 +427,16 @@ const Page = () => {
               children: (
                 <div className="h-full overflow-y-auto">
                   <Collapse
-                    items={renderRequests("rejected").map(({ readen='true', ...rest }) => rest)}
+                    items={renderRequests("rejected").map(
+                      ({ readen = "true", ...rest }) => ({ readen, ...rest })
+                    )}
                     onChange={(key) => handlePanelRequestsChange(key)}
                   />
                 </div>
               ),
             },
           ]}
-        /> 
+        />
       </div>
     </div>
   );
