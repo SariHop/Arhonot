@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { UpdateUserTypeForStore, IUserTypeWithId } from "../types/IUser";
-import { Schema } from "mongoose";
+// import { Schema } from "mongoose";
+import mongoose from "mongoose";
 import { persist } from "zustand/middleware";
 
 type UserStore = {
@@ -13,8 +14,8 @@ type UserStore = {
   city: string;
   dateOfBirth: Date | null;
   sensitive: string;
-  children: Schema.Types.ObjectId[]; // שינה מ-string[] ל-ObjectId[]
-  userDays: Schema.Types.ObjectId[];
+  children: mongoose.Types.ObjectId[]; // שימוש ב-mongoose.Types.ObjectId
+  userDays: mongoose.Types.ObjectId[];
   setUser: (user: Partial<UpdateUserTypeForStore>) => void;
   updateUser: (updatedFields: Partial<IUserTypeWithId>) => void;
   resetUser: () => void;
