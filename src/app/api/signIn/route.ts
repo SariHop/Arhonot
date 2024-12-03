@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
             const user = await User.findOne({ email });
             if (!user) {
                 return NextResponse.json(
-                    { message: 'Invalid email or password' },
+                    { message: 'Invalid email.\nplease try to signup' },
                     { status: 402 }
                 );
             }
@@ -48,14 +48,11 @@ export async function POST(request: NextRequest) {
             if (!isMatch) {
                 console.log("not maching");
                 return NextResponse.json(
-                    { message: 'Invalid username or password' },
+                    { message: 'Invalid password' },
                     { status: 403 }
                 );
             }
-            console.log("match");
             const token = generateToken(user.email);
-            console.log('Generated Token:', token);
-
             const response = NextResponse.json(
                 { success: true, data: user },
                 { status: 201 }

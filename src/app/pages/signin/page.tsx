@@ -2,6 +2,9 @@
 import { useState } from 'react';
 import { signin } from '../../services/userServices'
 import { useRouter } from 'next/navigation'; // ייבוא מתוך next/navigation
+import Link from 'antd/es/typography/Link';
+import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SignInPage() {
   const [email, setEmail] = useState('');
@@ -22,11 +25,19 @@ export default function SignInPage() {
         console.log('User signed in successfully:', result);
         router.push('/'); // כאן אנחנו מפנים לעמוד הבית
       } else {
-        setError(result.message);
+        if (result.status == 402) {
+          toast.error(`אימייל זה לא קיים במערכת\nנא נסה להרשם.`);
+        }
+        else if (result.status == 403) {
+          setError("הסיסמא שהוקשה שגויה");
+        }
+        else {
+          toast.error(`Signin failed: \n${result.message}`);
+        }
       }
     } catch (error) {
       console.error("Unexpected error:", error);
-      alert("שגיאה לא צפויה. אנא נסה שנית.");
+      toast.error("שגיאה לא צפויה. אנא נסה שנית.");
     }
   };
 
@@ -62,13 +73,19 @@ export default function SignInPage() {
               required
             />
           </div>
-          <div className="text-right my-4">
-            <a
+          <div className="flex justify-between items-center my-4">
+            <Link
               href="/pages/reset-password"
-              className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+              className="user-link"
             >
               שכחתי סיסמא
-            </a>
+            </Link>
+            <Link
+              href="/pages/signup"
+              className="user-link"
+            >
+              הרשמה
+            </Link>
           </div>
           <button
             type="submit"

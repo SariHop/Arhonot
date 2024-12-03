@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       const user = await User.findOne({ email });
       if (user) {
         return NextResponse.json(
-          { message: "This email already exists in the system." },
+          { message: "This email already exists." },
           { status: 404 }
         );
       }
