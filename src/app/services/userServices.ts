@@ -1,6 +1,8 @@
 import { IUserType } from '../types/IUser'
 import axios from 'axios';
 export const apiUrl = "/api/userRoute";
+import useUser from '@/app/store/userStore';
+
 
 async function hashPassword(password: string): Promise<string> {
     const encoder = new TextEncoder();
@@ -26,6 +28,7 @@ function calculateAge(birthDate: Date): number {
 }
 
 export const signup = async (formData: IUserType) => {
+    const { setUser} = useUser.getState();
     try {
         // const secretKey = 'mySecretKey'; // מפתח סודי שיש להגדיר מראש
         const encryptedPassword = await hashPassword(formData.password); // השתמש ב-await כדי לקבל את התוצאה המגובבת
@@ -42,12 +45,18 @@ export const signup = async (formData: IUserType) => {
         console.log("confirmPassword", confirmPassword);
         console.log("data:", data);
         const response = await axios.post(`${apiUrl}`, data);
+        if (response.data && response.data.success) {
+            console.log("Response Data after signup:", response.data.data);
+            setUser(response.data.data); // עדכון ה-store
+            console.log("User state after signup:", useUser.getState());
+        }
         return response.data;
     } catch (error) {
         console.error("Error adding recipe:", error);
         throw error;
     }
 };
+
 
 export const signin = async (email: string, password: string) => {
     // const secretKey = 'mySecretKey';

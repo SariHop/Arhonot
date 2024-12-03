@@ -4,6 +4,7 @@ import { userSchemaZod, IUserType } from '../../types/IUser'
 import { ZodError } from 'zod'; // הייבוא של ZodError
 import { signup } from '@/app/services/userServices';
 
+
 const SignUp = () => {
 
   const [formData, setFormData] = useState<IUserType>({
@@ -12,8 +13,9 @@ const SignUp = () => {
     email: "",
     userName: "",
     gender: "זכר",
-    dateOfBirth: new Date('10/10/2024'),
-    city: "jerusalem",
+    dateOfBirth: new Date('10/10/2000'),
+    age: 0,
+    city: "ירושלים",
     sensitive: "none"
   });
 
@@ -201,9 +203,9 @@ const SignUp = () => {
             onChange={handleChange}
             className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
           >
-            <option value="none">None</option>
-            <option value="cold">Cold</option>
-            <option value="heat">Heat</option>
+            <option value="none">ללא</option>
+            <option value="cold">קור</option>
+            <option value="heat">חום</option>
           </select>
           {errors.sensitive && (
             <p className="text-red-500 text-sm">{errors.sensitive}</p>
@@ -218,6 +220,7 @@ const SignUp = () => {
           Register
         </button>
       </form>
+      
     </div>
   );
 };

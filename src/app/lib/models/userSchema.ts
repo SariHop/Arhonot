@@ -11,17 +11,17 @@ const UserSchema : Schema<IUser> = new Schema({
     gender: { type: String, required: true, enum: ["זכר", "נקבה"]},
     dateOfBirth: { type: Date, required: true, validate: [function(value: Date) {
         return value <= new Date(); // Date of birth cannot be in the future
-    }, "Date of birth cannot be in the future"] },
+    }, "תאריך לידה לא יכול להיות עתידי"] },
     city: { type: String, required: true, validate: {
         validator: async function(value: string) {
             const cities: string[] = ['ירושלים'];
             return cities.includes(value);
         },
-        message: "City must be one of the valid cities in Israel",
+        message: "עיר חייבת להבחר מרשימת הערים בישראל",
     }
 },
     sensitive: { type: String, required: true, enum: ["cold", "heat", "none"]},
-    userDays: {type: [Types.ObjectId], required:true, ref: "Day" },
+    userDays: {type: [Types.ObjectId], required:true, ref: "day" },
 })
 
 const User:Model<IUser> =mongoose.models.User || mongoose.model<IUser>('User',UserSchema)

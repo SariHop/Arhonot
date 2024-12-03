@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiUrl = '/api/staticData'
+const apiUrl = 'http://localhost:3000/api/staticData'
 
 export const fetchSeasons = async () => {
     try {
@@ -38,9 +38,9 @@ export const fetchTags =async () => {
 export const fetchCities =async () => {
     try {
         const response = await axios.get(`${apiUrl}/cities`);
-        return response.data.types;
+        return response.data.cities;
     } catch (error) {
-        console.error("Error getting types:", error);
+        console.error("Error getting cities:", error);
         throw error;
     }
 }

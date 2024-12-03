@@ -51,6 +51,8 @@ export async function POST(request: NextRequest) {
       await newUser.validate();
       const savedUser = await newUser.save();
       console.log("Saved User:", savedUser);
+      console.log("Saved User after save:", savedUser.toObject());
+
 
       return NextResponse.json(
         { success: true, data: savedUser.toObject()},
