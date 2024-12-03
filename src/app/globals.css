@@ -17,3 +17,7 @@
 .button-select-div-wrap{
   @apply fixed inset-x-0 bottom-0
 }
+
+.paging{
+  @apply mb-[10vh]
+}

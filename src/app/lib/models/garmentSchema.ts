@@ -1,7 +1,7 @@
 
-import { fetchSeasons, fetchTags, fetchTypes } from "@/app/services/categoriesService";
 import IGarment from "@/app/types/IGarment";
 import mongoose, { Model, Schema, Types } from "mongoose";
+
 
 const GarmentSchema: Schema<IGarment> = new Schema({
     userId: { type: Types.ObjectId, required: true, ref: "User" },  
@@ -9,25 +9,11 @@ const GarmentSchema: Schema<IGarment> = new Schema({
     desc: { type: String, required: false },  // אופציונלי
     season: { 
         type: String, 
-        required: true, 
-        validate: {
-            validator: async function(value: string) {
-                const validSeasons = await fetchSeasons();
-                return validSeasons.includes(value);
-            },
-        message: "Season must be one of the valid seasons" 
-        }
+        required: true
     },
     category: { 
         type: String, 
-        required: true, 
-        validate: {
-            validator: async function(value: string) {
-                const validCategries = await fetchTypes();
-                return validCategries.includes(value);
-            },
-        message: "Category must be one of the valid categories"
-        }
+        required: true
     },
     range: { 
         type: Number, 
@@ -51,14 +37,7 @@ const GarmentSchema: Schema<IGarment> = new Schema({
     },
     tags: { 
         type: [String], 
-        required: false,
-        validate: {
-            validator: async function(tags: string[]) {
-                const validTags = await fetchTags(); // Assuming fetchTags fetches valid tags
-                return tags.every(tag => validTags.includes(tag));
-            },
-            message: "Some tags are invalid"
-        }
+        required: false
     }
 })
 

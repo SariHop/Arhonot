@@ -1,10 +1,10 @@
-import { Document, ObjectId } from "mongoose";
+import { Document, ObjectId, Types } from "mongoose";
 
 import {z} from 'zod'
 // import { fetchCities } from "../services/categoriesService";
 
 export default interface IUser extends Document {
-    children: ObjectId[];
+    children: Types.ObjectId[];
     password: string;
     email: string;
     age: number;
@@ -13,7 +13,7 @@ export default interface IUser extends Document {
     dateOfBirth: Date;
     city: string;
     sensitive: string;
-    userDays: ObjectId[];
+    userDays: Types.ObjectId[];
 }
 
 export const userSchemaZod = z.object({
