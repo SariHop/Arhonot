@@ -5,7 +5,7 @@ import mongoose, { Model, Schema, Types } from "mongoose";
 const UserSchema : Schema<IUser> = new Schema({
     children: {type: [Types.ObjectId], required:true, ref: "User" },
     password: { type: String, required: true, minlength: 8},
-    email: { type: String, required: true, match: /\S+@\S+\.\S+/},
+    email: { type: String, required: true, unique: true, match: /\S+@\S+\.\S+/},
     age: { type: Number, required: true, min: 0, max: 120},
     userName: { type: String, required: true, match: /^[A-Za-z]{2,}$/},
     gender: { type: String, required: true, enum: ["זכר", "נקבה"]},
@@ -24,5 +24,7 @@ const UserSchema : Schema<IUser> = new Schema({
     userDays: {type: [Types.ObjectId], required:true, ref: "day" },
 })
 
-const User:Model<IUser> =mongoose.models.User || mongoose.model<IUser>('User',UserSchema)
+UserSchema.index({ email: 1 }, { unique: true });
+
+const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User', UserSchema)
 export default User;

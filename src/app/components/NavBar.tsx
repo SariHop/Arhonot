@@ -11,7 +11,7 @@ import { Badge, Dropdown, MenuProps, message, Tooltip } from "antd";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useAlertsCounter } from "../store/alertsCunterStore";
-import Image from 'next/image';
+// import Image from 'next/image';
 
 const NavBar = () => {
   const AlertsCounter: number = useAlertsCounter(
@@ -41,10 +41,10 @@ const NavBar = () => {
         <Tooltip title="צור התאמה">
           <div className="flex text-3xl hover:text-blue-600">
             <SkinOutlined />
-            <img
+            {/* <img
               src="https://img.icons8.com/ios/50/skirt.png"
               className="size-8"
-            />
+            /> */}
             <PlusOutlined className="text-base" />
           </div>
         </Tooltip>
@@ -98,14 +98,14 @@ const NavBar = () => {
           onClick={() => router.push("/pages/add-outfit")}
         >
           <SkinOutlined />
-          <Image
+           <Image
             src="https://img.icons8.com/ios/50/skirt.png"
             alt="Skirt Icon"
             // layout="intrinsic"
             className="size-8"
             width={50}
             height={50}
-          />
+          /> 
           <PlusOutlined className="text-base" />
         </div>
       </Tooltip>

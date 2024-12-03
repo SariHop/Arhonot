@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, FC } from 'react';
+import React, { FC } from 'react';
 import Image from 'next/image'
 import { cloudinaryUploud } from '@/app/services/image/saveToCloudinary';
 import { IModalProps } from '@/app/types/props';
@@ -8,27 +8,33 @@ import "react-toastify/dist/ReactToastify.css";
 
 const Modal: FC<IModalProps> = ({ isOpen, onClose, fileWithNoBG, setCloudinary }) => {
 
-    const [progressUploud, setProgressUploud] = useState(false)
-
     if (!isOpen) return null;
 
     const handleAccept = async () => {
-        setProgressUploud(true)
-        if (fileWithNoBG != null) {
-            try {
-                const data = await cloudinaryUploud(fileWithNoBG);
-                if (!data.imageUrl) {
-                    toast.error("שגיאה בשמירת התמונה. נסה שנית!");
-                } else {
-                    setCloudinary(data.imageUrl);
-                }
-            } catch (error) {
-                toast.error("שגיאה בשמירת התמונה. נסה שנית!");
-                console.error(error)
-            }
-        }
         onClose();
+        if (fileWithNoBG != null) {
+            return toast.promise(
+                cloudinaryUploud(fileWithNoBG)
+                    .then(data => {
+                        if (!data.imageUrl) {
+                            throw new Error("Image URL is missing");
+                        }
+                        setCloudinary(data.imageUrl);
+                        return "success";
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        throw new Error("Error while saving changes");
+                    }),
+                {
+                    pending: "רק רגע! שומרים בשבילך את התמונה",
+                    success: "התמונה נשמרה בהצלחה",
+                    error: "שגיאה בשמירת התמונה. נסה שנית!"
+                }
+            );
+        }
     };
+
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -69,16 +75,10 @@ const Modal: FC<IModalProps> = ({ isOpen, onClose, fileWithNoBG, setCloudinary }
                             transition-all duration-300
                         "
                     >
-                        {progressUploud ? (
-                            // <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-6 h-6 border-4 border-white border-t-cyan-500 rounded-full animate-spin"></div>
-                            // </div>
-                        ) : (
-                            'אישור'
-                        )}
+                        אישור
                     </button>
                     <button
-                        disabled={progressUploud}
+
                         onClick={onClose}
                         className="
                             text-white bg-gradient-to-br from-green-400 to-blue-600 
