@@ -1,6 +1,6 @@
-import { Document, ObjectId } from "mongoose";
+import mongoose, { Document, ObjectId } from "mongoose";
 
-import {z} from 'zod'
+import { z } from 'zod'
 // import { fetchCities } from "../services/categoriesService";
 
 export default interface IUser extends Document {
@@ -15,6 +15,29 @@ export default interface IUser extends Document {
     sensitive: string;
     userDays: ObjectId[];
 }
+
+export interface IToken extends Document {
+    userId: mongoose.Types.ObjectId; // מצביע על ה-ObjectId של משתמש
+    token: string;
+    createdAt: Date;
+}
+
+export const passwordSchemaZod = z.object({
+    password: z
+        .string()
+        .min(8, "Password must be at least 8 characters")
+        .max(12, "Password cannot exceed 12 characters")
+        .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+        .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+        .regex(/\d/, "Password must contain at least one number")
+        .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
+    confirmPassword: z.string()
+        .min(8, "Confirm Password must be at least 8 characters") // לפי דרישת אורך דומה לסיסמה
+        .max(12, "Confirm Password cannot exceed 12 characters"),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords must match",
+    path: ["confirmPassword"], // מציין את השדה שבו נופלת השגיאה
+});
 
 export const userSchemaZod = z.object({
     password: z
@@ -60,3 +83,10 @@ export type IUserTypeWithId = Omit<z.infer<typeof userSchemaZod>, 'confirmPasswo
     _id: string;
 };
 
+export type ResetPasswordResponse =
+    | string // אם זה שגיאה
+    | {
+        message?: string;
+        error?: string;
+    } // אם זה אובייקט של הצלחה עם הודעה
+    | undefined; // אם לא מוחזר כלום במקרה של הצלחה

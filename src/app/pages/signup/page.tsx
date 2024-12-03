@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 import { userSchemaZod, IUserType } from '../../types/IUser'
 import { ZodError } from 'zod'; // הייבוא של ZodError
 import { signup } from '@/app/services/userServices';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignUp = () => {
-
   const [formData, setFormData] = useState<IUserType>({
     password: "",
     confirmPassword: "",
@@ -34,8 +35,15 @@ const SignUp = () => {
       const validationResult = await userSchemaZod.parseAsync(formData);
       console.log("הנתונים תקינים:", validationResult);
       setErrors({});
+      const result = await signup(formData);
 
-      signup(formData);
+      if (result.success) {
+        console.log("Signup successful:", result.data);
+        // הפניה לעמוד הבית או המשך תהליך
+      } else {
+        console.error("Signup failed:", result.message);
+        toast.error(`Signup failed: ${result.message}`);
+      }
     } catch (err) {
       // עדכון השגיאות במידה ו- Zod לא אישר את הנתונים
       const fieldErrors: Partial<Record<keyof IUserType, string>> = {};
@@ -52,6 +60,7 @@ const SignUp = () => {
   };
 
   return (
+
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <form
         onSubmit={(e) => { handleSubmit(e) }}
