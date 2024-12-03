@@ -17,7 +17,7 @@ export default interface IGarment extends Document {
 
 
 export const garmentSchemaZod = z.object({
-    desc: z.string().optional(), // אפשרות להיות ריק או לא להימסר
+    desc: z.string().optional(),
     season: z.string().refine(
         async (season) => {
           const validSeasons = await fetchSeasons();
