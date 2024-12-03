@@ -25,7 +25,8 @@ const UserSchema: Schema<IUser> = new Schema({
     },
     sensitive: { type: String, required: true, enum: ["cold", "heat", "none"] },
     userDays: { type: [Types.ObjectId], required: true, ref: "Day" },
-})
+});
+UserSchema.index({ email: 1 }, { unique: true });
 
 const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User', UserSchema)
 export default User;
