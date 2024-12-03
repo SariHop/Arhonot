@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { UpdateUserTypeForStore, IUserTypeWithId } from "../types/IUser";
 import { Schema } from "mongoose";
+import { persist } from "zustand/middleware";
 
 type UserStore = {
   _id: string | null;
@@ -19,7 +20,9 @@ type UserStore = {
   resetUser: () => void;
 };
 
-const useUser = create<UserStore>((set) => ({
+const useUser = create(
+  persist<UserStore>(
+    (set) => ({
   _id: null,
   userName: "",
   password: "",
@@ -80,6 +83,22 @@ const useUser = create<UserStore>((set) => ({
       children: [],
       userDays: [],
     }),
-}));
-
+  }),
+  {
+    name: "user", // שם המפתח לשמירה ב-localStorage
+    storage: {
+      getItem: (name: string) => {
+        const storedValue = localStorage.getItem(name);
+        return storedValue ? JSON.parse(storedValue) : null;
+      },
+      setItem: (name: string, value: any) => {
+        localStorage.setItem(name, JSON.stringify(value));
+      },
+      removeItem: (name: string) => {
+        localStorage.removeItem(name);
+      },
+    }, 
+  }
+)
+);
 export default useUser;
