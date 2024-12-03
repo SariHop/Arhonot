@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
             const user = await User.findOne({ email });
             if (!user) {
                 return NextResponse.json(
-                    { message: 'Invalid username or password' },
+                    { message: 'Invalid email or password' },
                     { status: 402 }
                 );
             }

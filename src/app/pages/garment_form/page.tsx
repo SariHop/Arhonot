@@ -12,7 +12,6 @@ import useUser from "@/app/store/userStore";
 import { ZodError } from "zod";
 import UploadImage from "@/app/components/imagesUploud/UploudButton";
 import Image from "next/image";
-// import { ChromePicker,ColorResult} from "react-color";
 import { ColorPicker } from "antd";
 
 const GarmentForm = () => {
