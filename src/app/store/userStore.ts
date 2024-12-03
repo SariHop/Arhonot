@@ -87,14 +87,14 @@ const useUser = create(
   {
     name: "user", // שם המפתח לשמירה ב-localStorage
     storage: {
-      getItem: (name) => {
+      getItem: (name: string) => {
         const storedValue = localStorage.getItem(name);
         return storedValue ? JSON.parse(storedValue) : null;
       },
-      setItem: (name, value) => {
+      setItem: (name: string, value: any) => {
         localStorage.setItem(name, JSON.stringify(value));
       },
-      removeItem: (name) => {
+      removeItem: (name: string) => {
         localStorage.removeItem(name);
       },
     }, 
