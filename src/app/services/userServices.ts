@@ -27,7 +27,6 @@ function calculateAge(birthDate: Date): number {
 
 export const signup = async (formData: IUserType) => {
     try {
-        // const secretKey = 'mySecretKey'; // מפתח סודי שיש להגדיר מראש
         const encryptedPassword = await hashPassword(formData.password); // השתמש ב-await כדי לקבל את התוצאה המגובבת
         const { confirmPassword, ...rest } = formData; // מסננים את confirmPassword
         const data = {
@@ -62,10 +61,12 @@ export const signin = async (email: string, password: string) => {
         console.log(email, encryptedPassword)
         const response = await axios.post("/api/signIn", { email, password: encryptedPassword });
         console.log('Login successful:', response.data);
+        console.log(":",response.data);
         return response.data;
     } catch (error) {
         console.error('Error during login:', error);
         if (axios.isAxiosError(error)) {
+            console.log("ax: ",error);
             const message = error.response?.data?.message || "שגיאה לא צפויה";
             const status = error.response?.status || 500;
             return { success: false, message, status };
