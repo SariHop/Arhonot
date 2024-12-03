@@ -363,7 +363,7 @@ const page = () => {
     requests.filter((request) => request.status === status);
 
   return (
-    <div className="text-end mb-[10vh] paging">
+    <div className=" mb-[10vh] paging">
       
       <div className=" p-6">
   
