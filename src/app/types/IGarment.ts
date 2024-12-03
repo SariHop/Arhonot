@@ -17,7 +17,7 @@ export default interface IGarment extends Document {
 
 
 export const garmentSchemaZod = z.object({
-    desc: z.string().optional(), // אפשרות להיות ריק או לא להימסר
+    desc: z.string().optional(),
     season: z.string().refine(
         async (season) => {
           const validSeasons = await fetchSeasons();
@@ -34,10 +34,8 @@ export const garmentSchemaZod = z.object({
       ),
     range: z.number().min(1, { message: "Range must be at least 1" }).max(7, { message: "Range must be at most 7" }),
     color: z.string().optional(), // אופציונלי
-    link: z.string().url({ message: "Invalid URL format" }).optional(), // לינק חוקי
-    price: z.string().refine((val) => /^[0-9]*$/.test(val), {
-      message: "Price must be a number",
-    }).transform((val) => (val === "" ? 0 : parseFloat(val))), 
+    link: z.string().url({ message: "יש להזין לינק בפורמט חוקי" }).or(z.literal("").optional()), 
+    price: z.number().optional(),
     tags: z.array(z.string()).refine(
         async (tags) => {
             const validTags = await fetchTags(); // פונקציה שמחזירה מערך ערכים חוקיים
