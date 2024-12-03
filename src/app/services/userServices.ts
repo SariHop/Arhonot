@@ -29,10 +29,6 @@ export const signup = async (formData: IUserType) => {
     try {
         // const secretKey = 'mySecretKey'; // מפתח סודי שיש להגדיר מראש
         const encryptedPassword = await hashPassword(formData.password); // השתמש ב-await כדי לקבל את התוצאה המגובבת
-        alert(`${formData.password} = ${encryptedPassword}`);  // עכשיו יופיע הסיסמה המגובבת
-
-        console.log('הסיסמא המוצפנת בצד הלקוח:', encryptedPassword);
-
         const { confirmPassword, ...rest } = formData; // מסננים את confirmPassword
         const data = {
             ...rest,                // כל הערכים מ- formData, מלבד confirmPassword
@@ -42,10 +38,21 @@ export const signup = async (formData: IUserType) => {
         console.log("confirmPassword", confirmPassword);
         console.log("data:", data);
         const response = await axios.post(`${apiUrl}`, data);
-        return response.data;
+        if (response.status === 201 || response.status === 200) {
+            return { success: true, data: response.data };
+        } else {
+            const message = response.data?.message || "Unknown error occurred during signup.";
+            return { success: false, message, status: response.status };
+        }
     } catch (error) {
-        console.error("Error adding recipe:", error);
-        throw error;
+        console.error("Error during signup:", error);
+        if (axios.isAxiosError(error)) {
+            const message = error.response?.data?.message || "שגיאה לא צפויה";
+            const status = error.response?.status || 500;
+            return { success: false, message, status };
+        } else {
+            return { success: false, message: "שגיאה פנימית במערכת", status: 500 };
+        }
     }
 };
 
@@ -61,7 +68,6 @@ export const signin = async (email: string, password: string) => {
         if (axios.isAxiosError(error)) {
             const message = error.response?.data?.message || "שגיאה לא צפויה";
             const status = error.response?.status || 500;
-            // מחזירים את השגיאה בצורה מסודרת
             return { success: false, message, status };
         } else {
             // אם מדובר בשגיאה שאינה קשורה ל-axios

@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
   try {
     await connect();
     const body = await request.json();
-    const { password, ...otherFields } = body;
+    const { password, email, ...otherFields } = body;
     if (!password || typeof password !== 'string') {
       return NextResponse.json(
         { message: "Invalid password" },
@@ -36,11 +36,19 @@ export async function POST(request: NextRequest) {
       );
     }
     try {
+      const user = await User.findOne({ email });
+      if (user) {
+        return NextResponse.json(
+          { message: "This email already exists in the system." },
+          { status: 404 }
+        );
+      }
       const saltRounds = 10;
       // יצירת ההצפנה
       const hashedPassword = await bcrypt.hash(password, saltRounds);
       const updatedBody = {
         ...otherFields,
+        email,
         password: hashedPassword,
       };
       console.log("body:")
@@ -53,7 +61,7 @@ export async function POST(request: NextRequest) {
       console.log("Saved User:", savedUser);
 
       return NextResponse.json(
-        { success: true, data: savedUser.toObject()},
+        { success: true, data: savedUser.toObject() },
         { status: 201 }
       );
     } catch (error) {
