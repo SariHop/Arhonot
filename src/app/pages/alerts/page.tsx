@@ -27,6 +27,7 @@ type ExtendedItemType = {
   children: React.ReactNode;
   readen: boolean;
   date: Date;
+  status: boolean;
 };
 
 type ExtendedREquestType = {
@@ -67,7 +68,7 @@ const Page = () => {
     const returnAlerts: ExtendedItemType[] = [];
     try {
       const alerts: IAlertTypeWithId[] = await fetchUserAlerts(
-        "674b74d0dc0ad6b3951e1671"
+        "675007691ba3350d49f9b4e5"
       );
 
       alerts.map((alert: IAlertTypeWithId) =>
@@ -82,6 +83,7 @@ const Page = () => {
           children: <p>{alert.desc}</p>,
           readen: alert.readen,
           date: alert.date,
+          status: alert.readen,
         })
       );
       return returnAlerts;
@@ -96,7 +98,7 @@ const Page = () => {
     const returnConnectionRequests: ExtendedREquestType[] = [];
     try {
       const connections: IConnectionRequest[] = await fetchUsersConnectionReq(
-        "674b74d0dc0ad6b3951e1671"
+        "675007691ba3350d49f9b4e5"
       );
 
       connections.forEach((connectionReq: IConnectionRequest) => {
@@ -209,8 +211,10 @@ const Page = () => {
   };
 
   const handlePanelAlertsChange = async (key: string | string[]) => {
+    console.log(key);
+    
     if (Array.isArray(key)) {
-      key = key[0];
+      key = key[key.length - 1];
     }
 
     if (typeof key !== "string") {
@@ -221,7 +225,7 @@ const Page = () => {
     const updatedAlerts = alerts.map((alert) => {
       if (alert.key === key && !alert.readen) {
         decreaseAlertCounter();
-        updateAlertStatus(key); // אין צורך ב-await כאן
+        updateAlertStatus(key); 
         return { ...alert, readen: true, label: <span>{alert.title}</span> };
       }
       return alert;
@@ -272,7 +276,7 @@ const Page = () => {
   const accept = async (requestId: string, sender: string) => {
     console.log("accepted");
     try {
-      await updateConnections(sender, "674b74d0dc0ad6b3951e1671");
+      await updateConnections(sender, "675007691ba3350d49f9b4e5");
       await updateRequestStatus(requestId, "accepted");
 
       // עדכון ה-state המקומי
@@ -355,84 +359,158 @@ const Page = () => {
   };
 
   const renderRequests = (status: string) =>
-    requests.filter((request) => request.status === status);
+    requests.filter((request) => request.status === status)
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  const renderAlerts = (status: boolean) =>
+    alerts
+      .filter((alert) => alert.status === status)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+
+
+  const handleTabChange = (key: string) => {
+
+    // // Refresh alerts based on tab change logic
+    // if (key === "readen") {
+      setAlerts((prevAlerts) =>
+        prevAlerts.map((alert) =>
+          !alert.readen ? alert : { ...alert, status: true }
+        )
+      );
+    // }
+  };
+
 
   return (
-    <div className=" mb-[10vh] paging">
-      <div className=" p-6">
-        <Title level={3} className="">
+    <div className="mb-[10vh]">
+      {/* <div className="p-4 pb-2">
+        <Title level={5} className="">
           ההתרעות שלך
         </Title>
-        <p className="text-red-500">
+        <p className="text-red-500  text-xs">
           שלום {user.userName}, מחכות לך {AlertsCounter} הודעות שעדיין לא נקראו.
         </p>
       </div>
 
-      <Divider className="m-0" />
+      <Divider className="m-0" /> */}
 
       {/* התראות על מלאי */}
-      <div className="p-6 h-[35vh]">
-        <Title level={4} className="font-sans pb-2">
+      <div className="p-6 pt-2 h-[40vh]">
+        <p className="font-sans text-base pb-2 font-thin">
           התראות
-        </Title>
-        <div className="h-full overflow-y-auto">
-          <Collapse
-            accordion
-            items={alerts.map((alert) => ({  ...alert, readen: "true" }))}
-            onChange={(key) => handlePanelAlertsChange(key)}
+        </p>
+        <div className="rtl-tabs h-full flex flex-col">
+          <Tabs
+          onChange={handleTabChange}
+            defaultActiveKey="waiting"
+            className="h-full flex flex-col"
+            items={[
+              {
+                key: "unreaden",
+                label: "טרם נקראו",
+                children: (
+                  <div className="tab-content">
+                    <Collapse
+                      items={renderAlerts(false).map((alert) => ({
+                        ...alert,
+                        readen: "true",
+                        status: "true"
+                      }))}
+                      onChange={(key) => handlePanelAlertsChange(key)}
+                    />
+                  </div>
+                ),
+              },
+              {
+                key: "readen",
+                label: "הודעות שנקראו",
+                children: (
+                  <div className="tab-content">
+                    <Collapse
+                      items={renderAlerts(true).map((alert) => ({
+                        ...alert,
+                        readen: "true",
+                        status: "true"
+                      }))}
+                      onChange={(key) => handlePanelAlertsChange(key)}
+                    />
+                  </div>
+                ),
+              },
+            ]}
           />
         </div>
+        {/* <div className="h-full overflow-y-auto">
+          <Collapse
+            accordion
+            items={alerts.map((alert) => ({ ...alert, readen: "true" }))}
+            onChange={(key) => handlePanelAlertsChange(key)}
+          />
+        </div> */}
       </div>
 
       <Divider className="mb-0" />
 
       {/* בקשות התחברות */}
-      <div className="p-6 h-[35vh]">
-        <Title level={4} className="font-sans">
+      <div className="p-6 pt-2 h-[40vh]">
+        <p className="font-sans text-base font-thin">
           בקשות התחברות
-        </Title>
+        </p>
 
-        <Tabs
-          defaultActiveKey="waiting"
-          items={[
-            {
-              key: "waiting",
-              label: "ממתינות",
-              children: (
-                <div className="h-full overflow-y-auto">
-                  <Collapse
-                    items={renderRequests("waiting").map((request) => ({ ...request, readen: "true" }))}
-                    onChange={(key) => handlePanelRequestsChange(key)}
-                  />
-                </div>
-              ),
-            },
-            {
-              key: "accepted",
-              label: "אושרו",
-              children: (
-                <div className="h-full overflow-y-auto">
-                  <Collapse
-                    items={renderRequests("accepted").map((request) => ({ ...request, readen: "true" }))}
-                    onChange={(key) => handlePanelRequestsChange(key)}
-                  />
-                </div>
-              ),
-            },
-            {
-              key: "rejected",
-              label: "נדחו",
-              children: (
-                <div className="h-full overflow-y-auto">
-                  <Collapse
-                    items={renderRequests("rejected").map((request) => ({ ...request, readen: "true" }))}
-                    onChange={(key) => handlePanelRequestsChange(key)}
-                  />
-                </div>
-              ),
-            },
-          ]}
-        />
+        <div className="rtl-tabs h-full flex flex-col">
+          <Tabs
+            defaultActiveKey="waiting"
+            className="h-full flex flex-col"
+            items={[
+              {
+                key: "waiting",
+                label: "ממתינות",
+                children: (
+                  <div className="tab-content">
+                    <Collapse
+                      items={renderRequests("waiting").map((request) => ({
+                        ...request,
+                        readen: "true",
+                      }))}
+                      onChange={(key) => handlePanelRequestsChange(key)}
+                    />
+                  </div>
+                ),
+              },
+              {
+                key: "accepted",
+                label: "אושרו",
+                children: (
+                  <div className="tab-content">
+                    <Collapse
+                      items={renderRequests("accepted").map((request) => ({
+                        ...request,
+                        readen: "true",
+                      }))}
+                      onChange={(key) => handlePanelRequestsChange(key)}
+                    />
+                  </div>
+                ),
+              },
+              {
+                key: "rejected",
+                label: "נדחו",
+                children: (
+                  <div className="tab-content">
+                    <Collapse
+                      items={renderRequests("rejected").map((request) => ({
+                        ...request,
+                        readen: "true",
+                      }))}
+                      onChange={(key) => handlePanelRequestsChange(key)}
+                    />
+                  </div>
+                ),
+              },
+            ]}
+          />
+        </div>
       </div>
     </div>
   );

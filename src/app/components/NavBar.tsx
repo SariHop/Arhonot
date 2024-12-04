@@ -25,7 +25,7 @@ const NavBar = () => {
   useEffect(() => {
     const initialize = async () => {
       try {
-        const response = await fetch(`/api/alertRoute/userAlerts/674b74d0dc0ad6b3951e1671`);
+        const response = await fetch(`/api/alertRoute/userAlerts/675007691ba3350d49f9b4e5`);
         console.log(user._id);
         
         // const response = await fetch(`/api/alertRoute/userAlerts/${user._id}`);
@@ -50,6 +50,7 @@ const NavBar = () => {
     };
     initialize();
   }, []);
+
   const onClick: MenuProps["onClick"] = ({ key }) => {
     router.push(`/pages/${key === "1" ? "add-garment" : "add-outfit"}`);
     message.info(`Click on item ${key}`);
@@ -105,9 +106,8 @@ const NavBar = () => {
       {/* כפץתור הוספה מרכזי */}
       <Dropdown menu={{ items, onClick }} className="md:hidden">
         <a onClick={(e) => e.preventDefault()}>
-          <div className="rounded-full mb-16 p-4 border-t-2 bg-white">
-            <PlusOutlined className="text-4xl bg-blue-600 text-white p-2 rounded-full" />
-          </div>
+            <PlusOutlined className="text-2xl bg-blue-600 text-white p-2 rounded-full" />
+
         </a>
       </Dropdown>
 
