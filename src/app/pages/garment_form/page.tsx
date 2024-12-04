@@ -237,7 +237,6 @@ const GarmentForm = () => {
       <div className="space-y-2">
         <h3 className="text-lg font-medium">Select Color</h3>
         <ColorPicker
-          defaultValue="#1677ff"
           onChangeComplete={
             (color) =>
               handleChange({

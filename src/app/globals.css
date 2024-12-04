@@ -2,26 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-.button-submit {
-  @apply w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500;
-}
-
-.button-icon {
-  @apply text-blue-700 border border-blue-700 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800 dark:hover:bg-blue-500;
-}
-
-.button-select {
-  @apply w-full border py-5 bg-white;
-}
-
-.button-select-div-wrap {
-  @apply fixed inset-x-0 bottom-0;
-}
-
+/* global */
 body {
   direction: rtl;
 }
 
+/* buttons */
+.button-submit {
+  @apply w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500;
+}
+
+/* links */
 .user-link {
   @apply text-sm text-indigo-600 hover:text-indigo-800 font-medium;
+}
+/* BG */
+.from-coral-to-magenta{
+  @apply bg-gradient-to-br from-coral to-magenta
+}
+
+/* animathion */
+.grow-ease{
+  @apply transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-110 duration-300 
+}
+
+.paging{
+  @apply mb-[10vh]
 }

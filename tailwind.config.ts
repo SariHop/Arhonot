@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss-animated"; // Import the plugin
 
 const config: Config = {
   content: [
@@ -9,11 +10,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        banana: "#F2F996",
+        mindaro: "#D0F19F",
+        lime: "#AAE552",
+        coral: "#f09090",
+        magenta: "#992b51",
       },
     },
   },
-  plugins: [],
+  plugins: [plugin], // Add the animation plugin here
 };
+
 export default config;

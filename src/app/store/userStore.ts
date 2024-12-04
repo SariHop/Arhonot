@@ -1,9 +1,10 @@
 import { create } from "zustand";
 import { UpdateUserTypeForStore, IUserTypeWithId } from "../types/IUser";
-import { Schema } from "mongoose";
+import { persist } from "zustand/middleware";
+import { Types } from "mongoose";
 
 type UserStore = {
-  _id: string | null;
+  _id: string;
   userName: string;
   password: string;
   email: string;
@@ -12,15 +13,17 @@ type UserStore = {
   city: string;
   dateOfBirth: Date | null;
   sensitive: string;
-  children: Schema.Types.ObjectId[]; // שינה מ-string[] ל-ObjectId[]
-  userDays: Schema.Types.ObjectId[];
+  children: Types.ObjectId[]; // שינה מ-string[] ל-ObjectId[]
+  userDays: Types.ObjectId[];
   setUser: (user: Partial<UpdateUserTypeForStore>) => void;
   updateUser: (updatedFields: Partial<IUserTypeWithId>) => void;
   resetUser: () => void;
 };
 
-const useUser = create<UserStore>((set) => ({
-  _id: null,
+const useUser = create(
+  persist<UserStore>(
+    (set) => ({
+  _id: "",
   userName: "",
   password: "",
   email: "",
@@ -39,7 +42,7 @@ const useUser = create<UserStore>((set) => ({
 
     set(() => {
       const newState = {
-        _id: user._id ?? null,
+        _id: user._id ?? "",
         userName: user.userName || "",
         password: user.password || "",
         email: user.email || "",
@@ -69,7 +72,7 @@ const useUser = create<UserStore>((set) => ({
   // פונקציה לאיפוס היוזר לערכים ריקים
   resetUser: () =>
     set({
-      _id: null,
+      _id: "",
       userName: "",
       email: "",
       age: 0,
@@ -80,6 +83,22 @@ const useUser = create<UserStore>((set) => ({
       children: [],
       userDays: [],
     }),
-}));
-
+  }),
+  {
+    name: "user", // שם המפתח לשמירה ב-localStorage
+    storage: {
+      getItem: (name) => {
+        const storedValue = localStorage.getItem(name);
+        return storedValue ? JSON.parse(storedValue) : null;
+      },
+      setItem: (name, value) => {
+        localStorage.setItem(name, JSON.stringify(value));
+      },
+      removeItem: (name) => {
+        localStorage.removeItem(name);
+      },
+    }, 
+  }
+)
+);
 export default useUser;

@@ -1,11 +1,10 @@
 
-import mongoose, { Document, ObjectId } from "mongoose";
+import mongoose, { Document, Types } from "mongoose";
 import { z } from 'zod'
 // import { fetchCities } from "../services/categoriesService";
 
 export default interface IUser extends Document {
-    _id: string;
-    children: ObjectId[];
+    children: Types.ObjectId[];
     password: string;
     email: string;
     age: number;
@@ -14,7 +13,7 @@ export default interface IUser extends Document {
     dateOfBirth: Date;
     city: string;
     sensitive: string;
-    userDays: ObjectId[];
+    userDays: Types.ObjectId[];
 }
 
 export interface IToken extends Document {
