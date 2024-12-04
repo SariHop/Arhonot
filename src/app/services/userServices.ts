@@ -69,7 +69,6 @@ export const signin = async (email: string, password: string) => {
         console.log(email, encryptedPassword)
         const response = await axios.post("/api/signIn", { email, password: encryptedPassword });
         console.log('Login successful:', response.data);
-        console.log(":",response.data);
         return response.data;
     } catch (error) {
         console.error('Error during login:', error);
@@ -122,4 +121,3 @@ export const resetPassword = async (token: string, password: string): Promise<Re
         }
     }
 }
-//Esty1234%
