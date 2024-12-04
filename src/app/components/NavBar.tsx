@@ -10,7 +10,7 @@ import {
 import { Badge, Dropdown, MenuProps, message, Tooltip } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { useAlertsCounter } from "../store/alertsCunterStore";
+import { useAlertsCounter } from "../store/alertsCounterStore";
 import Image from "next/image";
 import useUser from "../store/userStore";
 

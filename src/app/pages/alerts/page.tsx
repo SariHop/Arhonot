@@ -1,6 +1,6 @@
 "use client";
 import { Collapse, Typography, Divider, Button, Tabs } from "antd";
-import { useAlertsCounter } from "@/app/store/alertsCunterStore";
+import { useAlertsCounter } from "@/app/store/alertsCounterStore";
 import useUser from "@/app/store/userStore";
 import { IAlertTypeWithId } from "@/app/types/IAlert";
 import {
@@ -18,7 +18,7 @@ import {
   updateRequestStatus,
 } from "@/app/services/ConnectionsServices";
 
-const { Title } = Typography;
+
 
 type ExtendedItemType = {
   key: string;
@@ -42,9 +42,6 @@ type ExtendedREquestType = {
 };
 
 const Page = () => {
-  const AlertsCounter: number = useAlertsCounter(
-    (state) => state.alertsCounter
-  );
   const decreaseAlertCounter = useAlertsCounter((state) => state.decrease);
   const user = useUser();
   const [alerts, setAlerts] = useState<ExtendedItemType[]>([]);
@@ -52,6 +49,8 @@ const Page = () => {
   // const [category, setCategory] = useState<string>("waiting"); // קטגוריה פעילה
 
   useEffect(() => {
+    console.log(user._id);
+    
     const fetchAlertsAndRequests = async () => {
       const fetchRequests = await getConnectionRequests();
       const fetchedAlerts = await getAlerts();
@@ -255,12 +254,12 @@ const Page = () => {
     if (typeof key !== "string") {
       return;
     }
-    console.log("clicked requests", requests);
+
     const updatedRequests = await Promise.all(
       requests.map(async (request: ExtendedREquestType) => {
         if (request.key === key && !request.readen) {
-          console.log("clicked 2 request");
           await updateRequestReadable(key);
+          decreaseAlertCounter();
           return {
             ...request,
             readen: true,
@@ -369,16 +368,12 @@ const Page = () => {
 
 
 
-  const handleTabChange = (key: string) => {
-
-    // // Refresh alerts based on tab change logic
-    // if (key === "readen") {
+  const handleTabChange = () => {
       setAlerts((prevAlerts) =>
         prevAlerts.map((alert) =>
           !alert.readen ? alert : { ...alert, status: true }
         )
       );
-    // }
   };
 
 
