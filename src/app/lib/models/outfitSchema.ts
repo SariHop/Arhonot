@@ -18,6 +18,8 @@ const OutfitSchema: Schema<IOutfit> = new Schema({
             return validCategories.includes(value);
         }, message: "Category must be one of the valid categories"}, required: true },
     img: { type: String, required: true, match: /^https?:\/\/.+/ }, 
+    favorite: {type: Number, required: false,enum: [0,1,2,3,4,5]},
+    rangeWheather: {type:Number, required:true}
 });
 
 const Outfit: Model<IOutfit> = mongoose.models.Outfit || mongoose.model<IOutfit>('Outfit', OutfitSchema);

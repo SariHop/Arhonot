@@ -2,51 +2,19 @@
 import { Collapse, Divider, Button, Tabs } from "antd";
 import { useAlertsCounter } from "@/app/store/alertsCounterStore";
 import useUser from "@/app/store/userStore";
-import { IAlertTypeWithId } from "@/app/types/IAlert";
-import {
-  fetchUserAlerts,
-  updateAlertStatus,
-} from "@/app/services/AlertsServices";
+import { AlertTypeFotCollapse, IAlertTypeWithId } from "@/app/types/IAlert";
+import {fetchUserAlerts, updateAlertStatus} from "@/app/services/AlertsServices";
 import { useEffect, useState } from "react";
-import IConnectionRequest from "@/app/types/IConnectionRequest";
-import { ObjectId } from "mongoose";
+import IConnectionRequest, { RequestTypeFotCollapse } from "@/app/types/IConnectionRequest";
 import { toast } from "react-toastify";
-import {
-  fetchUsersConnectionReq,
-  updateConnections,
-  updateRequestReadable,
-  updateRequestStatus,
-} from "@/app/services/ConnectionsServices";
+import {fetchUsersConnectionReq,updateConnections,updateRequestReadable,updateRequestStatus,} from "@/app/services/ConnectionsServices";
 
-
-
-type ExtendedItemType = {
-  key: string;
-  title: string;
-  label: React.ReactNode;
-  children: React.ReactNode;
-  readen: boolean;
-  date: Date;
-  status: boolean;
-};
-
-type ExtendedREquestType = {
-  key: string;
-  sender: ObjectId;
-  status: string;
-  sender_name: string;
-  date: Date;
-  label: React.ReactNode;
-  children: React.ReactNode;
-  readen: boolean;
-};
 
 const Page = () => {
   const decreaseAlertCounter = useAlertsCounter((state) => state.decrease);
   const user = useUser();
-  const [alerts, setAlerts] = useState<ExtendedItemType[]>([]);
-  const [requests, setRequests] = useState<ExtendedREquestType[]>([]);
-  // const [category, setCategory] = useState<string>("waiting"); // קטגוריה פעילה
+  const [alerts, setAlerts] = useState<AlertTypeFotCollapse[]>([]);
+  const [requests, setRequests] = useState<RequestTypeFotCollapse[]>([]);
 
   useEffect(() => {
 
@@ -58,14 +26,13 @@ const Page = () => {
       setRequests(fetchRequests);
       setAlerts(fetchedAlerts);
     };
-
     fetchAlertsAndRequests();
   },[]); //user._id
 
-  //זה אמו להיות בquery?
+
   const getAlerts = async () => {
     console.log(user._id);
-    const returnAlerts: ExtendedItemType[] = [];
+    const returnAlerts: AlertTypeFotCollapse[] = [];
     try {
       const alerts: IAlertTypeWithId[] = await fetchUserAlerts(
         "675007691ba3350d49f9b4e5"
@@ -93,9 +60,8 @@ const Page = () => {
     }
   };
 
-  //זה אמור להיות בuery?
   const getConnectionRequests = async () => {
-    const returnConnectionRequests: ExtendedREquestType[] = [];
+    const returnConnectionRequests: RequestTypeFotCollapse[] = [];
     try {
       const connections: IConnectionRequest[] = await fetchUsersConnectionReq(
         "675007691ba3350d49f9b4e5"
@@ -211,16 +177,12 @@ const Page = () => {
   };
 
   const handlePanelAlertsChange = async (key: string | string[]) => {
-    console.log(key);
-    
     if (Array.isArray(key)) {
       key = key[key.length - 1];
     }
-
     if (typeof key !== "string") {
       return;
     }
-    console.log("clicked");
 
     const updatedAlerts = alerts.map((alert) => {
       if (alert.key === key && !alert.readen) {
@@ -231,20 +193,6 @@ const Page = () => {
       return alert;
     });
     setAlerts(updatedAlerts);
-
-    // const updatedAlerts = await Promise.all(
-    //   alerts.map(async (alert: ExtendedItemType) => {
-    //     if (alert.key === key && !alert.readen) {
-    //       console.log("clicked 2");
-
-    //       decreaseAlertCounter();
-    //       await updateAlertStatus(key); // מעדכן סטטוס בשרת
-    //       return { ...alert, readen: true, label: <span>{alert.title}</span> };
-    //     }
-    //     return alert;
-    //   })
-    // );
-    // setAlerts(updatedAlerts); // עדכון ה-state עם הסטטוס החדש
   };
 
   const handlePanelRequestsChange = async (key: string | string[]) => {
@@ -257,7 +205,7 @@ const Page = () => {
     }
 
     const updatedRequests = await Promise.all(
-      requests.map(async (request: ExtendedREquestType) => {
+      requests.map(async (request: RequestTypeFotCollapse) => {
         if (request.key === key && !request.readen) {
           await updateRequestReadable(key);
           decreaseAlertCounter();
@@ -279,7 +227,6 @@ const Page = () => {
       await updateConnections(sender, "675007691ba3350d49f9b4e5");
       await updateRequestStatus(requestId, "accepted");
 
-      // עדכון ה-state המקומי
       setRequests((prevRequests) =>
         prevRequests.map((request) => {
           if (request.key === requestId) {
@@ -380,16 +327,6 @@ const Page = () => {
 
   return (
     <div className="mb-[10vh]">
-      {/* <div className="p-4 pb-2">
-        <Title level={5} className="">
-          ההתרעות שלך
-        </Title>
-        <p className="text-red-500  text-xs">
-          שלום {user.userName}, מחכות לך {AlertsCounter} הודעות שעדיין לא נקראו.
-        </p>
-      </div>
-
-      <Divider className="m-0" /> */}
 
       {/* התראות על מלאי */}
       <div className="p-6 pt-2 h-[40vh]">
@@ -437,13 +374,6 @@ const Page = () => {
             ]}
           />
         </div>
-        {/* <div className="h-full overflow-y-auto">
-          <Collapse
-            accordion
-            items={alerts.map((alert) => ({ ...alert, readen: "true" }))}
-            onChange={(key) => handlePanelAlertsChange(key)}
-          />
-        </div> */}
       </div>
 
       <Divider className="mb-0" />
