@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const apiKey = process.env.WEATHER_API_KEY;
     const response = await axios.get(
-      `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=auto:ip&days=7`
+      `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=auto:ip&days=7&lang=he`
     );
 
     return NextResponse.json(response.data);

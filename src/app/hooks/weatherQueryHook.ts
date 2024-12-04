@@ -1,37 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import {fetchWeatherData} from '@/app/services/weatherService'
-
-interface WeatherCondition {
-  text: string;
-  icon: string;
-}
-
-interface HourlyWeather {
-  time: string;
-  temp_c: number;
-  condition: WeatherCondition;
-}
-
-interface DailyWeather {
-  date: string;
-  day: {
-    maxtemp_c: number;
-    mintemp_c: number;
-    condition: WeatherCondition;
-  };
-  hour: HourlyWeather[];
-}
-
-interface WeatherData {
-  current: {
-    temp_c: number;
-    condition: WeatherCondition;
-  };
-  forecast: {
-    forecastday: DailyWeather[];
-  };
-}
-
+import { WeatherData} from '@/app/types/IWeather'
 
 export const useWeatherQuery = () => {
   return useQuery<WeatherData, Error>({
