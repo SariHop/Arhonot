@@ -141,8 +141,8 @@ const GarmentForm = () => {
       <UploadImage setCloudinary={setImageUrl} />
       {imageUrl && (
         <Image
-          width="960"
-          height="600"
+          width="120"
+          height="75"
           src={imageUrl}
           sizes="100vw"
           alt="Description of my image"
