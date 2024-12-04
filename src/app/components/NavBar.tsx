@@ -10,7 +10,7 @@ import {
 import { Badge, Dropdown, MenuProps, message, Tooltip } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { useAlertsCounter } from "../store/alertsCounterStore";
+import { initialize, useAlertsCounter } from "../store/alertsCounterStore";
 import Image from "next/image";
 import useUser from "../store/userStore";
 
@@ -18,40 +18,18 @@ const NavBar = () => {
   const AlertsCounter: number = useAlertsCounter(
     (state) => state.alertsCounter
   );
-  const setAlertsCounter = useAlertsCounter((state) => state.setAlertsCounter);
+  // const setAlertsCounter = useAlertsCounter((state) => state.setAlertsCounter);
   const router = useRouter();
   const user = useUser();
 
   useEffect(() => {
-    const initialize = async () => {
-      try {
-        const response = await fetch(`/api/alertRoute/userAlerts/675007691ba3350d49f9b4e5`);
-        console.log(user._id);
-        
-        // const response = await fetch(`/api/alertRoute/userAlerts/${user._id}`);
-        const data = await response.json();
-
-        if (data.success && Array.isArray(data.data)) {
-          const unreadCount = data.data.filter(
-            (alert: { readen: boolean }) => !alert.readen
-          ).length;
-          setAlertsCounter(unreadCount);
-        } else {
-          console.error(
-            "Error fetching alerts:",
-            data.error || "Invalid response format"
-          );
-          setAlertsCounter(0); // Default value in case of error
-        }
-      } catch (error) {
-        console.error("Error in initialize:", error);
-        setAlertsCounter(0); // Default value in case of error
-      }
-    };
-    initialize();
+    
+    initialize("675007691ba3350d49f9b4e5");
   }, []);
 
   const onClick: MenuProps["onClick"] = ({ key }) => {
+    console.log(user._id);
+    
     router.push(`/pages/${key === "1" ? "add-garment" : "add-outfit"}`);
     message.info(`Click on item ${key}`);
   };
