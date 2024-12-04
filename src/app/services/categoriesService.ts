@@ -1,8 +1,11 @@
+'use server'
 import axios from "axios";
 
-const apiUrl = 'http://localhost:3000/api/staticData'
+const baseUrl=process.env.NEXT_PUBLIC_BASE_URL;
+const apiUrl = `${baseUrl}/api/staticData`
 
 export const fetchSeasons = async () => {
+    console.log("baseUrl",baseUrl);
     try {
         const response = await axios.get(`${apiUrl}/categories`);
         return response.data.seasons;
