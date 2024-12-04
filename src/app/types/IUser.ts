@@ -5,7 +5,6 @@ import { z } from 'zod'
 
 export default interface IUser extends Document {
     children: Types.ObjectId[];
-    _id: string;////למה צריך את זה? זה מגיע אוטומטית??????????
     password: string;
     email: string;
     age: number;
