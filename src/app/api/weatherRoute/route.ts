@@ -1,4 +1,4 @@
-import type {NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import axios from 'axios';
 
 export async function GET() {
@@ -11,16 +11,21 @@ export async function GET() {
     return NextResponse.json(response.data);
     } catch (error) {
     if (axios.isAxiosError(error)) {
-      return res.status(error.response?.status || 500).json({
+      return NextResponse.json({
         error: 'Failed to fetch weather data',
         details: error.response?.data || error.message,
         status: error.response?.status || 500
-      });
-    }
+      },
+      { status: error.response?.status || 500 }
+    );
+  }
 
-    return res.status(500).json({
+  return NextResponse.json(
+    {
       error: 'Unexpected error occurred',
       details: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
+    },
+    { status: 500 }
+  );
+}
 }
