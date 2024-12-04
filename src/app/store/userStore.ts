@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { UpdateUserTypeForStore, IUserTypeWithId } from "../types/IUser";
 import { persist } from "zustand/middleware";
-import mongoose, { Types } from "mongoose";
+import { Types } from "mongoose";
 
 type UserStore = {
   _id: string;
