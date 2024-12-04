@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connect from "@/app/lib/db/mongoDB";
+import { Types } from "mongoose";
+import User from "@/app/lib/models/userSchema";
 import ConnectionRequest from "@/app/lib/models/connectionRequestSchema";
 
 export async function GET() {
@@ -49,5 +51,59 @@ export async function POST(request: NextRequest) {
         { status: 501 }
       );
     }
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    await connect();
+
+    // קבלת ה-Query Params
+    const url = new URL(request.url);
+    const senderId = url.searchParams.get("sender");
+    const receiverId = url.searchParams.get("receiver");
+
+
+    if (!senderId || !receiverId) {
+      return NextResponse.json(
+        { error: "Both sender and receiver IDs are required" },
+        { status: 400 }
+      );
+    }
+
+    // חיפוש הרשומות ב-DB
+    const sender = await User.findById(senderId);
+    const receiver = await User.findById( receiverId);
+
+    if (!sender || !receiver) {
+      return NextResponse.json(
+        { error: "One or both IDs not found in the database" },
+        { status: 404 }
+      );
+    }
+
+    // עדכון שדה ה-children
+    const objReciver = new Types.ObjectId(receiverId);
+    const objSender = new Types.ObjectId(senderId);
+    if(!sender.children.includes(objReciver)) 
+      sender.children = [...(sender.children || []), objReciver];
+    if(!receiver.children.includes(objSender))
+      receiver.children = [...(receiver.children || []), objSender];
+
+    // שמירת השינויים ב-DB
+    await sender.save();
+    await receiver.save();
+
+    return NextResponse.json(
+      { success: true, message: "Connections updated successfully" },
+      { status: 200 }
+    );
+  } catch (error: unknown) {
+    console.error("Error updating connections:", error);
+
+    return NextResponse.json(
+      { error: "An error occurred while updating connections" },
+      { status: 500 }
+    );
   }
 }

@@ -1,5 +1,7 @@
+
 import IGarment from "@/app/types/IGarment";
 import mongoose, { Model, Schema, Types } from "mongoose";
+
 
 const GarmentSchema: Schema<IGarment> = new Schema({
     userId: { type: Types.ObjectId, required: true, ref: "User" },  

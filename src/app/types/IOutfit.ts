@@ -33,8 +33,8 @@ export const outfitSchemaZod = z.object({
 });
 
 // סוגים
-export type IAlertType = z.infer<typeof outfitSchemaZod>;
+export type IOutfitType = z.infer<typeof outfitSchemaZod>;
 
-export type IAlertTypeWithId = IAlertType & {
+export type IOutfitTypeWithId = IOutfitType & {
   _id: string;
 };

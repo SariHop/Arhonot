@@ -6,7 +6,10 @@ const AlertSchema: Schema<IAlert> = new Schema({
     desc: { type: String, required: false }, 
     title: { type: String, required: true },
     readen: { type: Boolean, required: true },
+    date: { type: Date, required: true, validate: [function(value: Date) {
+        return value <= new Date(); 
+    }, "Date of alert must be in the past"] },
 });
 
-const Alert:Model<IAlert> =mongoose.models.Alart || mongoose.model<IAlert>('Alert',AlertSchema)
+const Alert:Model<IAlert> =mongoose.models.Alert || mongoose.model<IAlert>('Alert',AlertSchema)
 export default Alert;

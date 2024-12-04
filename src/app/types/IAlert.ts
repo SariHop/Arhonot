@@ -6,6 +6,7 @@ export default interface IAlert extends Document{
     desc: string;
     title: string;
     readen: boolean;
+    date: Date;
 }
 
 
@@ -13,6 +14,7 @@ export const alertSchemaZod = z.object({
     desc: z.string().nullable(),
     title: z.string().min(10,"Title is required"),
     readen: z.boolean(), 
+    date: z.date(),
 });
 
 export type IAlertType = z.infer<typeof alertSchemaZod> 

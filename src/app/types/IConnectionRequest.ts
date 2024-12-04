@@ -4,13 +4,15 @@ import {z} from 'zod'
 export default interface IConnectionRequest extends Document{
     userIdSender: ObjectId;
     userIdReciver: ObjectId;
-    status: boolean;
+    status: string;
     readen: boolean;
+    date: Date;
+    sendersName: string;
 }
 
 
 export const ConnectionRequestSchemaZod = z.object({
-    status: z.boolean(), 
+    status: z.string(), 
     readen: z.boolean(), 
 });
 
