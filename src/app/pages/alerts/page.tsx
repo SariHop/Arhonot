@@ -1,5 +1,5 @@
 "use client";
-import { Collapse, Typography, Divider, Button, Radio, Tabs } from "antd";
+import { Collapse, Typography, Divider, Button, Tabs } from "antd";
 import { useAlertsCounter } from "@/app/store/alertsCunterStore";
 import useUser from "@/app/store/userStore";
 import { IAlertTypeWithId } from "@/app/types/IAlert";
@@ -17,7 +17,6 @@ import {
   updateRequestReadable,
   updateRequestStatus,
 } from "@/app/services/ConnectionsServices";
-import TabPane from "antd/es/tabs/TabPane";
 
 const { Title } = Typography;
 
@@ -41,7 +40,7 @@ type ExtendedREquestType = {
   readen: boolean;
 };
 
-const page = () => {
+const Page = () => {
   const AlertsCounter: number = useAlertsCounter(
     (state) => state.alertsCounter
   );
@@ -49,7 +48,7 @@ const page = () => {
   const user = useUser();
   const [alerts, setAlerts] = useState<ExtendedItemType[]>([]);
   const [requests, setRequests] = useState<ExtendedREquestType[]>([]);
-  const [category, setCategory] = useState<string>("waiting"); // קטגוריה פעילה
+  // const [category, setCategory] = useState<string>("waiting"); // קטגוריה פעילה
 
   useEffect(() => {
     const fetchAlertsAndRequests = async () => {
@@ -61,7 +60,7 @@ const page = () => {
     };
 
     fetchAlertsAndRequests();
-  }, [user._id]);
+  }, []); //user._id
 
   //זה אמו להיות בquery?
   const getAlerts = async () => {
@@ -71,7 +70,6 @@ const page = () => {
         "674b74d0dc0ad6b3951e1671"
       );
 
-      
       alerts.map((alert: IAlertTypeWithId) =>
         returnAlerts.push({
           key: alert._id,
@@ -100,7 +98,6 @@ const page = () => {
       const connections: IConnectionRequest[] = await fetchUsersConnectionReq(
         "674b74d0dc0ad6b3951e1671"
       );
-
 
       connections.forEach((connectionReq: IConnectionRequest) => {
         const { labelContent, childrenContent } = getConnectionRequestChildren(
@@ -221,7 +218,6 @@ const page = () => {
     }
     console.log("clicked");
 
-
     const updatedAlerts = alerts.map((alert) => {
       if (alert.key === key && !alert.readen) {
         decreaseAlertCounter();
@@ -232,7 +228,6 @@ const page = () => {
     });
     setAlerts(updatedAlerts);
 
-    
     // const updatedAlerts = await Promise.all(
     //   alerts.map(async (alert: ExtendedItemType) => {
     //     if (alert.key === key && !alert.readen) {
@@ -363,10 +358,8 @@ const page = () => {
     requests.filter((request) => request.status === status);
 
   return (
-    <div className="text-end mb-[10vh] paging">
-      
+    <div className=" mb-[10vh] paging">
       <div className=" p-6">
-  
         <Title level={3} className="">
           ההתרעות שלך
         </Title>
@@ -385,7 +378,7 @@ const page = () => {
         <div className="h-full overflow-y-auto">
           <Collapse
             accordion
-            items={alerts.map(({ readen, ...rest }) => rest)}
+            items={alerts.map((alert) => ({  ...alert, readen: "true" }))}
             onChange={(key) => handlePanelAlertsChange(key)}
           />
         </div>
@@ -408,7 +401,7 @@ const page = () => {
               children: (
                 <div className="h-full overflow-y-auto">
                   <Collapse
-                    items={renderRequests("waiting").map(({ readen, ...rest }) => rest)}
+                    items={renderRequests("waiting").map((request) => ({ ...request, readen: "true" }))}
                     onChange={(key) => handlePanelRequestsChange(key)}
                   />
                 </div>
@@ -420,7 +413,7 @@ const page = () => {
               children: (
                 <div className="h-full overflow-y-auto">
                   <Collapse
-                    items={renderRequests("accepted").map(({ readen, ...rest }) => rest)}
+                    items={renderRequests("accepted").map((request) => ({ ...request, readen: "true" }))}
                     onChange={(key) => handlePanelRequestsChange(key)}
                   />
                 </div>
@@ -432,17 +425,17 @@ const page = () => {
               children: (
                 <div className="h-full overflow-y-auto">
                   <Collapse
-                    items={renderRequests("rejected").map(({ readen, ...rest }) => rest)}
+                    items={renderRequests("rejected").map((request) => ({ ...request, readen: "true" }))}
                     onChange={(key) => handlePanelRequestsChange(key)}
                   />
                 </div>
               ),
             },
           ]}
-        /> 
+        />
       </div>
     </div>
   );
 };
 
-export default page;
+export default Page;

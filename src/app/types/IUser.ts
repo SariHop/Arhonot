@@ -1,11 +1,10 @@
 
-import mongoose, { Document, ObjectId, Types } from "mongoose";
+import mongoose, { Document, Types } from "mongoose";
 import { z } from 'zod'
 // import { fetchCities } from "../services/categoriesService";
 
 export default interface IUser extends Document {
     children: Types.ObjectId[];
-    _id: string;////למה צריך את זה? זה מגיע אוטומטית??????????
     password: string;
     email: string;
     age: number;

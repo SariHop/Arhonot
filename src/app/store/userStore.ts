@@ -1,11 +1,10 @@
 import { create } from "zustand";
 import { UpdateUserTypeForStore, IUserTypeWithId } from "../types/IUser";
-// import { Schema } from "mongoose";
-import mongoose from "mongoose";
 import { persist } from "zustand/middleware";
+import { Types } from "mongoose";
 
 type UserStore = {
-  _id: string | null;
+  _id: string;
   userName: string;
   password: string;
   email: string;
@@ -14,8 +13,8 @@ type UserStore = {
   city: string;
   dateOfBirth: Date | null;
   sensitive: string;
-  children: mongoose.Types.ObjectId[]; // שימוש ב-mongoose.Types.ObjectId
-  userDays: mongoose.Types.ObjectId[];
+  children: Types.ObjectId[]; // שינה מ-string[] ל-ObjectId[]
+  userDays: Types.ObjectId[];
   setUser: (user: Partial<UpdateUserTypeForStore>) => void;
   updateUser: (updatedFields: Partial<IUserTypeWithId>) => void;
   resetUser: () => void;
@@ -24,7 +23,7 @@ type UserStore = {
 const useUser = create(
   persist<UserStore>(
     (set) => ({
-  _id: null,
+  _id: "",
   userName: "",
   password: "",
   email: "",
@@ -43,7 +42,7 @@ const useUser = create(
 
     set(() => {
       const newState = {
-        _id: user._id ?? null,
+        _id: user._id ?? "",
         userName: user.userName || "",
         password: user.password || "",
         email: user.email || "",
@@ -73,7 +72,7 @@ const useUser = create(
   // פונקציה לאיפוס היוזר לערכים ריקים
   resetUser: () =>
     set({
-      _id: null,
+      _id: "",
       userName: "",
       email: "",
       age: 0,
