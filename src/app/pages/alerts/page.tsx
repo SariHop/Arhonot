@@ -1,5 +1,5 @@
 "use client";
-import { Collapse, Typography, Divider, Button, Tabs } from "antd";
+import { Collapse, Divider, Button, Tabs } from "antd";
 import { useAlertsCounter } from "@/app/store/alertsCounterStore";
 import useUser from "@/app/store/userStore";
 import { IAlertTypeWithId } from "@/app/types/IAlert";
@@ -49,7 +49,7 @@ const Page = () => {
   // const [category, setCategory] = useState<string>("waiting"); // קטגוריה פעילה
 
   useEffect(() => {
-    console.log(user._id);
+
     
     const fetchAlertsAndRequests = async () => {
       const fetchRequests = await getConnectionRequests();
@@ -60,10 +60,11 @@ const Page = () => {
     };
 
     fetchAlertsAndRequests();
-  }, []); //user._id
+  },[]); //user._id
 
   //זה אמו להיות בquery?
   const getAlerts = async () => {
+    console.log(user._id);
     const returnAlerts: ExtendedItemType[] = [];
     try {
       const alerts: IAlertTypeWithId[] = await fetchUserAlerts(
