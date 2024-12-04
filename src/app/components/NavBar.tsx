@@ -25,7 +25,8 @@ const NavBar = () => {
   useEffect(() => {
     const initialize = async () => {
       try {
-        const response = await fetch(`/api/alertRoute/userAlerts/${user._id}`);
+        const response = await fetch(`/api/alertRoute/userAlerts/674b74d0dc0ad6b3951e1671`);
+        // const response = await fetch(`/api/alertRoute/userAlerts/${user._id}`);
         const data = await response.json();
 
         if (data.success && Array.isArray(data.data)) {
