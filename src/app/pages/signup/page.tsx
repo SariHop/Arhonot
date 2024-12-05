@@ -1,12 +1,16 @@
-"use client"
-import React, { useState } from 'react';
-import { userSchemaZod, IUserType } from '../../types/IUser'
-import { ZodError } from 'zod'; // הייבוא של ZodError
-import { signup } from '@/app/services/userServices';
+"use client";
+import React, { useState } from "react";
+import { userSchemaZod, IUserType } from "../../types/IUser";
+import { ZodError } from "zod"; // הייבוא של ZodError
+import { signup } from "@/app/services/userServices";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Link from 'next/link';
-import { EyeInvisibleTwoTone, EyeTwoTone } from '@ant-design/icons';
+import Link from "next/link";
+import { EyeInvisibleTwoTone, EyeTwoTone } from "@ant-design/icons";
+import { useCityQuery } from "@/app/hooks/cityQueryHook";
+import { Select } from "antd";
+import { DefaultOptionType } from "antd/es/select";
+
 
 
 const SignUp = () => {
@@ -16,16 +20,22 @@ const SignUp = () => {
     email: "",
     userName: "",
     gender: "זכר",
-    dateOfBirth: new Date('10/10/2000'),
+    dateOfBirth: new Date("10/10/2000"),
     age: 0,
     city: "ירושלים",
-    sensitive: "none"
+    sensitive: "none",
   });
 
-  const [errors, setErrors] = useState<Partial<Record<keyof IUserType, string>>>({});
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof IUserType, string>>
+  >({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const { data: cities, isLoading, error } = useCityQuery();
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -45,13 +55,11 @@ const SignUp = () => {
       if (result.success) {
         console.log("Signup successful:", result.data);
         // הפניה לעמוד הבית או המשך תהליך
-      }
-      else {
+      } else {
         console.error("Signup failed:", result.message);
         if (result.status == 404) {
           toast.error("אימייל זה כבר קיים במערכת,\nנסה אולי התחברות");
-        }
-        else {
+        } else {
           toast.error(`Signup failed: \n${result.message}`);
         }
       }
@@ -65,23 +73,42 @@ const SignUp = () => {
           }
         });
         setErrors(fieldErrors);
-        console.log("lllll", err)
+        console.log("lllll", err);
       }
     }
   };
 
-  return (
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading cities  {String(error)}</div>;
 
+  const cityOptions: DefaultOptionType[] = (cities || []).map((city: string) => ({
+    label: city,
+    value: city,
+  }));
+
+  const handleCityChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, city: value }));
+  };
+  
+
+  return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 pb-20">
       <form
-        onSubmit={(e) => { handleSubmit(e) }}
+        onSubmit={(e) => {
+          handleSubmit(e);
+        }}
         className="bg-white p-8 shadow-md rounded-md w-full max-w-md"
       >
-        <h2 className="text-2xl font-semibold mb-4 text-gray-800">Registration</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+          Registration
+        </h2>
         <div className="grid grid-cols-2 gap-4 mb-4">
           {/* UserName */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700" htmlFor="userName">
+            <label
+              className="block text-sm font-medium text-gray-700"
+              htmlFor="userName"
+            >
               User Name
             </label>
             <input
@@ -99,7 +126,10 @@ const SignUp = () => {
 
           {/* Email */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700" htmlFor="email">
+            <label
+              className="block text-sm font-medium text-gray-700"
+              htmlFor="email"
+            >
               Email
             </label>
             <input
@@ -109,13 +139,18 @@ const SignUp = () => {
               onChange={handleChange}
               className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
             />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email}</p>
+            )}
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4 mb-4">
           {/* Password */}
           <div className="mb-4 relative">
-            <label className="block text-sm font-medium text-gray-700" htmlFor="password">
+            <label
+              className="block text-sm font-medium text-gray-700"
+              htmlFor="password"
+            >
               Password
             </label>
             <input
@@ -173,12 +208,15 @@ const SignUp = () => {
         <div className="grid grid-cols-2 gap-4 mb-4">
           {/* Gender */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700" htmlFor="gender">
+            <label
+              className="block text-sm font-medium text-gray-700"
+              htmlFor="gender"
+            >
               Gender
             </label>
             <select
               id="gender"
-              name='gender'
+              name="gender"
               value={formData.gender}
               onChange={handleChange}
               className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
@@ -192,18 +230,24 @@ const SignUp = () => {
           </div>
           {/* Date of Birth */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700" htmlFor="dateOfBirth">
+            <label
+              className="block text-sm font-medium text-gray-700"
+              htmlFor="dateOfBirth"
+            >
               Date of Birth
             </label>
             <input
               type="date"
               value={
                 formData.dateOfBirth
-                  ? new Date(formData.dateOfBirth).toISOString().split('T')[0]
-                  : ''
+                  ? new Date(formData.dateOfBirth).toISOString().split("T")[0]
+                  : ""
               }
               onChange={(e) =>
-                setFormData({ ...formData, dateOfBirth: new Date(e.target.value) })
+                setFormData({
+                  ...formData,
+                  dateOfBirth: new Date(e.target.value),
+                })
               }
             />
             {errors.dateOfBirth && (
@@ -214,26 +258,36 @@ const SignUp = () => {
         <div className="grid grid-cols-2 gap-4 mb-4">
           {/* City */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700" htmlFor="city">
+            <label
+              className="block text-sm font-medium text-gray-700"
+              htmlFor="city"
+            >
               City
             </label>
-            <input
-              id="city"
-              name='city'
-              value={formData.city}
-              onChange={handleChange}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            />
-            {errors.city && <p className="text-red-500 text-sm">{errors.city}</p>}
+            
+            <Select
+            id="city"
+            showSearch
+            onChange={handleCityChange}
+            options={cityOptions}
+            placeholder="בחר עיר"
+            className="w-full mt-1 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 h-10"
+          />
+            {errors.city && (
+              <p className="text-red-500 text-sm">{errors.city}</p>
+            )}
           </div>
           {/* Sensitive */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700" htmlFor="sensitive">
+            <label
+              className="block text-sm font-medium text-gray-700"
+              htmlFor="sensitive"
+            >
               Sensitive To:
             </label>
             <select
               id="sensitive"
-              name='sensitive'
+              name="sensitive"
               value={formData.sensitive}
               onChange={handleChange}
               className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
@@ -248,7 +302,6 @@ const SignUp = () => {
           </div>
         </div>
 
-
         {/* Submit */}
         <button
           type="submit"
@@ -260,7 +313,6 @@ const SignUp = () => {
           התחברות
         </Link>
       </form>
-
     </div>
   );
 };

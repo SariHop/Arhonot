@@ -7,6 +7,7 @@ export async function GET() {
   try {
     await connect();
     const garments = await Garment.find({});
+    console.log("garments:",garments);
     return NextResponse.json({ message: "success", data: garments });
   } catch (error: unknown) {
     console.error("Error fetching garments:", error);

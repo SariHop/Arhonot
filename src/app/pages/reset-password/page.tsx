@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { forgotPassword } from '@/app/services/userServices';
 
 export default function ResetPasswordPage() {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
+    const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -12,22 +14,25 @@ export default function ResetPasswordPage() {
         setIsLoading(true);
         setMessage('');
         try {
-            const response = await fetch('/api/reset-password', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email }),
-            });
-
-            if (response.ok) {
-                setMessage('Email sent! Please check your inbox.');
-            } else {
-                const data = await response.json();
-                setMessage(data.message || 'Something went wrong.');
+            const response = await forgotPassword(email);
+            console.log(response);
+            if (typeof response === 'string') {
+                setError(response);
+                setMessage('');
+            } else if (response?.error) {
+                setError('response.error');
+                setMessage('');
+            } else if (response?.message) {
+                setMessage('נשלח אימייל לאיפוס סיסמא, נא בדוק את תיבת המייל שלך');
+                setError('');
+            }
+            else {
+                setError('Something went wrong.');
+                setMessage('');
             }
         } catch {
-            setMessage('An error occurred. Please try again later.');
+            setError('An error occurred. Please try again later.');
+            setMessage('');
         } finally {
             setIsLoading(false);
         }
@@ -70,10 +75,17 @@ export default function ResetPasswordPage() {
                 </button>
             </form>
             {message && (
-                <p style={{ marginTop: '1rem', color: message.includes('error') ? 'red' : 'green' }}>
+                <p className="mt-4 text-green-500">
                     {message}
                 </p>
+
             )}
-        </div>
+            {error && (
+                < p className="mt-4 text-red-500">
+                    {error}
+                </p>
+            )
+            }
+        </div >
     );
 }

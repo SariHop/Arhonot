@@ -1,11 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { garmentSchemaZod, IGarmentType } from "@/app/types/IGarment";
-import {
-  fetchSeasons,
-  fetchTags,
-  fetchTypes,
-} from "@/app/services/categoriesService";
+// import {
+//   fetchSeasons,
+//   fetchTags,
+//   fetchTypes,
+// } from "@/app/services/categoriesService";
 import { toast } from "react-toastify";
 import { createGarment } from "@/app/services/garmentService";
 import useUser from "@/app/store/userStore";
@@ -13,6 +13,9 @@ import { ZodError } from "zod";
 import UploadImage from "@/app/components/imagesUploud/UploudButton";
 import Image from "next/image";
 import { ColorPicker } from "antd";
+import { useTagQuery } from "@/app/hooks/tagsQueryHook";
+import { useTypeQuery } from "@/app/hooks/typeQueryHook";
+import { useSeasonQuery } from "@/app/hooks/seasonQueryHook";
 
 const GarmentForm = () => {
   const { _id } = useUser((state) => state);
@@ -29,25 +32,28 @@ const GarmentForm = () => {
     tags: [],
   });
 
-  const [seasons, setSeasons] = useState<string[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
+  const { data: tags, isLoading: isLoadingTag, error: errorTag } = useTagQuery();
+  const { data: seasons, isLoading: isLoadingSeason, error: errorSeason } = useSeasonQuery();
+  const { data: categories, isLoading: isLoadingCategory, error: errorCategory } = useTypeQuery();
+  // const [seasons, setSeasons] = useState<string[]>([]);
+  // const [categories, setCategories] = useState<string[]>([]);
+  // const [tags, setTags] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [imageUrl, setImageUrl] = useState<string>("");
 
   
-  useEffect(() => {
-    Promise.all([fetchSeasons(), fetchTags(), fetchTypes()])
-      .then(([fetchedSeasons, fetchedTags, fetchedCategories]) => {
-        setSeasons(fetchedSeasons);
-        setTags(fetchedTags);
-        setCategories(fetchedCategories);
-      })
-      .catch((error) => {
-        console.error("Error fetching categories:", error);
-        toast.error("Failed to load categories");
-      });
-  }, []);
+  // useEffect(() => {
+  //   Promise.all([fetchSeasons(), fetchTags(), fetchTypes()])
+  //     .then(([fetchedSeasons, fetchedTags, fetchedCategories]) => {
+  //       setSeasons(fetchedSeasons);
+  //       setTags(fetchedTags);
+  //       setCategories(fetchedCategories);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching categories:", error);
+  //       toast.error("Failed to load categories");
+  //     });
+  // }, []);
 
   const handleChange = (
     e:
@@ -132,6 +138,10 @@ const GarmentForm = () => {
     }
   };
 
+
+  if (isLoadingTag || isLoadingSeason || isLoadingCategory) return <div>Loading...</div>;
+  if (errorTag || errorSeason || errorCategory) return <div>Error loading details  </div>;
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -155,7 +165,7 @@ const GarmentForm = () => {
         className="w-full p-2 border rounded"
       >
         <option value="">Select Season</option>
-        {seasons.map((season) => (
+        {seasons.map((season:string) => (
           <option key={season} value={season}>
             {season}
           </option>
@@ -170,7 +180,7 @@ const GarmentForm = () => {
         className="w-full p-2 border rounded"
       >
         <option value="">Select Category</option>
-        {categories.map((category) => (
+        {categories.map((category:string) => (
           <option key={category} value={category}>
             {category}
           </option>
@@ -249,7 +259,7 @@ const GarmentForm = () => {
       <div className="space-y-2">
         <h3 className="text-lg font-medium">Select Tags</h3>
         <div className="flex flex-wrap gap-4">
-          {tags.map((tag) => (
+          {tags.map((tag:string) => (
             <label
               key={tag}
               className={`flex items-center p-2 border rounded cursor-pointer ${
