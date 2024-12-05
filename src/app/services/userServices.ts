@@ -140,3 +140,38 @@ export const resetPassword = async (
     }
   }
 };
+
+export const forgotPassword = async (email: string) => {
+  try {
+    const response = await axios.post('/api/reset-password', {
+      email: email,
+    });
+    if (response.status === 200) {
+      return { message: "Password reset successful" };
+    } else {
+      return { error: response.data.error || "Unexpected error occurred" };
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          console.error("Validation error:", data.error);
+          return data.error; // החזרת הודעת שגיאה ללקוח
+        } else if (status === 404) {
+          console.error("User not found:", data.message);
+          return data.message; // החזרת הודעת שגיאה ללקוח
+        } else if (status === 500) {
+          console.error("Server error:", data.error);
+          return "Internal server error. Please try again later.";
+        }
+      } else {
+        console.error("Request failed:", error.message);
+        return "Network error. Please check your connection.";
+      }
+    } else {
+      console.error("Unexpected error:", error);
+      return "An unexpected error occurred. Please try again.";
+    }
+  }
+};
