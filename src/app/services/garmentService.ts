@@ -18,3 +18,14 @@ export async function createGarment(formData: IGarmentType) {
     throw error;
   }
 }
+
+export const fetchGarments = async () => {
+  try {
+    
+    const response = await axios.get("/api/garmentRoute");
+    console.log(response.data);
+    return response.data
+  } catch (error) {
+    console.error("Failed to fetch garments:", error);
+  }
+};
