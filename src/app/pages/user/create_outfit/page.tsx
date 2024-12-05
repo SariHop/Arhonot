@@ -1,18 +1,24 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import {CanvasStateElemnt} from '@/app/hooks/useCanvasContects'
 import * as fabric from 'fabric';
+import ShowGallery from "@/app/components/createOutfit/ShowGallery";
+// import ToolBar from "@/app/components/createOutfit/ToolBar";
+
+// export const CanvasStateElemnt = createContext<fabric.Canvas | null>(null)
+
 
 const CreateOutfit = () => {
 
   // useref
-  const [canvas, setCanvas] = useState<fabric.Canvas>();
+  const [canvas, setCanvas] = useState<fabric.Canvas|null>(null);
 
   useEffect(() => {
-   
+
     // לטפל ביחס רוחב גובה גם בין מכשירים שונים
-    const width = 300
-    const height = 450
-  
+    const width = window.innerWidth
+    const height = 300
+
     const c = new fabric.Canvas("canvas", {
       height: height,
       width: width,
@@ -35,32 +41,6 @@ const CreateOutfit = () => {
     };
   }, []);
 
-  const addImage = async () => {
-    // אסתי תשלח ניתוב
-    // לשמור במערך גם את הID של התמונה בשביל לשמור בדאטבייס
-    if (!canvas) return;
-
-    const imageUrl =
-      "https://images.pexels.com/photos/1340389/pexels-photo-1340389.jpeg?auto=compress&cs=tinysrgb&w=400";
-
-    try {
-      const img = await fabric.Image.fromURL(imageUrl, {
-        crossOrigin: "anonymous", // Enable cross-origin for the image
-      });
-      img.set({
-        left: canvas.width! / 2 - img.width! / 2, // מיקום במרכז
-        top: canvas.height! / 2 - img.height! / 2,
-        scaleX: 0.5, // להקטין את התמונה לגודל מתאים
-        scaleY: 0.5,
-      });
-
-      canvas.add(img);
-      canvas.requestRenderAll();
-    } catch (error) {
-      console.error("Failed to load image:", error);
-    }
-  };
-
   const exportCanvasAsImage = () => {
     if (!canvas) return;
 
@@ -80,12 +60,18 @@ const CreateOutfit = () => {
 
   return (
     <div>
-      {/* עיצוב רספונסיבי */}
-      {/* סרגל כלים */}
-      {/* גלריה */}
-      <button onClick={exportCanvasAsImage}>Export as Image</button>
-      <button onClick={addImage}>Add Image</button>
+      {/* לנסות לעטוף בקונטקסט */}
+      {/* קנבס*/}
       <canvas id="canvas" />
+      <CanvasStateElemnt.Provider value={canvas}></CanvasStateElemnt.Provider>
+      {/* סרגל כלים */}
+      {/* <ToolBar /> */}
+      
+      <button onClick={exportCanvasAsImage}>Export as Image</button>
+
+      {/*גלריה והוספת תמונה*/}
+      <ShowGallery canvas={canvas}/>
+
     </div>
   )
 
