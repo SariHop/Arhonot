@@ -5,7 +5,6 @@ import bcrypt from 'bcrypt';
 import fs from 'fs/promises';
 import axios from "axios";
 import path from "path";
-import { error } from "console";
 
 const baseUrl=process.env.NEXT_PUBLIC_BASE_URL;
 const apiUrl = `${baseUrl}/api/staticData`;
