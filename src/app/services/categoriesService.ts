@@ -42,6 +42,8 @@ export const fetchTags =async () => {
 export const fetchCities =async () => {
     try {
         const response = await axios.get(`${apiUrl}/cities`);
+        console.log("okkkkkkkk");
+        
         return response.data.cities;
     } catch (error) {
         console.error("Error getting cities:", error);

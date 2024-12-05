@@ -63,14 +63,14 @@ export const userSchemaZod = z.object({
         { message: "תאריך לידה לא יכול להיות עתידי" }
     ),
     city: z.string()
-    .refine(
-        async (city) => {
-            // Fetch the list of cities from the API and validate.
-            const cities: string[] = ["ירושלים"];
-            return cities.includes(city);
+    // .refine(
+    //     async (city) => {
+    //         // Fetch the list of cities from the API and validate.
+    //         const cities: string[] = ["ירושלים"];
+    //         return cities.includes(city);
 
-        },
-        { message: "עיר חייבת להבחר מרשימת הערים בישראל" })
+    //     },
+    //     { message: "עיר חייבת להבחר מרשימת הערים בישראל" })
         ,
     sensitive: z.enum(["cold", "heat", "none"]),
 

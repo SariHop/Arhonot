@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchCities } from '../services/categoriesService';
+import { fetchTypes } from '../services/categoriesService';
 
 
-export const useCityQuery = () => {
+export const useTypeQuery = () => {
   return useQuery({
-    queryKey: ['cities'],
-    queryFn: () => fetchCities(),
+    queryKey: ['types'],
+    queryFn: () => fetchTypes(),
     staleTime: 24 * 60 * 60 * 1000, // נתונים תקפים ל-24 שעות
     refetchInterval: 24 * 60 * 60 * 1000, // רענון אחת ל-24 שעות
   });
