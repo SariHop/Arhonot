@@ -33,6 +33,8 @@ const validateCity = async (city: string) => {
     }
   } catch (error) {
     // אם הקובץ לא קיים או קרתה שגיאה, קרא את הערים מה-API ושמור אותן
+    console.error(error);
+    
     try {
       const response = await axios.get(`${apiUrl}/cities`);      
       await fs.writeFile(filePath, JSON.stringify(response.data.cities));
