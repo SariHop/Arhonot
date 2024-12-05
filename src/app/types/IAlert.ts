@@ -17,6 +17,18 @@ export const alertSchemaZod = z.object({
     date: z.date(),
 });
 
+
+export type AlertTypeFotCollapse = {
+    key: string;
+    title: string;
+    label: React.ReactNode;
+    children: React.ReactNode;
+    readen: boolean;
+    date: Date;
+    status: boolean;
+  };
+
+  
 export type IAlertType = z.infer<typeof alertSchemaZod> 
 
 export type IAlertTypeWithId = z.infer<typeof alertSchemaZod> & {

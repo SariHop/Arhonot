@@ -16,6 +16,19 @@ export const ConnectionRequestSchemaZod = z.object({
     readen: z.boolean(), 
 });
 
+
+export type RequestTypeFotCollapse = {
+    key: string;
+    sender: ObjectId;
+    status: string;
+    sender_name: string;
+    date: Date;
+    label: React.ReactNode;
+    children: React.ReactNode;
+    readen: boolean;
+  };
+
+  
 export type IConnectionRequestType = z.infer<typeof ConnectionRequestSchemaZod> 
 
 export type IConnectionRequestTypeWithId = z.infer<typeof ConnectionRequestSchemaZod> & {

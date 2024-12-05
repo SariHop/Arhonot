@@ -10,6 +10,8 @@ export default interface IOutfit extends Document {
   season: string;
   category: string;
   img: string;
+  favorite: number;
+  rangeWheather: number;
 }
 
 // סכמת Zod

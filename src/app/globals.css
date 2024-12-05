@@ -29,3 +29,72 @@ body {
 .paging{
   @apply mb-[10vh]
 }
+
+
+/* הוספה לקובץ ה-CSS */
+/* .rtl-tabs .ant-tabs-nav {
+  direction: rtl;
+} */
+
+.rtl-tabs .ant-tabs-nav {
+  flex-direction: row-reverse;
+  /* gap: 32px;  מרווח בין הטאבים */
+}
+
+.rtl-tabs .ant-tabs-nav-list {
+  /* flex-direction: row-reverse; */
+  gap: 32px;  /* מרווח בין הטאבים */
+}
+
+.rtl-tabs .ant-tabs-tab {
+  margin: 0 !important;  /* מבטל את ברירת המחדל של המרווחי*/
+}
+
+.rtl-tabs {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.rtl-tabs .ant-tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.rtl-tabs .ant-tabs-content-holder {
+  flex: 1;
+  overflow: hidden;
+}
+
+.rtl-tabs .ant-tabs-content {
+  height: 100%;
+}
+
+.rtl-tabs .ant-tabs-tabpane {
+  height: 100%;
+}
+
+.tab-content {
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 2px; /* מרווח לסרגל גלילה */
+}
+
+/* סגנון סרגל הגלילה */
+.tab-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tab-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.tab-content::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
