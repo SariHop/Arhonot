@@ -1,25 +1,22 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { CanvasStateElemnt } from '@/app/hooks/useCanvasContects'
+import React, { useState, useEffect, createContext } from "react";
 import * as fabric from 'fabric';
 import ShowGallery from "@/app/components/createOutfit/ShowGallery";
-import FormCreateOutfit from "@/app/components/createOutfit/FormCreateOutfit";
-// import ToolBar from "@/app/components/createOutfit/ToolBar";
+import { CanvasContextType } from "@/app/types/canvas"
 
-// export const CanvasStateElemnt = createContext<fabric.Canvas | null>(null)
+
+export const CanvasContext = createContext<CanvasContextType | null>(null)
 
 
 const CreateOutfit = () => {
 
   // useref
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
-  const [shoeCreateForm, setShoeCreateForm] = useState(false);
 
   useEffect(() => {
-
     // לטפל ביחס רוחב גובה גם בין מכשירים שונים
     const width = window.innerWidth
-    const height = 100
+    const height = 200
 
     const c = new fabric.Canvas("canvas", {
       height: height,
@@ -36,54 +33,54 @@ const CreateOutfit = () => {
     // למחוק אלמנט, להעתיק אלמנט
 
     setCanvas(c);
-    // canvas?.renderAll();
 
     return () => {
       c.dispose();
     };
   }, []);
 
-  // const exportCanvasAsImage = () => {
-  //   if (!canvas) return;
+  const addImageToCanvas = async (garmentURL: string, garmenId: string | unknown) => {
+    if (!canvas) return;
 
-  //   const dataURL = canvas.toDataURL({
-  //     format: "png",
-  //     quality: 1,
-  //     multiplier: 1,
-  //   });
-  //   // לשמור בענן, לקבל ניתוה ואז לשלוח לשרת ליצירה
+    const imageUrl = garmentURL
 
-  //   const link = document.createElement("a");
-  //   link.href = dataURL;
-  //   link.download = "canvas_image.png";
-  //   link.click();
-  // };
+    try {
+      const img = await fabric.Image.fromURL(imageUrl, {
+        crossOrigin: "anonymous",
+      });
+      img.set({
+        left: canvas.width! / 2 - img.width! / 2,
+        top: canvas.height! / 2 - img.height! / 2,
+        scaleX: 0.5,
+        scaleY: 0.5,
+      });
+
+      canvas.add(img);
+      canvas.requestRenderAll();
+    } catch (error) {
+      console.error("Failed to load image:", error);
+    }
+
+    // need to update an array of garments
+    // ליצור כאן את המערך ולשתף בקונטקסט
+    // כנראה גם את המצביע צריך ליצור ולשתף
+    console.log(garmenId)
+  };
 
   return (
     <div>
-      {/*  לעטוף בקונטקסט */}
-      {/* קנבס*/}
-      <canvas id="canvas" />
-      <CanvasStateElemnt.Provider value={canvas}></CanvasStateElemnt.Provider>
-      {/* סרגל כלים */}
-      {/* <ToolBar /> */}
+      <CanvasContext.Provider value={{ canvas, addImageToCanvas }}>
 
-      <button
-        className="focus:outline-none text-white bg-magenta hover:bg-red-900 focus:ring-4  font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900"
-        // onClick={exportCanvasAsImage}>
-        onClick={() => { setShoeCreateForm(true) }}>
-        שמירה </button>
+        {/* קנבס*/}
+        <canvas id="canvas" />
 
-      {shoeCreateForm && <FormCreateOutfit />}
+        {/*גלריה והוספת תמונה*/}
+        {/* לשלוח פרופב בוליאני שכעת יצירת לוק */}
+        <ShowGallery />
 
-      {/*גלריה והוספת תמונה*/}
-      <ShowGallery canvas={canvas} />
-
+      </CanvasContext.Provider>
     </div>
   )
-
-
-
 }
 
 export default CreateOutfit
