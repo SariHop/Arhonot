@@ -20,7 +20,10 @@ export async function POST(request: NextRequest) {
 
     // Upload the base64 image to Cloudinary
     const uploadResult = await cloudinary.uploader.upload(body.imageurl, {
-      folder: 'Arhonot', // specify a folder in Cloudinary
+      folder: 'Arhonot', // תיקייה ב-Cloudinary
+      // width: 500, // רוחב התמונה הרצוי בפיקסלים
+      // height: 500, // גובה התמונה הרצוי בפיקסלים
+      // crop: 'fill', // שומר על יחס התמונה וממלא את הממדים המבוקשים
     });
 
     console.log("Upload successful:", uploadResult);
