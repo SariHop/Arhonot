@@ -36,7 +36,7 @@ const WeatherHeader: React.FC = () => {
   const currentDayForecast = weatherData.forecast.forecastday[selectedDateIndex];
 
   // סינון תחזית לפי שעות זוגיות בלבד
-  const hourlyWeather = currentDayForecast.hour.filter((hour, index) => {
+  const hourlyWeather = currentDayForecast.hour.filter((hour) => {
     const hourTime = new Date(hour.time);
     return hourTime.getHours() % 2 === 0; // שעתיים זוגיות בלבד
   });
