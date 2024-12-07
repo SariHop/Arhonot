@@ -2,12 +2,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { apiUrl } from '@/app/services/garmentService'
 import {Position} from "@/app/types/IWeather"
-// טיפוס למיקום
-
 
 export const fetchWeatherData = async () => {
   try {
-    // קבלת המיקום של המשתמש בצורה חכמה
     const position = await new Promise<Position>((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(resolve, reject);
     });

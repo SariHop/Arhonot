@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export async function GET(req: Request) {
   try {
-    const apiKey = process.env.WEATHER_API_KEY;
+    const apiKey = process.env.OPENWEATHER_API_KEY; // שנה למפתח OpenWeatherMap
     const { searchParams } = new URL(req.url);
     
     let lat = searchParams.get('lat');
@@ -24,7 +24,7 @@ export async function GET(req: Request) {
     }
 
     const response = await axios.get(
-      `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${lat},${lon}&days=7&lang=he`
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&lang=he&units=metric&cnt=40`
     );
     return NextResponse.json(response.data);
   } catch (error) {
