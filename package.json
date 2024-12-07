@@ -11,6 +11,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.5.1",
     "@hookform/resolvers": "^3.9.1",
+    "@react-leaflet/core": "^2.1.0",
     "@tanstack/react-query": "^5.62.2",
     "@tanstack/react-query-devtools": "^5.62.2",
     "antd": "^5.22.3",
@@ -21,6 +22,7 @@
     "filepond": "^4.32.4",
     "filepond-plugin-file-validate-type": "^1.2.9",
     "jsonwebtoken": "^9.0.2",
+    "leaflet": "^1.9.4",
     "lucide-react": "^0.465.0",
     "mongoose": "^8.8.2",
     "next": "14.2.17",
