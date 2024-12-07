@@ -20,6 +20,9 @@ export interface DailyWeather {
 }
 
 export interface WeatherData {
+    location: {
+        name: string;
+      };
   current: {
     temp_c: number;
     condition: WeatherCondition;
@@ -28,3 +31,10 @@ export interface WeatherData {
     forecastday: DailyWeather[];
   };
 }
+
+export interface Position {
+    coords: {
+      latitude: number;
+      longitude: number;
+    };
+  }
