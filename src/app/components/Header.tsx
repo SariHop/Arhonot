@@ -2,23 +2,22 @@ import React, { useState, useEffect } from "react";
 import { Sun, Cloud, CloudRain, Snowflake, MapPin } from "lucide-react";
 import { useWeatherQuery } from "@/app/hooks/weatherQueryHook";
 
+const getWeatherIcon = (condition: string) => {
+  const iconMap = {
+    Clear: <Sun className="w-6 h-6" />,
+    Clouds: <Cloud className="w-6 h-6" />,
+    Rain: <CloudRain className="w-6 h-6" />,
+    Snow: <Snowflake className="w-6 h-6" />,
+  };
+  return (
+    iconMap[condition as keyof typeof iconMap] || <Sun className="w-6 h-6" />
+  );
+};
+
 const WeatherHeader: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [expanded, setExpanded] = useState(false);
-  const [selectedDateIndex, /* setSelectedDateIndex*/] = useState(0);
   const { data: weatherData, isLoading, error } = useWeatherQuery();
-
-  const getWeatherIcon = (condition: string) => {
-    const iconMap = {
-      Sunny: <Sun className="w-6 h-6" />,
-      Cloudy: <Cloud className="w-6 h-6" />,
-      Rain: <CloudRain className="w-6 h-6" />,
-      Snow: <Snowflake className="w-6 h-6" />,
-    };
-    return (
-      iconMap[condition as keyof typeof iconMap] || <Sun className="w-6 h-6" />
-    );
-  };
 
   useEffect(() => {
     const timeInterval = setInterval(() => {
@@ -32,37 +31,31 @@ const WeatherHeader: React.FC = () => {
   if (error) return <div>שגיאה בטעינת נתונים</div>;
   if (!weatherData) return null;
 
-  const currentHour = currentTime.getHours();
-  const currentDayForecast = weatherData.forecast.forecastday[selectedDateIndex];
+  const cityName = weatherData.city.name;
+  const hourlyWeather = weatherData.list; //מערך תחזית שעות ל5 ימים קרובים
 
-  // סינון תחזית לפי שעות זוגיות בלבד
-  const hourlyWeather = currentDayForecast.hour.filter((hour) => {
-    const hourTime = new Date(hour.time);
-    return hourTime.getHours() % 2 === 0; // שעתיים זוגיות בלבד
-  });
-
-  // פונקציה למציאת השעה הזוגית הקרובה ביותר
-  const getClosestEvenHour = () => {
-    // אם השעה הנוכחית היא אי זוגית, נבחר את השעה הזוגית הקודמת
+  const getClosestHour = () => {
     let closestHour = hourlyWeather[0];
-    if (currentHour % 2 !== 0) {
-      // אם השעה הנוכחית אי זוגית, נבחר את השעה הקודמת הזוגית
-      closestHour = hourlyWeather.find(
-        (hour) => new Date(hour.time).getHours() === currentHour - 1
-      ) || hourlyWeather[0];
-    } else {
-      // אם השעה הנוכחית זוגית, נבחר אותה כקרובה ביותר
-      closestHour = hourlyWeather.find(
-        (hour) => new Date(hour.time).getHours() === currentHour
-      ) || hourlyWeather[0];
+    for (let i = 0; i < hourlyWeather.length; i++) {
+      const currentData = hourlyWeather[i];
+      const currentTimeStamp = new Date(currentData.dt_txt);
+      if (
+        currentTimeStamp.getHours() <= currentTime.getHours() &&
+        (!closestHour ||
+          currentTimeStamp.getHours() > new Date(closestHour.dt_txt).getHours())
+      ) {
+        closestHour = currentData;
+      }
     }
     return closestHour;
   };
 
-  const currentHourWeather = getClosestEvenHour();
+  const closestHour = getClosestHour();
 
-  // הוספת המיקום
-  const locationName = weatherData.location.name;
+  // פרטי תחזית נוכחית
+  const currentTemp = closestHour.main.temp;
+  const currentDesc = closestHour.weather[0].description;
+  const currentIcon = closestHour.weather[0].icon;
 
   return (
     <div className="relative">
@@ -70,13 +63,14 @@ const WeatherHeader: React.FC = () => {
         className="bg-gray-100 p-4 flex items-center justify-between"
         onClick={() => setExpanded(!expanded)}
       >
-        {/* הצגת המיקום בצד השמאלי עם אייקון של Location */}
+        {/* הצגת המיקום עם אייקון של Location */}
         <div className="flex items-center space-x-2">
           <MapPin className="w-6 h-6 text-gray-600" />
-          <span className="text-lg font-semibold">{locationName}</span>
+          <span className="text-lg font-semibold">{cityName}</span>
         </div>
 
         <div className="flex items-center space-x-4">
+          {/* הצגת הזמן הנוכחי */}
           <div className="text-lg font-semibold">
             {currentTime.toLocaleTimeString("he-IL", {
               hour: "2-digit",
@@ -84,32 +78,29 @@ const WeatherHeader: React.FC = () => {
               hour12: false,
             })}
           </div>
-          {/* הצגת תיאור מזג האוויר בעברית */}
-          {currentHourWeather && (
-            <div className="flex items-center cursor-pointer hover:bg-gray-200 p-2 rounded-md">
-              {getWeatherIcon(currentHourWeather.condition.text)}
-              <span className="ml-2 text-sm">
-                {currentHourWeather.temp_c.toFixed(1)}°C -{" "}
-                {currentHourWeather.condition.text} {/* תיאור מזג האוויר */}
-              </span>
-            </div>
-          )}
+
+          {/* הצגת התחזית הנוכחית */}
+          <div className="flex items-center cursor-pointer hover:bg-gray-200 p-2 rounded-md">
+            {getWeatherIcon(currentIcon)}
+            <span className="mr-2 text-ml">
+              {currentTemp.toFixed(1)}°C - {currentDesc}
+            </span>
+          </div>
         </div>
       </header>
 
       {expanded && (
         <div className="absolute top-full left-0 w-full bg-white shadow-md z-10">
-          {/* תחזית שעתית עבור היום הנבחר */}
+          {/* תחזית שעתית */}
           <div className="flex justify-between overflow-x-auto p-2">
-            {hourlyWeather.map((hourlyData) => {
-              const hourTime = new Date(hourlyData.time);
-
+          {hourlyWeather.slice(0, 8).map((hourlyData)  => {
+              const hourTime = new Date(hourlyData.dt_txt);
               const isCurrentHour =
-                hourlyData.time === currentHourWeather.time;
+                hourlyData.dt_txt === closestHour.dt_txt;
 
               return (
                 <div
-                  key={hourlyData.time}
+                  key={hourlyData.dt}
                   className={`text-center flex flex-col items-center p-2 ${
                     isCurrentHour
                       ? "font-bold text-blue-600 bg-blue-100 rounded-md"
@@ -117,10 +108,12 @@ const WeatherHeader: React.FC = () => {
                   }`}
                 >
                   <div>{hourTime.getHours()}:00</div>
-                  {getWeatherIcon(hourlyData.condition.text)}
-                  <div>{hourlyData.temp_c.toFixed(1)}°C</div>
+                  {getWeatherIcon(hourlyData.weather[0].icon)}
+                  <div className="font-bold">
+                    {hourlyData.main.temp.toFixed(1)}°C
+                  </div>
                   <div className="text-sm text-gray-500">
-                    {hourlyData.condition.text} {/* תיאור מזג האוויר */}
+                    {hourlyData.weather[0].description}
                   </div>
                 </div>
               );
