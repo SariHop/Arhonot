@@ -21,7 +21,6 @@ const GaleryHeader = () => {
             </div>
                 <div className="flex justify-between w-full sm:w-auto">
                     <div className="flex gap-6 mt-6"> {/* השתמש ב-gap במקום space-x-6 */}
-
                         <button
                             className={`text-lg ${activeTab === "garments"
                                 ? "border-b-2 border-gray-800"

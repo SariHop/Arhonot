@@ -4,16 +4,17 @@ import { fetchGarments } from "@/app/services/garmentService";
 import Card from "./Card";
 import GaleryHeader from "./GaleryHeader";
 import useGarments from '../../store/garmentsStore';
+import useUser from "@/app/store/userStore";
 
 
 const GarmentsGallery: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const { sortedGarments, setGarments } = useGarments();
-
+    const { _id } = useUser((state) => state);
     useEffect(() => {
         const fetchGarmentsFromServises = async () => {
             try {
-                const response = await fetchGarments();
+                const response = await fetchGarments(_id);
                 console.log(response.data); // data הוא מערך של IGarment[]
                 setGarments(response.data); // הגדר ישירות
             } catch (error) {
