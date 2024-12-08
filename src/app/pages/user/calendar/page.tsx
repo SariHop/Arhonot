@@ -3,7 +3,7 @@
 import { Calendar, CalendarProps } from 'antd';
 import React from 'react';
 import type { Dayjs } from 'dayjs';
-import dayjs from 'dayjs';
+// import dayjs from 'dayjs';
 
 const Page: React.FC = () => {
   const onPanelChange = (value: Dayjs, mode: CalendarProps<Dayjs>['mode']) => {
