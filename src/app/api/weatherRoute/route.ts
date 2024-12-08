@@ -4,6 +4,8 @@ import axios from 'axios';
 export async function GET(req: Request) {
   try {
     const apiKey = process.env.OPENWEATHER_API_KEY; // שנה למפתח OpenWeatherMap
+    console.log('apiKey',apiKey);
+    
     const { searchParams } = new URL(req.url);
     
     let lat = searchParams.get('lat');
