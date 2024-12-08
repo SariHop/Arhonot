@@ -3,9 +3,17 @@ import React, { useState } from "react";
 import Image from "next/image"; // שימוש ב-Image מ-next/image
 import IGarment from "@/app/types/IGarment";
 import Garment from "./Garment";
+// import { useContext } from "react";
+// import { CanvasContext } from "@/app/components/createOutfit/Canvas";
+// import { CanvasContextType } from "@/app/types/canvas";
+
 
 const Card = ({ garment }: { garment: IGarment }) => {
-    
+
+    // הפונקציה להוספת בגד לקנבס
+    // const context:CanvasContextType|null = useContext(CanvasContext);
+    // const { addImageToCanvas } = context;
+
     const [isModalOpen, setIsModalOpen] = useState(false); // מצב הפופ-אפ (פתוח/סגור)
     const openModal = () => setIsModalOpen(true); // לפתוח את הפופ-אפ
     const closeModal = () => {
