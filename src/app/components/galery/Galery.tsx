@@ -11,8 +11,14 @@ const GarmentsGallery: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const { sortedGarments, setGarments } = useGarments();
     const { _id } = useUser((state) => state);
+    console.log("User ID from store:", _id);
+
     useEffect(() => {
-        const fetchGarmentsFromServises = async () => {
+        if (!_id) {
+            console.log("Waiting for user ID to load...");
+            return;
+        }
+        const fetchGarmentsFromServices = async () => {
             try {
                 const response = await fetchGarments(_id);
                 console.log(response.data); // data הוא מערך של IGarment[]
@@ -23,8 +29,9 @@ const GarmentsGallery: React.FC = () => {
                 setLoading(false);
             }
         };
-        fetchGarmentsFromServises();
-    }, []);
+        fetchGarmentsFromServices();
+    }, [_id]); // הוסף _id כתלות
+
 
     if (loading) return <p>Loading...</p>;
     // if (!sortedGarments.length) return <p>No garments found.</p>;

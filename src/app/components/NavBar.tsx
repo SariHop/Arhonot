@@ -30,7 +30,7 @@ const NavBar = () => {
   const onClick: MenuProps["onClick"] = ({ key }) => {
     console.log(user._id);
     
-    router.push(`/pages/${key === "1" ? "add-garment" : "add-outfit"}`);
+    router.push(`/pages/user/${key === "1" ? "garment_form" : "create_outfit"}`);
     message.info(`Click on item ${key}`);
   };
 
@@ -69,7 +69,7 @@ const NavBar = () => {
       <Tooltip title="פרטי משתמש">
         <UserOutlined
           className="text-3xl hover:text-blue-600"
-          onClick={() => router.push("/pages/user-details")}
+          onClick={() => router.push("/pages/user/personal_area")}
         />
       </Tooltip>
 
@@ -77,7 +77,7 @@ const NavBar = () => {
       <Tooltip title="גלריה">
         <ProductOutlined
           className="text-3xl hover:text-blue-600"
-          onClick={() => router.push("/pages/gallery")}
+          onClick={() => router.push("/pages/user/gallery")}
         />
       </Tooltip>
 
@@ -93,7 +93,7 @@ const NavBar = () => {
       <Tooltip title="הוסף בגד">
         <div
           className="hidden text-3xl hover:text-blue-600 md:flex"
-          onClick={() => router.push("/pages/add-garment")}
+          onClick={() => router.push("/pages/user/garment_form")}
         >
           <SkinOutlined />
           <PlusOutlined className="text-base" />
@@ -104,7 +104,7 @@ const NavBar = () => {
       <Tooltip title="צור לבוש">
         <div
           className="hidden text-3xl hover:text-blue-600 md:flex"
-          onClick={() => router.push("/pages/add-outfit")}
+          onClick={() => router.push("/pages/user/create_outfit")}
         >
           <SkinOutlined />
           <Image
@@ -123,7 +123,7 @@ const NavBar = () => {
       <Tooltip title="לוח">
         <CalendarOutlined
           className="text-3xl hover:text-blue-600"
-          onClick={() => router.push("/pages/calender")}
+          onClick={() => router.push("/pages/user/calendar")}
         />
       </Tooltip>
 
@@ -137,7 +137,7 @@ const NavBar = () => {
         >
           <BellOutlined
             className="text-3xl hover:text-blue-600"
-            onClick={() => router.push("/pages/alerts")}
+            onClick={() => router.push("/pages/user/alerts")}
           />
         </Badge>
       </Tooltip>

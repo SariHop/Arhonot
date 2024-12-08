@@ -23,7 +23,7 @@ export default function SignInPage() {
       const result = await signin(email, password);
       if (result.success) {
         console.log('User signed in successfully:', result);
-        router.push('/'); // כאן אנחנו מפנים לעמוד הבית
+        router.push('/pages/user'); // כאן אנחנו מפנים לעמוד הבית
       } else {
         if (result.status == 402) {
           toast.error(`אימייל זה לא קיים במערכת\nנא נסה להרשם.`);
