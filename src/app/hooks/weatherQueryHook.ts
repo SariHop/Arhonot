@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import {fetchWeatherData} from '@/app/services/weatherService'
 import { WeatherResponse} from '@/app/types/IWeather'
 import { toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
 
 
 export const useWeatherQuery = () => {

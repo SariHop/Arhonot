@@ -7,6 +7,7 @@ import {fetchUserAlerts, updateAlertStatus} from "@/app/services/AlertsServices"
 import { useEffect, useState } from "react";
 import IConnectionRequest, { RequestTypeFotCollapse } from "@/app/types/IConnectionRequest";
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {fetchUsersConnectionReq,updateConnections,updateRequestReadable,updateRequestStatus,} from "@/app/services/ConnectionsServices";
 
 
