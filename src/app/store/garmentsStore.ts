@@ -104,7 +104,9 @@ function filterGarments(
     }
 ): IGarment[] {
     return garments.filter((garment) => {
-        const matchesColor = filters.selectedColors.length === 0 || filters.selectedColors.includes(garment.color);
+        const matchesColor =
+            filters.selectedColors.length === 0 ||
+            (garment.color && filters.selectedColors.includes(getClosestColor(garment.color) ?? ""));
         const matchesCategory = !filters.selectedCategory || garment.category === filters.selectedCategory;
         const matchesSeason = !filters.selectedSeason || garment.season === filters.selectedSeason;
         const matchesRange = garment.range >= filters.selectedRange; // Assuming temperature is a property
@@ -113,4 +115,51 @@ function filterGarments(
         return matchesColor && matchesCategory && matchesSeason && matchesRange && matchesTags;
     });
 }
+function hexToRgb(hex: string) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return { r, g, b };
+}
+function colorDistance(c1: { r: number, g: number, b: number }, c2: { r: number, g: number, b: number }) {
+    const rDiff = c1.r - c2.r;
+    const gDiff = c1.g - c2.g;
+    const bDiff = c1.b - c2.b;
+    return Math.sqrt(rDiff * rDiff + gDiff * gDiff + bDiff * bDiff);
+}
+const colorHexMap: { [key: string]: string } = {
+    red: "#EF4444",      // bg-red-600
+    blue: "#60A5FA",     // bg-blue-400
+    green: "#10B981",    // bg-green-500
+    yellow: "#F59E0B",   // bg-yellow-400
+    black: "#000000",    // bg-black
+    white: "#FFFFFF",    // bg-white
+    orange: "#F97316",   // bg-orange-500
+    pink: "#EC4899",     // bg-pink-500
+    gray: "#6B7280",     // bg-gray-500
+    purple: "#8B5CF6"    // bg-purple-500
+};
+function getClosestColor(garmentColor: string | null): string | null {
+    if (!garmentColor) {
+        return null;
+    }
+    const garmentRgb = hexToRgb(garmentColor);
+    let closestColor = null;
+    let minDistance = Infinity;
+
+    // לולאה על כל הצבעים ברשימה
+    for (const [name, hex] of Object.entries(colorHexMap)) {
+        const colorRgb = hexToRgb(hex);
+        const distance = colorDistance(garmentRgb, colorRgb);
+
+        // עדכון הצבע הקרוב ביותר
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestColor = name;
+        }
+    }
+
+    return closestColor;
+}
+
 export default useGarments;

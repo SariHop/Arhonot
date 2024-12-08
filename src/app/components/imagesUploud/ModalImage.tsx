@@ -2,11 +2,11 @@
 import React, { FC } from 'react';
 import Image from 'next/image'
 import { cloudinaryUploud } from '@/app/services/image/saveToCloudinary';
-import { IModalProps } from '@/app/types/props';
+import { ModalImageProps } from '@/app/types/props';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Modal: FC<IModalProps> = ({ isOpen, onClose, fileWithNoBG, setCloudinary }) => {
+const Modal: FC<ModalImageProps> = ({ isOpen, onClose, fileWithNoBG, setCloudinary }) => {
 
     if (!isOpen) return null;
 

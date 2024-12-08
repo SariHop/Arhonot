@@ -36,7 +36,7 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
                     <p><strong>Season:</strong> {garment.season}</p>
                     <p><strong>Range:</strong> {garment.range}</p>
                     <p><strong>Category:</strong> {garment.category}</p>
-                    <p><strong>Color:</strong> {garment.color}</p>
+                    <p><strong>Color:</strong> <div style={{ backgroundColor: garment.color }}>{garment.color}</div></p>
                     <p><strong>Price:</strong> ${garment.price}</p>
                     <p><strong>Link:</strong> <a href={garment.link} target="_blank" className="text-blue-500">Visit Link</a></p>
                     <p><strong>Tags:</strong> {garment.tags.join(", ")}</p>

@@ -19,10 +19,9 @@ export async function createGarment(formData: IGarmentType) {
   }
 }
 
-export const fetchGarments = async () => {
+export const fetchGarments = async (userId: string) => {
   try {
-    
-    const response = await axios.get("/api/garmentRoute");
+    const response = await axios.get(`/api/garmentRoute/galery/${userId}`);
     console.log(response.data);
     return response.data
   } catch (error) {
