@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Sun, Cloud, CloudRain, Snowflake, MapPin } from "lucide-react";
 import { useWeatherQuery } from "@/app/hooks/weatherQueryHook";
+import { useLocationTracking } from "@/app/hooks/locationHook";
 
 const getWeatherIcon = (condition: string) => {
   const iconMap = {
@@ -15,9 +16,11 @@ const getWeatherIcon = (condition: string) => {
 };
 
 const WeatherHeader: React.FC = () => {
+  const { hasSignificantLocationChange, resetLocationChange } =useLocationTracking();
   const [currentTime, setCurrentTime] = useState(new Date());
+
   const [expanded, setExpanded] = useState(false);
-  const { data: weatherData, isLoading, error } = useWeatherQuery();
+  const { data: weatherData, isLoading, error, refetch} = useWeatherQuery();
 
   useEffect(() => {
     const timeInterval = setInterval(() => {
@@ -26,6 +29,12 @@ const WeatherHeader: React.FC = () => {
 
     return () => clearInterval(timeInterval);
   }, []);
+  useEffect(() => {
+    if (hasSignificantLocationChange) {
+      refetch();
+      resetLocationChange();
+    }
+  }, [hasSignificantLocationChange, refetch, resetLocationChange]);
 
   if (isLoading) return <div>טוען נתוני מזג אוויר...</div>;
   if (error) return <div>שגיאה בטעינת נתונים</div>;
@@ -93,10 +102,9 @@ const WeatherHeader: React.FC = () => {
         <div className="absolute top-full left-0 w-full bg-white shadow-md z-10">
           {/* תחזית שעתית */}
           <div className="flex justify-between overflow-x-auto p-2">
-          {hourlyWeather.slice(0, 8).map((hourlyData)  => {
+            {hourlyWeather.slice(0, 8).map((hourlyData) => {
               const hourTime = new Date(hourlyData.dt_txt);
-              const isCurrentHour =
-                hourlyData.dt_txt === closestHour.dt_txt;
+              const isCurrentHour = hourlyData.dt_txt === closestHour.dt_txt;
 
               return (
                 <div
