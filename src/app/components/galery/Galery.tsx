@@ -42,7 +42,7 @@ const Gallery = ({ isForOutfit }: { isForOutfit: boolean }) => {
     return (
         <>
             <GaleryHeader activeTab={activeTab} setActiveTab={setActiveTab} isForOutfit={isForOutfit} />
-            {activeTab === "garments" && <GarmentsGallery />}
+            {activeTab === "garments" && <GarmentsGallery isForOutfit={isForOutfit} />}
         </>
     );
 };
