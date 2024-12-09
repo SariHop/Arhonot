@@ -4,6 +4,8 @@ import * as fabric from 'fabric';
 import ShowGallery from "@/app/components/createOutfit/ShowGallery";
 import { CanvasContextType } from "@/app/types/canvas"
 import GarmentForm from "./FormCreateOutfit";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 export const CanvasContext = createContext<CanvasContextType | null>(null)
@@ -51,37 +53,52 @@ const Canvas = () => {
   }, []);
 
 
-  const addImageToCanvas = async (garmentURL: string, garmenId: string) => {
+  const addImageToCanvas = async (garmentURL: string, garmenId: string | unknown) => {
     if (!canvas) return;
 
-    const imageUrl = garmentURL
+    // בדיקה האם הבגד נבחר כבר ואם לא להוסיף לרשימת הבגדים ולקנבס
+    if (typeof garmenId === 'string') {
+      if (arreyOfGarmentInCanvas.includes(garmenId)) {
+        toast.info("הבגד כבר נוסף ללוק בהצלחה!");
+        return;
+      } 
+    } else {
+      console.error("garmenId is not a string", garmenId);
+      return;
+    }
+
     try {
-      const img = await fabric.Image.fromURL(imageUrl, {
+      const img = await fabric.Image.fromURL(garmentURL, {
         crossOrigin: "anonymous",
       });
 
+      // Ensure canvas width and height are valid
+      if (!canvas.width || !canvas.height) {
+        console.error("Canvas dimensions are invalid.");
+        return;
+      }
+
       // Calculate scale to fit canvas while maintaining aspect ratio
       const canvasScale = Math.min(
-        (canvas.width! / img.width!),
-        (canvas.height! / img.height!)
+        canvas.width / img.width,
+        canvas.height / img.height
       ) * 0.8; // 80% of max scale to leave some margin
 
       img.set({
-        left: canvas.width! / 2 - (img.width! * canvasScale) / 2,
-        top: canvas.height! / 2 - (img.height! * canvasScale) / 2,
+        left: canvas.width / 2 - (img.width * canvasScale) / 2,
+        top: canvas.height / 2 - (img.height * canvasScale) / 2,
         scaleX: canvasScale,
         scaleY: canvasScale,
       });
 
       canvas.add(img);
       canvas.requestRenderAll();
+
+      setArrayOfGarmentInCanvas(prevArray => [...prevArray, garmenId]);// אם הגיע עד לפה להוסיף בגד למערך
+      
     } catch (error) {
       console.error("Failed to load image:", error);
     }
-
-    setArrayOfGarmentInCanvas(prevArray => [...prevArray, garmenId]);
-    console.log(arreyOfGarmentInCanvas)
-
   };
 
 

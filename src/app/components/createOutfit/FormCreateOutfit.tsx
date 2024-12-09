@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useState, useEffect, useContext } from "react";
-import { outfitSchemaZod } from '@/app/types/IOutfit'
+import { IOutfitType, outfitSchemaZod } from '@/app/types/IOutfit'
 import Image from "next/image";
 import { Modal, Rate } from "antd";
 import { CanvasContext } from "@/app/components/createOutfit/Canvas";
 import useUser from "@/app/store/userStore";
-import { useTagQuery } from "@/app/hooks/tagsQueryHook";
-import { useSeasonQuery } from "@/app/hooks/seasonQueryHook";
+import {validSeasons, tags} from "@/app/data/staticArrays"
 import { cloudinaryUploud } from "@/app/services/image/saveToCloudinary";
 import { toast } from "react-toastify";
+import {createOutfit} from "@/app/services/outfitsService"
 import "react-toastify/dist/ReactToastify.css";
 
 interface OutfitFormProps {
@@ -28,8 +28,6 @@ const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => 
   const [imageError, setImageError] = useState<string>("תצוגה מקדימה של הלוק");
   const [rate, setRate] = useState<number>(0);
 
-  const { data: tags = [] } = useTagQuery();
-  const { data: seasons = [] } = useSeasonQuery();
 
   useEffect(() => {
     const saveImageToCloudinary = async () => {
@@ -57,33 +55,39 @@ const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => 
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
+    
     const data: Record<string, unknown> = {};
     formData.forEach((value, key) => {
       data[key] = value;
     });
+  
     if (typeof data["rangeWheather"] === "string") {
       data["rangeWheather"] = Number(data["rangeWheather"]);
     }
-    data["tags"] = selectedTags; 
-    data["clothesId"] = arreyOfGarmentInCanvas; 
-    data["userId"] = userId; 
-    data["img"] = outfitFromCloudinary; 
-    data["favorite"] = rate; 
-
-    console.log(data);
+    
+    const outfitFinal: IOutfitType = {
+      userId: userId,
+      clothesId: arreyOfGarmentInCanvas,
+      desc: data["desc"] as string,
+      season: data["season"] as string,
+      tags: selectedTags,
+      img: outfitFromCloudinary,
+      favorite: rate,
+      rangeWheather: data["rangeWheather"] as number,
+    };
+  
     try {
-      await outfitSchemaZod.parseAsync(data);
+      await outfitSchemaZod.parseAsync(outfitFinal);
       console.log("Validation passed");
-      
-      // Submit to server here
-      // לעדכן רידקס
+      await createOutfit(outfitFinal);
+      toast.success("לוק נוצר בהצלחה!");
     } catch (err) {
       console.error("Validation failed:", err);
       toast.error("שגיאה ביצירת הלוק. נסה שנית!");
+      // תעדכן כאן מה את ההודעות של זוד
     }
-    // לסגור את המודל,  ולנתב לגלריה
   };
-
+  
 
   return (
     <Modal
@@ -99,10 +103,11 @@ const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => 
       }}
     >
       <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-4 space-y-6">
+
         {/* Season Selector */}
         <select name="season" className="w-full p-2 border rounded" required>
           <option value="">בחר עונה</option>
-          {seasons.map((season: string) => (
+          {validSeasons.map((season: string) => (
             <option key={season} value={season}>
               {season}
             </option>
@@ -184,6 +189,7 @@ const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => 
         >
           צור לוק
         </button>
+        
       </form>
     </Modal>
   );
