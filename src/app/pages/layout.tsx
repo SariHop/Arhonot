@@ -16,10 +16,14 @@ export default function RootLayout({
 
   return (
     <QueryClientProvider client={queryClient}>
-    {children}
-    <Header/>
-    <NavBar/>
-    <ReactQueryDevtools initialIsOpen={false} />
-  </QueryClientProvider>
+
+      <div style={{ paddingBottom: "10vh" }}>
+        <Header />
+        {children}
+        <NavBar />
+      </div>
+
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }

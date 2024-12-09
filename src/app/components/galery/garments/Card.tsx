@@ -11,6 +11,7 @@ const Card = ({ garment, isForOutfit }: { garment: IGarment; isForOutfit: boolea
     // הפונקציה להוספת בגד לקנבס
     // const context: CanvasContextType | null = useContext(CanvasContext);
     // const { addImageToCanvas } = context;
+    
     const [isModalOpen, setIsModalOpen] = useState(false); // מצב הפופ-אפ (פתוח/סגור)
     const openModal = () => setIsModalOpen(true); // לפתוח את הפופ-אפ
     const closeModal = () => {
