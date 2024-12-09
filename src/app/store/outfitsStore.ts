@@ -99,12 +99,7 @@ const useOutfits = create<OutfitsStore>((set) => ({
             };
         });
     },
-    outfitStartFilter: (
-        // outfitSelectedRate: number | undefined,
-        // outfitSelectedSeason: string | undefined,
-        // outfitSelectedRange: number,
-        // outfitSelectedTags: string[]
-    ) => {
+    outfitStartFilter: () => {
         set((state) => ({
             sortedOutfits: filterOutfits(state.outfits, {
                 outfitSelectedRate: state.outfitSelectedRate,
