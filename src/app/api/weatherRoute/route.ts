@@ -31,6 +31,16 @@ export async function GET(req: Request) {
     return NextResponse.json(response.data);
   } catch (error) {
     if (axios.isAxiosError(error)) {
+      if (error.response?.status === 401) {
+        // טיפול בשגיאה 401 - מפתח API או אימות לא תקינים
+        return NextResponse.json(
+          {
+            error: 'הגישה נדחתה: מפתח ה-API או האימות לא תקינים.',
+            details: error.response?.data || error.message,
+          },
+          { status: 401 }
+        );
+      }
       return NextResponse.json(
         {
           error: 'Failed to fetch weather data',

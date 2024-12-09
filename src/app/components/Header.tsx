@@ -18,9 +18,23 @@ const getWeatherIcon = (condition: string) => {
 const WeatherHeader: React.FC = () => {
   const { hasSignificantLocationChange, resetLocationChange } =useLocationTracking();
   const [currentTime, setCurrentTime] = useState(new Date());
-
   const [expanded, setExpanded] = useState(false);
-  const { data: weatherData, isLoading, error, refetch} = useWeatherQuery();
+  const [errorOccurred, setErrorOccurred] = useState(false);
+ 
+  // בדיקה אם הנתונים כבר תקפים (לא עברו 24 שעות)
+//   const isStaleData = () => {
+//     const lastFetchTime = localStorage.getItem('lastFetchTime');
+//     if (!lastFetchTime) return true;
+//     const elapsed = Date.now() - Number(lastFetchTime);
+//     return elapsed > 24 * 60 * 60 * 1000; // אם עברו יותר מ-24 שעות
+//   };
+
+    // הגדרת enabled לפי התנאים
+//   const { data: weatherData, isLoading, error, refetch } = useWeatherQuery({
+//     enabled: hasSignificantLocationChange || !isStaleData() // אם המיקום השתנה או אם נתונים כבר לא עדכניים
+//   });
+const { data: weatherData, isLoading, error, refetch} = useWeatherQuery();
+
 
   useEffect(() => {
     const timeInterval = setInterval(() => {
@@ -30,15 +44,34 @@ const WeatherHeader: React.FC = () => {
     return () => clearInterval(timeInterval);
   }, []);
   useEffect(() => {
-    if (hasSignificantLocationChange) {
-      refetch();
-      resetLocationChange();
-    }
-  }, [hasSignificantLocationChange, refetch, resetLocationChange]);
-
+    if (hasSignificantLocationChange && !errorOccurred) {
+      refetch()
+        .catch(() => setErrorOccurred(true)); 
+        
+         resetLocationChange();  
+          }
+  }, [hasSignificantLocationChange, refetch, resetLocationChange, errorOccurred]);
+  console.log("isLoading:", isLoading);
+  console.log("error:", error);
+  console.log("errorOccurred:", errorOccurred);
+  console.log("weatherData:", weatherData);
   if (isLoading) return <div>טוען נתוני מזג אוויר...</div>;
-  if (error) return <div>שגיאה בטעינת נתונים</div>;
+  if (error||errorOccurred) return <div>שגיאה בטעינת נתונים</div>;
   if (!weatherData) return null;
+
+   // לוגיקה להדפסת נתונים אם הם מהשרת או מהקאש
+//   useEffect(() => {
+//     if (isStaleData()) {
+//       console.log("נתונים חדשים: הנתונים הושגו מהשרת.");
+//     } else {
+//       console.log("נתונים מקאש: הנתונים הושגו מהקאש.");
+//     }
+
+//     // עדכון קונסול אחרי טעינת הנתונים
+//     if (!isLoading && weatherData) {
+//       console.log("נתונים שהתקבלו:", weatherData); // פה את יכולה גם לראות את הנתונים עצמם אם תרצי
+//     }
+//   }, [weatherData, isLoading]);  // תנאי לבדוק את הנתונים לאחר טעינה או שינוי
 
   const cityName = weatherData.city.name;
   const hourlyWeather = weatherData.list; //מערך תחזית שעות ל5 ימים קרובים
