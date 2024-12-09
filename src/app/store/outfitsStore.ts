@@ -14,15 +14,15 @@ type OutfitsStore = {
     setOutfits: (outfits: IOutfit[]) => void;
     deleteOutfits: (outfit: IOutfit) => void;
     resetOutfits: () => void;
-    setOutfitSelectedRate: (rate: number) => void
+    setOutfitSelectedRate: (rate: number | undefined) => void
     setOutfitSelectedSeason: (season: string | undefined) => void;
-    setOutfitSelectedRange: (range: number) => void;
+    setOutfitSelectedRange: (range: number | undefined) => void;
     setOutfitSelectedTags: (tags: string[]) => void;
     setOutfitSearchContent: (contant: string) => void;
     outfitStartFilter: (
         outfitSelectedRate: number | undefined,
         outfitSelectedSeason: string | undefined,
-        outfitSelectedRange: number,
+        outfitSelectedRange: number | undefined,
         outfitSelectedTags: string[]
     ) => void;
 };
@@ -41,8 +41,9 @@ const useOutfits = create<OutfitsStore>((set) => ({
         }));
     },
     setOutfits: (outfits: IOutfit[]) => {
-        set({ outfits });
+        set({ outfits: outfits, sortedOutfits: outfits });
     },
+
     deleteOutfits: (outfit: IOutfit) => {
         set((state) => ({
             outfits: state.outfits.filter((o) => o._id !== outfit._id)  // מסנן את הבגד לפי ה-ID

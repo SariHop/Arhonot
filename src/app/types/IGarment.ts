@@ -59,6 +59,7 @@ export interface GarmentProps {
 export interface IFilterModalProps {
   visible: boolean;
   onClose: () => void;
+  activeTab: string;
 }
 
 type TabType = "garments" | "outfits"; // הגדרת טיפוס מותאם אישית

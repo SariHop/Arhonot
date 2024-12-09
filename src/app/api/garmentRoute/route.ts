@@ -44,7 +44,6 @@ export async function POST(request: NextRequest) {
       throw new Error("Invalid tags value");
     }
     const newgarment = new Garment(body);
-    console.log(newgarment);
     
     await newgarment.validate();
     const savedgarment = await newgarment.save();

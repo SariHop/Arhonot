@@ -149,7 +149,6 @@ function filterGarments(
     }
 ): IGarment[] {
     return garments.filter((garment) => {
-        console.log("filter garments:", filters.garmentSelectedColors)
         const matchesColor =
             filters.garmentSelectedColors.length === 0 ||
             (garment.color
@@ -189,7 +188,6 @@ const colorHexMap: { [key: string]: string } = {
     transparent: ""
 };
 function getClosestColor(garmentColor: string | null): string | null {
-    console.log("garmentColor: ", garmentColor);
     if (!garmentColor) {
         return "transparent";
     }
