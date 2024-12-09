@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <QueryClientProvider client={queryClient}>
     {children}
-    <Header/>
+    {/* <Header/> */}
     <NavBar/>
     <ReactQueryDevtools initialIsOpen={false} />
   </QueryClientProvider>
