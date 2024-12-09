@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useContext } from "react";
-import {IOutfitType} from '@/app/types/IOutfit'
+import { outfitSchemaZod } from '@/app/types/IOutfit'
 import Image from "next/image";
 import { Modal, Rate } from "antd";
 import { CanvasContext } from "@/app/components/createOutfit/Canvas";
@@ -9,6 +9,8 @@ import useUser from "@/app/store/userStore";
 import { useTagQuery } from "@/app/hooks/tagsQueryHook";
 import { useSeasonQuery } from "@/app/hooks/seasonQueryHook";
 import { cloudinaryUploud } from "@/app/services/image/saveToCloudinary";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface OutfitFormProps {
   closeModal: () => void;
@@ -52,34 +54,36 @@ const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => 
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    // IOutfitType
-    // זה הטייפ של האובייקט שצריך לשלוח לשרת
     e.preventDefault();
-
     const form = e.currentTarget;
     const formData = new FormData(form);
-
-    const data: { [key: string]: any } = {};
-    // Unexpected any. Specify a different type.
-
-    // מעבר על כל הערכים של ה-FormData
+    const data: Record<string, unknown> = {};
     formData.forEach((value, key) => {
-        data[key] = value;
+      data[key] = value;
     });
-    //rangeWheather שמחזיר מספר בצורה של מחרוזת
-    // וצריך להמיר למספר יש בטופס אובייק בשם
-
-    // הוספת ערכים נוספים מהסטייט
-    data["tags"] = selectedTags; // מערך
-    data["clothesId"] = arreyOfGarmentInCanvas; // מערך
-    data["userId"] = userId; // מחרוזת או מספר
-    data["img"] = outfitFromCloudinary; // מחרוזת
-    data["favorite"] = rate; // ערך
+    if (typeof data["rangeWheather"] === "string") {
+      data["rangeWheather"] = Number(data["rangeWheather"]);
+    }
+    data["tags"] = selectedTags; 
+    data["clothesId"] = arreyOfGarmentInCanvas; 
+    data["userId"] = userId; 
+    data["img"] = outfitFromCloudinary; 
+    data["favorite"] = rate; 
 
     console.log(data);
-    // TODO: Add server submission logic here
-    // לעדכן את הסטור
+    try {
+      await outfitSchemaZod.parseAsync(data);
+      console.log("Validation passed");
+      
+      // Submit to server here
+      // לעדכן רידקס
+    } catch (err) {
+      console.error("Validation failed:", err);
+      toast.error("שגיאה ביצירת הלוק. נסה שנית!");
+    }
+    // לסגור את המודל,  ולנתב לגלריה
   };
+
 
   return (
     <Modal
@@ -115,6 +119,7 @@ const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => 
         {/* Weather Range */}
         <div className="flex flex-col space-y-2">
           <label htmlFor="range">לאיזה מזג אוויר הלוק הזה מתאים?</label>
+          {/* רותח חם חמים נעים קריר קר קפוא */}
           <input
             type="range"
             name="rangeWheather"

@@ -24,6 +24,7 @@ const Card = ({ garment }: { garment: IGarment }) => {
     }
 
     return (
+        // <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm" onClick={()=>{addImageToCanvas(garment.img, garment._id)}}
         <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm" onClick={openModal}
         >
             <Image

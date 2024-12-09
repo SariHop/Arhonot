@@ -32,6 +32,7 @@ export const outfitSchemaZod = z.object({
     { message: "Some tags are invalid" }
   ),
   img: z.string().url({ message: "Invalid image URL" }), // אימות URL לתמונה
+  // חסר כאן בדיקות
 });
 
 // סוגים
