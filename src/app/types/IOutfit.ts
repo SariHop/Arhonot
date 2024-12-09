@@ -45,3 +45,9 @@ export type IOutfitType = z.infer<typeof outfitSchemaZod>;
 export type IOutfitTypeWithId = IOutfitType & {
   _id: string;
 };
+
+
+export interface IOutfitProps {
+  outfit: IOutfit;
+  closeModal: () => void;
+}

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Card from "./Card";
 import useGarments from '../../../store/garmentsStore';
 
-const ITEMS_PER_PAGE = 4; // מספר פריטים לעמוד
+const ITEMS_PER_PAGE = 4;
 
 const GarmentsGallery = ({ isForOutfit }: { isForOutfit: boolean }) => {
     const { sortedGarments } = useGarments();
@@ -23,7 +23,7 @@ const GarmentsGallery = ({ isForOutfit }: { isForOutfit: boolean }) => {
     const goToNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
     return (
         <>
-            {!sortedGarments.length && <p>No garments found.</p>}
+            {!sortedGarments.length && <p>לא נמצאו בגדים עבור לקוח זה.</p>}
             <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-7 gap-4 px-4">
                 {currentItems.map((garment) => (
                     <Card key={String(garment._id)} garment={garment} isForOutfit={isForOutfit} />
@@ -35,12 +35,12 @@ const GarmentsGallery = ({ isForOutfit }: { isForOutfit: boolean }) => {
                         onClick={goToPreviousPage}
                         disabled={currentPage === 1}
                         className={`text-gray-600 underline 
-                        ${currentPage === 1 ? 'text-gray-400 no-underline cursor-not-allowed' : 'hover:text-gray-800'}`}
+                        ${currentPage === 1 ? 'text-gray-400 no-underline cursor-not-allowed' : 'hover:text-gray-800'} px-2 mx-2`}
                     >
                         הקודם
                     </button>
-                    <span className="text-gray-600 font-medium">
-                        Page <span className="font-bold">{currentPage}</span> of <span className="font-bold">{totalPages}</span>
+                    <span className="text-gray-600 font-medium mx-4">
+                        עמוד <span className="font-bold">{currentPage}</span> מתוך <span className="font-bold">{totalPages}</span>
                     </span>
                     <button
                         onClick={goToNextPage}

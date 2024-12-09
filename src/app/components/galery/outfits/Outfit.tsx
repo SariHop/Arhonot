@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { GarmentProps } from "@/app/types/IGarment";
+import { IOutfitProps } from "../../../types/IOutfit";
 
-const Garment = ({ garment, closeModal }: GarmentProps) => {
+const Outfit = ({ outfit, closeModal }: IOutfitProps) => {
     const handleCloseClick = (e: React.MouseEvent) => {
         e.stopPropagation(); // מונע פיזור אירוע
         closeModal();
@@ -26,49 +26,48 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
                     ✖
                 </button>
                 <h2 className="text-2xl font-semibold text-center mb-4 text-gray-800">
-                    {garment.desc}
+                    {outfit.desc}
                 </h2>
                 <div className="flex flex-col items-center">
                     <Image
-                        src={garment.img}
-                        alt={garment.desc}
+                        src={outfit.img}
+                        alt={outfit.desc}
                         width={180}
                         height={270}
                         className="object-cover rounded-lg mt-4"
                     />
                     <div className="mt-6 w-full space-y-2">
+                        {/* עונה */}
                         <p className="text-gray-700">
-                            <strong>עונה:</strong> {garment.season}
+                            <strong>עונה:</strong> {outfit.season}
                         </p>
+
+                        {/* טווח */}
                         <p className="text-gray-700">
-                            <strong>טווח:</strong> {garment.range}
+                            <strong>טווח מזג אוויר:</strong> {outfit.rangeWheather}
                         </p>
+
+                        {/* תגיות */}
                         <p className="text-gray-700">
-                            <strong>קטגוריה:</strong> {garment.category}
+                            <strong>תגיות:</strong> {outfit.tags.join(", ")}
                         </p>
-                        <p className="text-gray-700 flex items-center">
-                            <strong>צבע:  </strong>
-                            <div
-                                style={{ backgroundColor: garment.color }}
-                                className="w-6 h-6 rounded-full border mx-2"
-                            ></div>
-                        </p>
+
+                        {/* מחיר */}
                         <p className="text-gray-700">
-                            <strong>מחיר:</strong> {garment.price} ₪ 
+                            <strong>מחיר:</strong> {outfit.favorite} ₪
                         </p>
+
+                        {/* קישור */}
                         <p className="text-gray-700">
                             <strong>קישור:</strong>{" "}
                             <a
-                                href={garment.link}
+                                href={outfit.img} // אם הכוונה היא לקישור למוצר עצמו, אולי צריך לשנות את `outfit.img` לכישור המתאים
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-blue-500 hover:underline"
                             >
                                 מעבר לקישור
                             </a>
-                        </p>
-                        <p className="text-gray-700">
-                            <strong>תגיות:</strong> {garment.tags.join(", ")}
                         </p>
                     </div>
                 </div>
@@ -77,4 +76,4 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
     );
 };
 
-export default Garment;
+export default Outfit;
