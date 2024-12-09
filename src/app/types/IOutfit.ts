@@ -16,23 +16,28 @@ export default interface IOutfit extends Document {
 
 // סכמת Zod
 export const outfitSchemaZod = z.object({
-  desc: z.string().optional(), // desc אופציונלי
+  userId: z.string().regex(/^[a-fA-F0-9]{24}$/, { message: "מזהה משתמש אינו תקין" }), 
+  clothesId: z.array(z.string().regex(/^[a-fA-F0-9]{24}$/, { message: "מזהה בגד אינו תקין" })), 
+  desc: z.string().optional(), 
   season: z.string().refine(
     async (season) => {
       const validSeasons = await fetchSeasons();
       return validSeasons.includes(season);
     },
-    { message: "Invalid season" }
+    { message: "עונה אינה תקפה" }
   ),
   tags: z.array(z.string()).refine(
     async (tags) => {
-      const validTags = await fetchTags(); // פונקציה שמחזירה מערך ערכים חוקיים
+      const validTags = await fetchTags();
       return tags.every(tag => validTags.includes(tag));
     },
-    { message: "Some tags are invalid" }
+    { message: "ישנם תגיות שאינן תקפות" }
   ),
-  img: z.string().url({ message: "Invalid image URL" }), // אימות URL לתמונה
+  img: z.string().url({ message: "כתובת URL של תמונה אינה תקפה" }),
+  favorite: z.number().int().min(0, { message: "הדירוג חייב להיות לפחות 0" }).max(5, { message: "הדירוג חייב להיות עד 5" }), 
+  rangeWheather: z.number().min(1, { message: "הטווח חייב להיות לפחות 1" }).max(7, { message: "הטווח חייב להיות עד 7" }), 
 });
+
 
 // סוגים
 export type IOutfitType = z.infer<typeof outfitSchemaZod>;
