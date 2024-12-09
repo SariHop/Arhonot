@@ -4,25 +4,13 @@ import React, { useEffect, useState } from "react";
 import type { Dayjs } from "dayjs";
 import "@/app/globals.css";
 import "dayjs/locale/he"; // ייבוא של השפה העברית
-import dayjs from "dayjs";
 import heIL from "antd/locale/he_IL"; // Import the Hebrew locale
 const customDayNames = ["יום א", "יום ב", "יום ג", "יום ד", "יום ה", "יום ו", "שבת"];
 
 
-
-    
-  
-
-
-
-
 const Page: React.FC = () => {
-  const [currentMonth, setCurrentMonth] = useState<number>(
-    new Date().getMonth()
-  ); // חודש נבחר
-  const [currentYear, setCurrentYear] = useState<number>(
-    new Date().getFullYear()
-  ); // שנה נבחרת
+  const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth()); // חודש נבחר
+  const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear()); // שנה נבחרת
   const [cellHeight, setCellHeight] = useState<string>(""); // גובה התא
   const [calendarMode, setCalendarMode] = useState<CalendarProps<Dayjs>["mode"]>("month"); // מצב היומן (חודש/שנה)
 
