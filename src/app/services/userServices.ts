@@ -175,3 +175,20 @@ export const forgotPassword = async (email: string) => {
     }
   }
 };
+
+
+
+export const logout = async (): Promise<void> => {
+  const { resetUser } = useUser.getState();
+
+  try {
+    // שליחת בקשה לשרת למחיקת הטוקי
+    await axios.post("/api/logoutRoute", null, { withCredentials: true });
+    // איפוס המשתמש ב-Store
+    resetUser();
+
+    console.log("User has been logged out successfully.");
+  } catch (error) {
+    console.error("Error during logout:", error);
+  }
+};
