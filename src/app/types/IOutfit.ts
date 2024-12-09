@@ -1,6 +1,6 @@
 import { Document, ObjectId } from "mongoose";
 import { z } from "zod";
-import { fetchSeasons, fetchTypes } from "../services/categoriesService";
+import { fetchSeasons, fetchTags } from "../services/categoriesService";
 
 // ממשק IOutfit
 export default interface IOutfit extends Document {
@@ -8,7 +8,7 @@ export default interface IOutfit extends Document {
   clothesId: ObjectId[];
   desc: string;
   season: string;
-  category: string;
+  tags: string[];
   img: string;
   favorite: number;
   rangeWheather: number;
@@ -24,12 +24,12 @@ export const outfitSchemaZod = z.object({
     },
     { message: "Invalid season" }
   ),
-  category: z.string().refine(
-    async (category) => {
-      const validCategories = await fetchTypes();
-      return validCategories.includes(category);
+  tags: z.array(z.string()).refine(
+    async (tags) => {
+      const validTags = await fetchTags(); // פונקציה שמחזירה מערך ערכים חוקיים
+      return tags.every(tag => validTags.includes(tag));
     },
-    { message: "Invalid category" }
+    { message: "Some tags are invalid" }
   ),
   img: z.string().url({ message: "Invalid image URL" }), // אימות URL לתמונה
 });
