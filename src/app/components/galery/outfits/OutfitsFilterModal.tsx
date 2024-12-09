@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Modal, Slider, Tag } from "antd";
 import { IFilterModalProps } from "@/app/types/IGarment";
-import useGarments from '../../store/garmentsStore';
+import useGarments from '../../../store/garmentsStore';
 
-const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose }) => {
-    const { selectedColors, selectedCategory, selectedSeason, selectedRange, selectedTags, setSelectedColors, setSelectedCategory, setSelectedSeason, setSelectedRange, setSelectedTags } = useGarments();
+
+const OutfitsFilterModal: React.FC<IFilterModalProps> = ({ visible, onClose }) => {
+
+    const { garmentSelectedColors, garmentSelectedCategory, garmentSelectedSeason, garmentSelectedRange, garmentSelectedTags, setGarmentSelectedColors, setGarmentSelectedCategory, setGarmentSelectedSeason, setGarmentSelectedRange, setGarmentSelectedTags } = useGarments();
     const categories = ["Shirts", "Pants", "Dresses"];
     const seasons = ["Winter", "Spring", "Summer", "Fall"];
     const tags = ["Casual", "Formal", "Sporty", "Vintage"];
@@ -18,26 +20,27 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose }) => {
         { bg: "bg-orange-500", name: "orange" },
         { bg: "bg-pink-500", name: "pink" },
         { bg: "bg-gray-500", name: "gray" },
-        { bg: "bg-purple-500", name: "purple" }
+        { bg: "bg-purple-500", name: "purple" },
+        { bg: "bg-transparent", name: "transparent" }
     ];
 
-    const [localSelectedColors, setLocalSelectedColors] = useState<string[]>(selectedColors);
-    const [localselectedCategory, setLocalSelectedCategory] = useState<string | undefined>(selectedCategory);
-    const [localselectedSeason, setLocalSelectedSeason] = useState<string | undefined>(selectedSeason);
-    const [localselectedRange, setLocalSelectedRange] = useState<number>(selectedRange);
-    const [localselectedTags, setLocalSelectedTags] = useState<string[]>(selectedTags);
+    const [localGarmentSelectedColors, setGarmentLocalSelectedColors] = useState<string[]>(garmentSelectedColors);
+    const [localGarmentSelectedCategory, setGarmentLocalSelectedCategory] = useState<string | undefined>(garmentSelectedCategory);
+    const [localGarmentSelectedSeason, setGarmentLocalSelectedSeason] = useState<string | undefined>(garmentSelectedSeason);
+    const [localGarmentSelectedRange, setGarmentLocalSelectedRange] = useState<number>(garmentSelectedRange);
+    const [localGarmentSelectedTags, setGarmentLocalSelectedTags] = useState<string[]>(garmentSelectedTags);
 
     const onFilter = () => {
-        setSelectedCategory(localselectedCategory);
-        setSelectedColors(localSelectedColors);
-        setSelectedSeason(localselectedSeason);
-        setSelectedRange(localselectedRange);
-        setSelectedTags(localselectedTags);
+        setGarmentSelectedCategory(localGarmentSelectedCategory);
+        setGarmentSelectedColors(localGarmentSelectedColors);
+        setGarmentSelectedSeason(localGarmentSelectedSeason);
+        setGarmentSelectedRange(localGarmentSelectedRange);
+        setGarmentSelectedTags(localGarmentSelectedTags);
     }
 
     return (
         <Modal
-            title="סינונים"
+            title="סינון בגדים"
             visible={visible}
             onOk={onClose}
             onCancel={onClose}
@@ -53,13 +56,16 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose }) => {
                             <div
                                 key={name}
                                 onClick={() => {
-                                    setLocalSelectedColors((prevColors) =>
-                                        prevColors.includes(name)
-                                            ? prevColors.filter((c) => c !== name)
-                                            : [...prevColors, name]
-                                    );
+                                    const updatedColors = localGarmentSelectedColors.includes(name)
+                                        ? localGarmentSelectedColors.filter((c) => c !== name)
+                                        : [...localGarmentSelectedColors, name];
+
+                                    setGarmentLocalSelectedColors(updatedColors); // עדכון ה-state המקומי
+
+                                    // שליחה ישירה לפונקציה מהסטור
+                                    setGarmentSelectedColors(updatedColors); // שליחה ישירה לפונקציה של הסטור
                                 }}
-                                className={`w-7 h-7 rounded-full cursor-pointer border-2 transition ${bg} ${localSelectedColors.includes(name) ? "border-blue-500" : "border-gray-300"}`}
+                                className={`w-7 h-7 rounded-full cursor-pointer border-2 transition ${bg} ${localGarmentSelectedColors.includes(name) ? "border-blue-500" : "border-gray-300"}`}
                             />
                         ))}
                     </div>
@@ -72,10 +78,10 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose }) => {
                         {categories.map((category) => (
                             <Tag
                                 key={category}
-                                color={localselectedCategory === category ? "blue" : "default"}
+                                color={localGarmentSelectedCategory === category ? "blue" : "default"}
                                 onClick={() =>
-                                    setLocalSelectedCategory(
-                                        localselectedCategory === category ? undefined : category
+                                    setGarmentLocalSelectedCategory(
+                                        localGarmentSelectedCategory === category ? undefined : category
                                     )
                                 }
                                 className="cursor-pointer"
@@ -93,10 +99,10 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose }) => {
                         {seasons.map((season) => (
                             <Tag
                                 key={season}
-                                color={localselectedSeason === season ? "blue" : "default"}
+                                color={localGarmentSelectedSeason === season ? "blue" : "default"}
                                 onClick={() =>
-                                    setLocalSelectedSeason(
-                                        localselectedSeason === season ? undefined : season
+                                    setGarmentLocalSelectedSeason(
+                                        localGarmentSelectedSeason === season ? undefined : season
                                     )
                                 }
                                 className="cursor-pointer"
@@ -113,8 +119,8 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose }) => {
                     <Slider
                         min={1}
                         max={7}
-                        value={localselectedRange}
-                        onChange={(value) => setLocalSelectedRange(value)}
+                        value={localGarmentSelectedRange}
+                        onChange={(value) => setGarmentLocalSelectedRange(value)}
                         className="w-full"
                     />
                 </div>
@@ -126,12 +132,12 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose }) => {
                         {tags.map((tag) => (
                             <Tag
                                 key={tag}
-                                color={localselectedTags.includes(tag) ? "blue" : "default"}
+                                color={localGarmentSelectedTags.includes(tag) ? "blue" : "default"}
                                 onClick={() => {
-                                    if (localselectedTags.includes(tag)) {
-                                        setLocalSelectedTags(localselectedTags.filter((t) => t !== tag));
+                                    if (localGarmentSelectedTags.includes(tag)) {
+                                        setGarmentLocalSelectedTags(localGarmentSelectedTags.filter((t) => t !== tag));
                                     } else {
-                                        setLocalSelectedTags([...localselectedTags, tag]);
+                                        setGarmentLocalSelectedTags([...localGarmentSelectedTags, tag]);
                                     }
                                 }}
                                 className="cursor-pointer"
@@ -160,4 +166,4 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose }) => {
     );
 };
 
-export default FilterModal;
+export default OutfitsFilterModal
