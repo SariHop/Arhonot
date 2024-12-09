@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from "react";
 import { Collapse } from "antd";
-import GarmentsGallery from "../galery/Galery";
+import Gallery from "../galery/Galery";
 
 const ShowGallery: React.FC = () => {
   const [activeKey, setActiveKey] = useState<string[]>([]);
@@ -30,7 +30,7 @@ const ShowGallery: React.FC = () => {
           <div className="p-4">
 
             {/* gallery addimage */}
-            <GarmentsGallery/>
+            <Gallery isForOutfit={true}/>
             
           </div>
         </Collapse.Panel>

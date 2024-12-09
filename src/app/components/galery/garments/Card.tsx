@@ -7,13 +7,11 @@ import Garment from "./Garment";
 // import { CanvasContext } from "@/app/components/createOutfit/Canvas";
 // import { CanvasContextType } from "@/app/types/canvas";
 
-
-const Card = ({ garment }: { garment: IGarment }) => {
-
+const Card = ({ garment, isForOutfit }: { garment: IGarment; isForOutfit: boolean }) => {
     // הפונקציה להוספת בגד לקנבס
-    // const context:CanvasContextType|null = useContext(CanvasContext);
+    // const context: CanvasContextType | null = useContext(CanvasContext);
     // const { addImageToCanvas } = context;
-
+    
     const [isModalOpen, setIsModalOpen] = useState(false); // מצב הפופ-אפ (פתוח/סגור)
     const openModal = () => setIsModalOpen(true); // לפתוח את הפופ-אפ
     const closeModal = () => {
@@ -24,8 +22,7 @@ const Card = ({ garment }: { garment: IGarment }) => {
     }
 
     return (
-        // <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm" onClick={()=>{addImageToCanvas(garment.img, garment._id)}}
-        <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm" onClick={openModal}
+        <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm" onClick={isForOutfit ? () => { console.log(isForOutfit) } : openModal}
         >
             <Image
                 src={garment.img}
