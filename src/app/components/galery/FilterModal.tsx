@@ -1,10 +1,17 @@
 import React, { useState } from "react";
-import { Modal, Slider, Tag } from "antd";
+import { Modal, Slider, Tag, Rate } from "antd";
 import { IFilterModalProps } from "@/app/types/IGarment";
 import useGarments from '../../store/garmentsStore';
+import useOutfit from '../../store/outfitsStore';
 
-const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose }) => {
-    const { selectedColors, selectedCategory, selectedSeason, selectedRange, selectedTags, setSelectedColors, setSelectedCategory, setSelectedSeason, setSelectedRange, setSelectedTags } = useGarments();
+const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose, activeTab }) => {
+    const { garmentSelectedColors, garmentSelectedCategory, garmentSelectedSeason, garmentSelectedRange, garmentSelectedTags, setGarmentSelectedColors, setGarmentSelectedCategory, setGarmentSelectedSeason, setGarmentSelectedRange, setGarmentSelectedTags, garmentsStartFilter } = useGarments();
+    const { outfitSelectedRate, outfitSelectedSeason, outfitSelectedTags, outfitSelectedRange, setOutfitSelectedRate, setOutfitSelectedSeason, setOutfitSelectedRange, setOutfitSelectedTags, outfitStartFilter } = useOutfit();
+    const [localOutfitSelectedSeason, setOutfitLocalSelectedSeason] = useState<string | undefined>(outfitSelectedSeason);
+    const [localOutfitSelectedRange, setOutfitLocalSelectedRange] = useState<number | undefined>(outfitSelectedRange);
+    const [localOutfitSelectedTags, setOutfitLocalSelectedTags] = useState<string[]>(outfitSelectedTags);
+    const [localOutfitSelectedRate, setOutfitLocalSelectedRate] = useState<number | undefined>(outfitSelectedRate);
+
     const categories = ["Shirts", "Pants", "Dresses"];
     const seasons = ["Winter", "Spring", "Summer", "Fall"];
     const tags = ["Casual", "Formal", "Sporty", "Vintage"];
@@ -18,26 +25,36 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose }) => {
         { bg: "bg-orange-500", name: "orange" },
         { bg: "bg-pink-500", name: "pink" },
         { bg: "bg-gray-500", name: "gray" },
-        { bg: "bg-purple-500", name: "purple" }
+        { bg: "bg-purple-500", name: "purple" },
+        { bg: "bg-transparent", name: "transparent" }
     ];
 
-    const [localSelectedColors, setLocalSelectedColors] = useState<string[]>(selectedColors);
-    const [localselectedCategory, setLocalSelectedCategory] = useState<string | undefined>(selectedCategory);
-    const [localselectedSeason, setLocalSelectedSeason] = useState<string | undefined>(selectedSeason);
-    const [localselectedRange, setLocalSelectedRange] = useState<number>(selectedRange);
-    const [localselectedTags, setLocalSelectedTags] = useState<string[]>(selectedTags);
+    const [localGarmentSelectedColors, setGarmentLocalSelectedColors] = useState<string[]>(garmentSelectedColors);
+    const [localGarmentSelectedCategory, setGarmentLocalSelectedCategory] = useState<string | undefined>(garmentSelectedCategory);
+    const [localGarmentSelectedSeason, setGarmentLocalSelectedSeason] = useState<string | undefined>(garmentSelectedSeason);
+    const [localGarmentSelectedRange, setGarmentLocalSelectedRange] = useState<number>(garmentSelectedRange);
+    const [localGarmentSelectedTags, setGarmentLocalSelectedTags] = useState<string[]>(garmentSelectedTags);
 
     const onFilter = () => {
-        setSelectedCategory(localselectedCategory);
-        setSelectedColors(localSelectedColors);
-        setSelectedSeason(localselectedSeason);
-        setSelectedRange(localselectedRange);
-        setSelectedTags(localselectedTags);
+        if (activeTab === "garments") {
+            setGarmentSelectedCategory(localGarmentSelectedCategory);
+            setGarmentSelectedColors(localGarmentSelectedColors);
+            setGarmentSelectedSeason(localGarmentSelectedSeason);
+            setGarmentSelectedRange(localGarmentSelectedRange);
+            setGarmentSelectedTags(localGarmentSelectedTags);
+            garmentsStartFilter(localGarmentSelectedColors, localGarmentSelectedCategory, localGarmentSelectedSeason, localGarmentSelectedRange, localGarmentSelectedTags);
+        } else {
+            setOutfitSelectedSeason(localOutfitSelectedSeason);
+            setOutfitSelectedRange(localOutfitSelectedRange);
+            setOutfitSelectedTags(localOutfitSelectedTags);
+            setOutfitSelectedRate(localOutfitSelectedRate);
+            outfitStartFilter(localOutfitSelectedRate, localOutfitSelectedSeason, localOutfitSelectedRange, localOutfitSelectedTags,);
+        }
     }
 
     return (
         <Modal
-            title="סינונים"
+            title="סינון בגדים"
             visible={visible}
             onOk={onClose}
             onCancel={onClose}
@@ -46,45 +63,50 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose }) => {
         >
             <div className="space-y-4 px-3">
                 {/* צבע */}
-                <div>
-                    <h3 className="text-lg mb-3">בחר צבע</h3>
-                    <div className="flex gap-2 flex-wrap">
-                        {colors.map(({ bg, name }) => (
-                            <div
-                                key={name}
-                                onClick={() => {
-                                    setLocalSelectedColors((prevColors) =>
-                                        prevColors.includes(name)
-                                            ? prevColors.filter((c) => c !== name)
-                                            : [...prevColors, name]
-                                    );
-                                }}
-                                className={`w-7 h-7 rounded-full cursor-pointer border-2 transition ${bg} ${localSelectedColors.includes(name) ? "border-blue-500" : "border-gray-300"}`}
-                            />
-                        ))}
+                {activeTab === "garments" &&
+                    <div>
+                        <h3 className="text-lg mb-3">בחר צבע</h3>
+                        <div className="flex gap-2 flex-wrap">
+                            {colors.map(({ bg, name }) => (
+                                <div
+                                    key={name}
+                                    onClick={() => {
+                                        const updatedColors = localGarmentSelectedColors.includes(name)
+                                            ? localGarmentSelectedColors.filter((c) => c !== name)
+                                            : [...localGarmentSelectedColors, name];
+
+                                        setGarmentLocalSelectedColors(updatedColors);
+                                    }}
+                                    className={`w-7 h-7 rounded-full cursor-pointer border-2 transition ${bg} ${localGarmentSelectedColors.includes(name) ? "border-blue-500" : "border-gray-300"}`}
+                                />
+                            ))}
+                        </div>
+
                     </div>
-                </div>
+                }
 
                 {/* קטגוריה */}
-                <div>
-                    <h3 className="text-lg mb-3">בחר קטגוריה</h3>
-                    <div className="flex gap-4">
-                        {categories.map((category) => (
-                            <Tag
-                                key={category}
-                                color={localselectedCategory === category ? "blue" : "default"}
-                                onClick={() =>
-                                    setLocalSelectedCategory(
-                                        localselectedCategory === category ? undefined : category
-                                    )
-                                }
-                                className="cursor-pointer"
-                            >
-                                {category}
-                            </Tag>
-                        ))}
+                {activeTab === "garments" &&
+                    <div>
+                        <h3 className="text-lg mb-3">בחר קטגוריה</h3>
+                        <div className="flex gap-4">
+                            {categories.map((category) => (
+                                <Tag
+                                    key={category}
+                                    color={localGarmentSelectedCategory === category ? "blue" : "default"}
+                                    onClick={() =>
+                                        setGarmentLocalSelectedCategory(
+                                            localGarmentSelectedCategory === category ? undefined : category
+                                        )
+                                    }
+                                    className="cursor-pointer"
+                                >
+                                    {category}
+                                </Tag>
+                            ))}
+                        </div>
                     </div>
-                </div>
+                }
 
                 {/* עונה */}
                 <div>
@@ -93,11 +115,16 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose }) => {
                         {seasons.map((season) => (
                             <Tag
                                 key={season}
-                                color={localselectedSeason === season ? "blue" : "default"}
+                                color={localGarmentSelectedSeason === season ? "blue" : "default"}
                                 onClick={() =>
-                                    setLocalSelectedSeason(
-                                        localselectedSeason === season ? undefined : season
-                                    )
+                                    activeTab === "outfits" ?
+                                        setGarmentLocalSelectedSeason(
+                                            localGarmentSelectedSeason === season ? undefined : season
+                                        )
+                                        :
+                                        setOutfitLocalSelectedSeason(
+                                            localOutfitSelectedSeason === season ? undefined : season
+                                        )
                                 }
                                 className="cursor-pointer"
                             >
@@ -113,8 +140,8 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose }) => {
                     <Slider
                         min={1}
                         max={7}
-                        value={localselectedRange}
-                        onChange={(value) => setLocalSelectedRange(value)}
+                        value={activeTab === "outfits" ? localGarmentSelectedRange : localOutfitSelectedRange}
+                        onChange={activeTab === "outfits" ? (value) => setGarmentLocalSelectedRange(value) : (value) => setOutfitLocalSelectedRange(value)}
                         className="w-full"
                     />
                 </div>
@@ -126,12 +153,20 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose }) => {
                         {tags.map((tag) => (
                             <Tag
                                 key={tag}
-                                color={localselectedTags.includes(tag) ? "blue" : "default"}
+                                color={localGarmentSelectedTags.includes(tag) ? "blue" : "default"}
                                 onClick={() => {
-                                    if (localselectedTags.includes(tag)) {
-                                        setLocalSelectedTags(localselectedTags.filter((t) => t !== tag));
+                                    if (activeTab === "outfits") {
+                                        if (localOutfitSelectedTags.includes(tag)) {
+                                            setOutfitLocalSelectedTags(localOutfitSelectedTags.filter((t) => t !== tag));
+                                        } else {
+                                            setOutfitLocalSelectedTags([...localOutfitSelectedTags, tag]);
+                                        }
                                     } else {
-                                        setLocalSelectedTags([...localselectedTags, tag]);
+                                        if (localGarmentSelectedTags.includes(tag)) {
+                                            setGarmentLocalSelectedTags(localGarmentSelectedTags.filter((t) => t !== tag));
+                                        } else {
+                                            setGarmentLocalSelectedTags([...localGarmentSelectedTags, tag]);
+                                        }
                                     }
                                 }}
                                 className="cursor-pointer"
@@ -142,6 +177,19 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose }) => {
                     </div>
                 </div>
             </div>
+            {/* רמת דירוג */}
+
+            {activeTab === "outfits" &&
+                <div>
+                    <h3 className="text-lg mb-3">בחר רמת דירוג</h3>
+                    <Rate
+                        value={localOutfitSelectedRate}
+                        onChange={(value) => setOutfitLocalSelectedRate(value)}
+                        className="w-full"
+                    />
+                </div>
+            }
+
             <div className="flex justify-end mt-6 space-x-4 gap-5">
                 <button
                     onClick={() => { console.log("Cancel clicked"); onClose() }}

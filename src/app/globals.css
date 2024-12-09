@@ -36,6 +36,9 @@ body {
   direction: rtl;
 } */
 
+
+
+
 .rtl-tabs .ant-tabs-nav {
   flex-direction: row-reverse;
   /* gap: 32px;  מרווח בין הטאבים */
@@ -97,4 +100,10 @@ body {
 
 .tab-content::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+
+
+.ant-picker-calendar .ant-picker-content thead {
+  text-align: center;
 }

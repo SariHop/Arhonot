@@ -55,7 +55,16 @@ export interface GarmentProps {
   garment: IGarment;
   closeModal: () => void;
 }
+
 export interface IFilterModalProps {
   visible: boolean;
   onClose: () => void;
+  activeTab: string;
+}
+
+type TabType = "garments" | "outfits"; // הגדרת טיפוס מותאם אישית
+export interface IGalleryHeaderProps {
+  activeTab: string;
+  setActiveTab: (tab: TabType) => void;
+  isForOutfit: boolean;
 }

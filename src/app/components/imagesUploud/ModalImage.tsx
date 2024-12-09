@@ -56,7 +56,7 @@ const Modal: FC<ModalImageProps> = ({ isOpen, onClose, fileWithNoBG, setCloudina
                     ) : (
                         <div className="flex flex-col items-center justify-center space-y-3">
                             <div className="w-6 h-6 border-4 border-white border-t-cyan-500 rounded-full animate-spin"></div>
-                            <p className=" font-medium text-2xl text-black"> מסירים את הרקע בשהילך</p>
+                            <p className=" font-medium text-2xl text-black"> מסירים את הרקע בשבילך</p>
                         </div>
                     )}
                 </div>

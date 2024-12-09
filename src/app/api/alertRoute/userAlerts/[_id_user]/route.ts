@@ -7,11 +7,11 @@ export async function GET(
   { params }: { params: { _id_user: string } }
 ) {
   try {
-    console.log("Request method:", request.method); // לשם דיבאג
+    // console.log("Request method:", request.method); // לשם דיבאג
     await connect();
 
     const _idUser = params._id_user;
-    console.log("Params:", params);
+    // console.log("Params:", params);
 
     if (!_idUser) {
       return NextResponse.json(
@@ -22,7 +22,6 @@ export async function GET(
 
     // חיפוש ההתראות של המשתמש
     const alerts = await Alert.find({ userId: _idUser });
-    console.log(alerts);
     
     return NextResponse.json({ success: true, data: alerts }, { status: 200 });
   } catch (error: unknown) {

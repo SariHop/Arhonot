@@ -1,31 +1,40 @@
-import { fetchSeasons, fetchTags } from "@/app/services/categoriesService";
+import { validSeasons, tags } from "@/app/data/staticArrays";
 import IOutfit from "@/app/types/IOutfit";
 import mongoose, { Model, Schema, Types } from "mongoose";
 
 
 const OutfitSchema: Schema<IOutfit> = new Schema({
     userId: { type: Types.ObjectId, required: true, ref: "User" },
-    clothesId: { type: [Types.ObjectId], required: true, ref: "Garment" },
-    desc: { type: String, required: false },
-    season: {
-        type: String, validate: {
-            validator: async function (value: string) {
-                const validSeasons = await fetchSeasons();
-                return validSeasons.includes(value);
-            }, message: "Season must be one of the valid seasons"
-        }, required: true
+    clothesId: { 
+        type: [Types.ObjectId], 
+        required: true, 
+        ref: "Garment", 
+        validate: {
+            validator: (value: Types.ObjectId[]) => value.length > 0,
+            message: 'חייב להיות לפחות בגד אחד'
+        }
     },
-    tags: {
-        type: [String], validate: {
-            validator: async function (value: string) {
-                const validCategories = await fetchTags();
-                return validCategories.includes(value);
-            }, message: "Category must be one of the valid categories"
-        }, required: true
+    desc: { type: String },
+    season: { type: String, required: true, enum: validSeasons },
+    tags: { 
+        type: [String], 
+        enum: tags, 
     },
-    img: { type: String, required: true, match: /^https?:\/\/.+/ },
-    favorite: { type: Number, required: false, enum: [0, 1, 2, 3, 4, 5] },
-    rangeWheather: { type: Number, required: true }
+    img: { 
+        type: String, 
+        required: true, 
+        match: /^https?:\/\/.+/ 
+    },
+    favorite: { 
+        type: Number, 
+        enum: [0, 1, 2, 3, 4, 5], 
+        default: 0
+    },
+    rangeWheather: { 
+        type: Number, 
+        required: true, 
+        enum: [1, 2, 3, 4, 5, 6, 7] 
+    }
 });
 
 const Outfit: Model<IOutfit> = mongoose.models.Outfit || mongoose.model<IOutfit>('Outfit', OutfitSchema);

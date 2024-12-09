@@ -4,32 +4,43 @@ import IGarment from "../types/IGarment";
 type GarmentsStore = {
     garments: IGarment[];
     sortedGarments: IGarment[];
-    selectedColors: string[];
-    selectedCategory: string | undefined;
-    selectedSeason: string | undefined;
-    selectedRange: number;
-    selectedTags: string[];
+    garmentSelectedColors: string[];
+    garmentSelectedCategory: string | undefined;
+    garmentSelectedSeason: string | undefined;
+    garmentSelectedRange: number;
+    garmentSelectedTags: string[];
+    garmentSearchContent: string;
 
     addGarment: (garment: IGarment) => void;
     setGarments: (garments: IGarment[]) => void;
     deleteGarment: (garment: IGarment) => void;
     resetGarments: () => void;
 
-    setSelectedColors: (colors: string[]) => void;
-    setSelectedCategory: (category: string | undefined) => void;
-    setSelectedSeason: (season: string | undefined) => void;
-    setSelectedRange: (range: number) => void;
-    setSelectedTags: (tags: string[]) => void;
+    setGarmentSelectedColors: (colors: string[]) => void;
+    setGarmentSelectedCategory: (category: string | undefined) => void;
+    setGarmentSelectedSeason: (season: string | undefined) => void;
+    setGarmentSelectedRange: (range: number) => void;
+    setGarmentSelectedTags: (tags: string[]) => void;
+    setGarmentSearchContent: (contant: string) => void;
+
+    garmentsStartFilter: (
+        garmentSelectedColors: string[],
+        garmentSelectedCategory: string | undefined,
+        garmentSelectedSeason: string | undefined,
+        garmentSelectedRange: number,
+        garmentSelectedTags: string[]
+    ) => void;
 };
 
 const useGarments = create<GarmentsStore>((set) => ({
     garments: [],
     sortedGarments: [],
-    selectedColors: [],
-    selectedCategory: undefined,
-    selectedSeason: undefined,
-    selectedRange: 1,
-    selectedTags: [],
+    garmentSelectedColors: [],
+    garmentSelectedCategory: undefined,
+    garmentSelectedSeason: undefined,
+    garmentSelectedRange: 1,
+    garmentSelectedTags: [],
+    garmentSearchContent: "",
 
     addGarment: (garment: IGarment) => {
         set((state) => {
@@ -61,34 +72,68 @@ const useGarments = create<GarmentsStore>((set) => ({
             sortedGarments: [],
         });
     },
-    setSelectedColors: (colors) => {
+    setGarmentSelectedColors: (colors) => {
         set((state) => ({
-            selectedColors: colors,
-            sortedGarments: filterGarments(state.garments, { ...state, selectedColors: colors }),
+            ...state, // שומר על שאר ה-state
+            garmentSelectedColors: colors, // מעדכן רק את selectedColors
         }));
     },
-    setSelectedCategory: (category) => {
+
+    setGarmentSelectedCategory: (category) => {
         set((state) => ({
-            selectedCategory: category,
-            sortedGarments: filterGarments(state.garments, { ...state, selectedCategory: category }),
+            ...state,
+            garmentSelectedCategory: category,
         }));
     },
-    setSelectedSeason: (season) => {
+    setGarmentSelectedSeason: (season) => {
         set((state) => ({
-            selectedSeason: season,
-            sortedGarments: filterGarments(state.garments, { ...state, selectedSeason: season }),
+            ...state,
+            garmentSelectedSeason: season,
         }));
     },
-    setSelectedRange: (range) => {
+    setGarmentSelectedRange: (range) => {
         set((state) => ({
-            selectedRange: range,
-            sortedGarments: filterGarments(state.garments, { ...state, selectedRange: range }),
+            ...state,
+            garmentSelectedRange: range,
         }));
     },
-    setSelectedTags: (tags) => {
+    setGarmentSelectedTags: (tags) => {
         set((state) => ({
-            selectedTags: tags,
-            sortedGarments: filterGarments(state.garments, { ...state, selectedTags: tags }),
+            ...state,
+            garmentSelectedTags: tags,
+        }));
+    },
+
+    setGarmentSearchContent: (contant) => {
+        // const searchLowerCase = contant.toLowerCase();
+        set((state) => {
+            const filteredGarments = filterGarments(state.garments, { ...state })
+                .filter(garment => {
+                    // סינון לפי מילת החיפוש (contant)
+                    return (
+                        garment.desc.toLowerCase().includes(contant) ||
+                        (garment.season && garment.season.toLowerCase().includes(contant)) ||
+                        (garment.category && garment.category.toLowerCase().includes(contant)) ||
+                        garment.tags.some(tag => tag.toLowerCase().includes(contant))
+                    );
+                });
+
+            // עדכון ה-state עם הערכים המפולטרים
+            return {
+                garmentSearchContent: contant,
+                sortedGarments: filteredGarments,
+            };
+        });
+    },
+    garmentsStartFilter: (
+        garmentSelectedColors: string[],
+        garmentSelectedCategory: string | undefined,
+        garmentSelectedSeason: string | undefined,
+        garmentSelectedRange: number,
+        garmentSelectedTags: string[]
+    ) => {
+        set((state) => ({
+            sortedGarments: filterGarments(state.garments, { garmentSelectedColors, garmentSelectedCategory, garmentSelectedSeason, garmentSelectedRange, garmentSelectedTags }),
         }));
     },
 }));
@@ -96,21 +141,23 @@ const useGarments = create<GarmentsStore>((set) => ({
 function filterGarments(
     garments: IGarment[],
     filters: {
-        selectedColors: string[];
-        selectedCategory: string | undefined;
-        selectedSeason: string | undefined;
-        selectedRange: number;
-        selectedTags: string[];
+        garmentSelectedColors: string[];
+        garmentSelectedCategory: string | undefined;
+        garmentSelectedSeason: string | undefined;
+        garmentSelectedRange: number;
+        garmentSelectedTags: string[];
     }
 ): IGarment[] {
     return garments.filter((garment) => {
         const matchesColor =
-            filters.selectedColors.length === 0 ||
-            (garment.color && filters.selectedColors.includes(getClosestColor(garment.color) ?? ""));
-        const matchesCategory = !filters.selectedCategory || garment.category === filters.selectedCategory;
-        const matchesSeason = !filters.selectedSeason || garment.season === filters.selectedSeason;
-        const matchesRange = garment.range >= filters.selectedRange; // Assuming temperature is a property
-        const matchesTags = filters.selectedTags.length === 0 || filters.selectedTags.some((tag) => garment.tags.includes(tag));
+            filters.garmentSelectedColors.length === 0 ||
+            (garment.color
+                ? filters.garmentSelectedColors.includes(getClosestColor(garment.color) ?? "")
+                : filters.garmentSelectedColors.includes("transparent"));
+        const matchesCategory = !filters.garmentSelectedCategory || garment.category === filters.garmentSelectedCategory;
+        const matchesSeason = !filters.garmentSelectedSeason || garment.season === filters.garmentSelectedSeason;
+        const matchesRange = garment.range >= filters.garmentSelectedRange; // Assuming temperature is a property
+        const matchesTags = filters.garmentSelectedTags.length === 0 || filters.garmentSelectedTags.some((tag) => garment.tags.includes(tag));
 
         return matchesColor && matchesCategory && matchesSeason && matchesRange && matchesTags;
     });
@@ -137,18 +184,22 @@ const colorHexMap: { [key: string]: string } = {
     orange: "#F97316",   // bg-orange-500
     pink: "#EC4899",     // bg-pink-500
     gray: "#6B7280",     // bg-gray-500
-    purple: "#8B5CF6"    // bg-purple-500
+    purple: "#8B5CF6",    // bg-purple-500
+    transparent: ""
 };
 function getClosestColor(garmentColor: string | null): string | null {
     if (!garmentColor) {
-        return null;
+        return "transparent";
     }
     const garmentRgb = hexToRgb(garmentColor);
-    let closestColor = null;
+    let closestColor = "transparent";
     let minDistance = Infinity;
 
     // לולאה על כל הצבעים ברשימה
     for (const [name, hex] of Object.entries(colorHexMap)) {
+        if (!hex) {
+            continue; // דלג על צבעים ללא hex (כמו transparent)
+        }
         const colorRgb = hexToRgb(hex);
         const distance = colorDistance(garmentRgb, colorRgb);
 
