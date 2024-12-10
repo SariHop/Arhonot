@@ -1,3 +1,4 @@
+'use client';
 import { create } from "zustand";
 import IGarment from "../types/IGarment";
 
@@ -108,34 +109,25 @@ const useGarments = create<GarmentsStore>((set) => ({
         // const searchLowerCase = contant.toLowerCase();
         set((state) => {
             const filteredGarments = filterGarments(state.garments, { ...state })
-                .filter(garment => {
-                    // סינון לפי מילת החיפוש (contant)
-                    return (
-                        garment.desc.toLowerCase().includes(contant) ||
-                        (garment.season && garment.season.toLowerCase().includes(contant)) ||
-                        (garment.category && garment.category.toLowerCase().includes(contant)) ||
-                        garment.tags.some(tag => tag.toLowerCase().includes(contant))
-                    );
-                });
-
+            const searchFilteredGarments = filterGarmentsByContent(filteredGarments, contant);
             // עדכון ה-state עם הערכים המפולטרים
             return {
                 garmentSearchContent: contant,
-                sortedGarments: filteredGarments,
+                sortedGarments: searchFilteredGarments,
             };
         });
     },
-    garmentsStartFilter: (
-        garmentSelectedColors: string[],
-        garmentSelectedCategory: string | undefined,
-        garmentSelectedSeason: string | undefined,
-        garmentSelectedRange: number,
-        garmentSelectedTags: string[]
-    ) => {
-        set((state) => ({
-            sortedGarments: filterGarments(state.garments, { garmentSelectedColors, garmentSelectedCategory, garmentSelectedSeason, garmentSelectedRange, garmentSelectedTags }),
-        }));
-    },
+
+    garmentsStartFilter: () => {
+        set((state) => {
+            const filteredGarments = filterGarments(state.garments, state);
+            const searchFilteredGarments = filterGarmentsByContent(filteredGarments, state.garmentSearchContent);
+            return {
+                sortedGarments: searchFilteredGarments,
+            };
+        });
+    }
+
 }));
 // פונקציה לסינון הבגדים
 function filterGarments(
@@ -213,4 +205,13 @@ function getClosestColor(garmentColor: string | null): string | null {
     return closestColor;
 }
 
+function filterGarmentsByContent(outfits: IGarment[], content: string): IGarment[] {
+    return outfits.filter(outfit => {
+        return (
+            outfit.desc.toLowerCase().includes(content) ||
+            (outfit.season && outfit.season.toLowerCase().includes(content)) ||
+            outfit.tags.some((tag: string) => tag.toLowerCase().includes(content))
+        );
+    });
+}
 export default useGarments;
