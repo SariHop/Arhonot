@@ -34,7 +34,7 @@ const PersonalArea = () => {
     >
       {/* תפריט */}
       <div
-        className={`transition-all duration-500 bg-gray-50 shadow-xl z-10 overflow-y-auto flex flex-col items-center p-6
+        className={`transition-all duration-500 bg-gray-50 shadow-xl overflow-y-auto flex flex-col items-center p-6
           ${isMobile && activeKey ? "translate-x-full w-0" : "w-1/2"}`}
       >
         {userName && (

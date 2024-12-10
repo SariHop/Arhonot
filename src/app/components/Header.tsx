@@ -94,11 +94,6 @@ const { data: weatherData, isLoading, error, refetch} = useWeatherQuery();
 
   const closestHour = getClosestHour();
 
-  // פרטי תחזית נוכחית
-  // const currentTemp = closestHour.main.temp;
-  // const currentDesc = closestHour.weather[0].description;
-  // const currentIcon = closestHour.weather[0].icon;
-
   return (
     <div
       className="fixed top-0 left-0 w-full bg-gray-100 z-50 shadow-md"
@@ -130,24 +125,37 @@ const { data: weatherData, isLoading, error, refetch} = useWeatherQuery();
       </header>
 
       {expanded && (
-        <div className="absolute top-full left-0 w-full bg-white shadow-lg z-50">
+        <div className="absolute top-full left-0 w-full bg-white shadow-md z-10">
+          {/* תחזית שעתית */}
           <div className="flex justify-between overflow-x-auto p-2">
-            {hourlyWeather.slice(0, 8).map((hourlyData) => (
-              <div
-                key={hourlyData.dt}
-                className="text-center flex flex-col items-center p-2 text-gray-700"
-              >
-                <div>{new Date(hourlyData.dt_txt).getHours()}:00</div>
-                {getWeatherIcon(hourlyData.weather[0].main)}
-                <div className="font-bold">{hourlyData.main.temp.toFixed(1)}°C</div>
-                <div className="text-sm">{hourlyData.weather[0].description}</div>
-              </div>
-            ))}
+            {hourlyWeather.slice(0, 8).map((hourlyData) => {
+              const hourTime = new Date(hourlyData.dt_txt);
+              const isCurrentHour = hourlyData.dt_txt === closestHour.dt_txt;
+
+              return (
+                <div
+                  key={hourlyData.dt}
+                  className={`text-center flex flex-col items-center p-2 ${
+                    isCurrentHour
+                      ? "font-bold text-blue-600 bg-blue-100 rounded-md"
+                      : "text-gray-700"
+                  }`}
+                >
+                  <div>{hourTime.getHours()}:00</div>
+                  {getWeatherIcon(hourlyData.weather[0].icon)}
+                  <div className="font-bold">
+                    {hourlyData.main.temp.toFixed(1)}°C
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    {hourlyData.weather[0].description}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
     </div>
   );
 };
-
 export default WeatherHeader;
