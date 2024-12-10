@@ -15,7 +15,7 @@ const UserSchema : Schema<IUser> = new Schema({
     }, "תאריך לידה לא יכול להיות עתידי"] },
     city: { type: String, required: true},
     sensitive: { type: String, required: true, enum: ["cold", "heat", "none"]},
-    userDays: {type: [Types.ObjectId], required:true, ref: "day" },
+    // userDays: {type: [Types.ObjectId], required:true, ref: "day" },
 })
 
 UserSchema.index({ email: 1 }, { unique: true });

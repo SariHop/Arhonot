@@ -1,10 +1,11 @@
-import { Document } from "mongoose";
+import { Document, ObjectId, Types } from "mongoose";
 import {z} from 'zod'
 
 export default interface IDay extends Document{
+    userId: ObjectId;
     date: Date;
     dayDesc: string;
-    looks: string [];
+    looks: Types.ObjectId [];
     comments: string;
     weather: string;
 }

@@ -13,7 +13,7 @@ export default interface IUser extends Document {
     dateOfBirth: Date;
     city: string;
     sensitive: string;
-    userDays: Types.ObjectId[];
+    // userDays: Types.ObjectId[];
 }
 
 export interface IToken extends Document {
@@ -86,7 +86,7 @@ export type IUserTypeWithId = Omit<IUserType, "confirmPassword"> & { _id: string
 
 
 // טיפוס ליצירת משתמש (ללא _id ועם שדות נדרשים בלבד)
-export type CreateUserType = Omit<IUser, "_id"/* | "children" | "userDays"*/>;
+export type CreateUserType = Omit<IUser, "_id"/* | "children" */>;
 
 // טיפוס לעדכון יוזר בסטור (כולל ה-ID, כל השדות אופציונליים)
 export type UpdateUserTypeForStore = Partial<IUser> & { _id: string };
