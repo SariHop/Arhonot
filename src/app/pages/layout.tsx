@@ -18,7 +18,7 @@ export default function RootLayout({
     <QueryClientProvider client={queryClient}>
 
       <div style={{ paddingBottom: "10vh" }}>
-        {/* <Header /> */}
+        <Header />
         {children}
         <NavBar />
       </div>
