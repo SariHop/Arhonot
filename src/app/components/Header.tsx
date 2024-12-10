@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Sun, Cloud, CloudRain, Snowflake, MapPin } from "lucide-react";
+import {
+  Sun,
+  Cloud,
+  CloudRain,
+  Snowflake,
+  MapPin,
+  ChevronDown,
+} from "lucide-react";
 import { useWeatherQuery } from "@/app/hooks/weatherQueryHook";
 import { useLocationTracking } from "@/app/hooks/locationHook";
 import Image from "next/image"; 
