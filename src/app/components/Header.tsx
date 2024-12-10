@@ -95,9 +95,9 @@ const { data: weatherData, isLoading, error, refetch} = useWeatherQuery();
   const closestHour = getClosestHour();
 
   // פרטי תחזית נוכחית
-  const currentTemp = closestHour.main.temp;
-  const currentDesc = closestHour.weather[0].description;
-  const currentIcon = closestHour.weather[0].icon;
+  // const currentTemp = closestHour.main.temp;
+  // const currentDesc = closestHour.weather[0].description;
+  // const currentIcon = closestHour.weather[0].icon;
 
   return (
     <div

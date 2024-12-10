@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Button, Typography, message } from "antd";
+import { Button, Typography } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { logout } from "@/app/services/userServices";
 import { useRouter } from "next/navigation"; 
@@ -28,6 +28,7 @@ const Logout = () => {
       toast.success("ההתנתקות בוצעה בהצלחה!"); 
       router.push("/pages/signin");
     } catch (error) {
+        console.error("שגיאה בהתנתקות, נסה שנית", error);
         toast.error("הייתה שגיאה בהתנתקות, אנא נסה שנית.");
     }
   };
