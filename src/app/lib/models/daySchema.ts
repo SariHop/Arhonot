@@ -2,6 +2,7 @@ import IDay from "@/app/types/IDay";
 import mongoose, { Model, Schema, Types } from "mongoose";
 
 const daySchema: Schema<IDay> = new Schema({
+    userId: { type: Types.ObjectId, required: true, ref: 'User' },
     date: { type: Date, required: true }, 
     dayDesc: {
         type: String,

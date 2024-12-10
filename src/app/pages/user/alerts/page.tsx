@@ -323,7 +323,7 @@ const Page = () => {
 
 
   return (
-    <div className="mb-[10vh]">
+    <div className="">
 
       {/* התראות על מלאי */}
       <div className="p-6 pt-2 h-[40vh]">

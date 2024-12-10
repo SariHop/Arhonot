@@ -14,7 +14,6 @@ type UserStore = {
   dateOfBirth: Date | null;
   sensitive: string;
   children: Types.ObjectId[]; // שינה מ-string[] ל-ObjectId[]
-  userDays: Types.ObjectId[];
   setUser: (user: Partial<UpdateUserTypeForStore>) => void;
   updateUser: (updatedFields: Partial<IUserTypeWithId>) => void;
   resetUser: () => void;
@@ -33,7 +32,6 @@ const useUser = create(
   dateOfBirth: null,
   sensitive: "none",
   children: [],
-  userDays: [],
 
   // פונקציה לאיתחול יוזר חדש
   // setUser: (user) => set(() => ({ ...user })),
@@ -52,7 +50,6 @@ const useUser = create(
         dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth) : null,
         sensitive: user.sensitive || "none",
         children: user.children ?? [],
-        userDays: user.userDays ?? [],
       };
       console.log("Updated user:", newState);
       return newState;
@@ -81,7 +78,6 @@ const useUser = create(
       dateOfBirth: null,
       sensitive: "none",
       children: [],
-      userDays: [],
     }),
   }),
   {
