@@ -13,7 +13,7 @@ type UserStore = {
   city: string;
   dateOfBirth: Date | null;
   sensitive: string;
-  children: Types.ObjectId[]; // שינה מ-string[] ל-ObjectId[]
+  children: Types.ObjectId[]; 
   userDays: Types.ObjectId[];
   setUser: (user: Partial<UpdateUserTypeForStore>) => void;
   updateUser: (updatedFields: Partial<IUserTypeWithId>) => void;
@@ -25,7 +25,7 @@ const useUser = create(
     (set) => ({
   _id: "",
   userName: "",
-  password: "",
+  password: "",//למחוק את שמירת הסיסמא
   email: "",
   age: 0,
   gender: "",
@@ -44,7 +44,7 @@ const useUser = create(
       const newState = {
         _id: user._id ?? "",
         userName: user.userName || "",
-        password: user.password || "",
+        password: user.password || "",//למחוק לאחר הסרת מהסטור
         email: user.email || "",
         age: user.age ?? 0,
         gender: user.gender || "",
@@ -73,6 +73,7 @@ const useUser = create(
   resetUser: () =>
     set({
       _id: "",
+      password:"",// למחוק לאחר הסרת שמירת הסיסמא בסטור
       userName: "",
       email: "",
       age: 0,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Sun, Cloud, CloudRain, Snowflake, MapPin } from "lucide-react";
+import { Sun, Cloud, CloudRain, Snowflake, MapPin ,ChevronDown} from "lucide-react";
 import { useWeatherQuery } from "@/app/hooks/weatherQueryHook";
 import { useLocationTracking } from "@/app/hooks/locationHook";
 
@@ -95,24 +95,23 @@ const { data: weatherData, isLoading, error, refetch} = useWeatherQuery();
   const closestHour = getClosestHour();
 
   // פרטי תחזית נוכחית
-  const currentTemp = closestHour.main.temp;
-  const currentDesc = closestHour.weather[0].description;
-  const currentIcon = closestHour.weather[0].icon;
+  // const currentTemp = closestHour.main.temp;
+  // const currentDesc = closestHour.weather[0].description;
+  // const currentIcon = closestHour.weather[0].icon;
 
   return (
-    <div className="relative">
+    <div
+      className="fixed top-0 left-0 w-full bg-gray-100 z-50 shadow-md"
+    >
       <header
-        className="bg-gray-100 p-4 flex items-center justify-between"
+        className="p-4 flex items-center justify-between cursor-pointer"
         onClick={() => setExpanded(!expanded)}
       >
-        {/* הצגת המיקום עם אייקון של Location */}
         <div className="flex items-center space-x-2">
           <MapPin className="w-6 h-6 text-gray-600" />
           <span className="text-lg font-semibold">{cityName}</span>
         </div>
-
         <div className="flex items-center space-x-4">
-          {/* הצגת הזמן הנוכחי */}
           <div className="text-lg font-semibold">
             {currentTime.toLocaleTimeString("he-IL", {
               hour: "2-digit",
@@ -120,45 +119,30 @@ const { data: weatherData, isLoading, error, refetch} = useWeatherQuery();
               hour12: false,
             })}
           </div>
-
-          {/* הצגת התחזית הנוכחית */}
-          <div className="flex items-center cursor-pointer hover:bg-gray-200 p-2 rounded-md">
-            {getWeatherIcon(currentIcon)}
-            <span className="mr-2 text-ml">
-              {currentTemp.toFixed(1)}°C - {currentDesc}
+          <div className="flex items-center">
+            {getWeatherIcon(closestHour.weather[0].main)}
+            <span className="mr-2">
+              {closestHour.main.temp.toFixed(1)}°C - {closestHour.weather[0].description}
             </span>
           </div>
+          <ChevronDown className={`transform transition-transform ${expanded ? "rotate-180" : ""}`} />
         </div>
       </header>
 
       {expanded && (
-        <div className="absolute top-full left-0 w-full bg-white shadow-md z-10">
-          {/* תחזית שעתית */}
+        <div className="absolute top-full left-0 w-full bg-white shadow-lg z-50">
           <div className="flex justify-between overflow-x-auto p-2">
-            {hourlyWeather.slice(0, 8).map((hourlyData) => {
-              const hourTime = new Date(hourlyData.dt_txt);
-              const isCurrentHour = hourlyData.dt_txt === closestHour.dt_txt;
-
-              return (
-                <div
-                  key={hourlyData.dt}
-                  className={`text-center flex flex-col items-center p-2 ${
-                    isCurrentHour
-                      ? "font-bold text-blue-600 bg-blue-100 rounded-md"
-                      : "text-gray-700"
-                  }`}
-                >
-                  <div>{hourTime.getHours()}:00</div>
-                  {getWeatherIcon(hourlyData.weather[0].icon)}
-                  <div className="font-bold">
-                    {hourlyData.main.temp.toFixed(1)}°C
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    {hourlyData.weather[0].description}
-                  </div>
-                </div>
-              );
-            })}
+            {hourlyWeather.slice(0, 8).map((hourlyData) => (
+              <div
+                key={hourlyData.dt}
+                className="text-center flex flex-col items-center p-2 text-gray-700"
+              >
+                <div>{new Date(hourlyData.dt_txt).getHours()}:00</div>
+                {getWeatherIcon(hourlyData.weather[0].main)}
+                <div className="font-bold">{hourlyData.main.temp.toFixed(1)}°C</div>
+                <div className="text-sm">{hourlyData.weather[0].description}</div>
+              </div>
+            ))}
           </div>
         </div>
       )}
