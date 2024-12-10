@@ -83,7 +83,7 @@ const PersonalArea = () => {
                 shape="circle"
                 icon={<CloseOutlined />}
                 onClick={() => handleTogglePanel(null)}
-                className="absolute top-4 left-4"
+                className="absolute top-4 left-4 "
               />
             )}
             {renderContent()}

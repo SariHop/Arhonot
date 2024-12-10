@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { useWeatherQuery } from "@/app/hooks/weatherQueryHook";
 import { useLocationTracking } from "@/app/hooks/locationHook";
-import Image from "next/image"; 
+import Image from "next/image";
 
 const getWeatherIcon = (condition: string) => {
   const iconMap = {
@@ -24,11 +24,12 @@ const getWeatherIcon = (condition: string) => {
 };
 
 const WeatherHeader: React.FC = () => {
-  const { hasSignificantLocationChange, resetLocationChange } =useLocationTracking();
+  const { hasSignificantLocationChange, resetLocationChange } =
+    useLocationTracking();
   const [currentTime, setCurrentTime] = useState(new Date());
 
   const [expanded, setExpanded] = useState(false);
-  const { data: weatherData, isLoading, error, refetch} = useWeatherQuery();
+  const { data: weatherData, isLoading, error, refetch } = useWeatherQuery();
 
   useEffect(() => {
     const timeInterval = setInterval(() => {
@@ -44,7 +45,12 @@ const WeatherHeader: React.FC = () => {
     }
   }, [hasSignificantLocationChange, refetch, resetLocationChange]);
 
-  if (isLoading) return <div className="fixed top-0 left-0 w-full bg-gray-100 z-50 shadow-md">טוען נתוני מזג אוויר...</div>;
+  if (isLoading)
+    return (
+      <div className="fixed top-0 left-0 w-full bg-gray-100 z-50 shadow-md">
+        טוען נתוני מזג אוויר...
+      </div>
+    );
   if (error) return <div>שגיאה בטעינת נתונים</div>;
   if (!weatherData) return null;
 
@@ -75,50 +81,63 @@ const WeatherHeader: React.FC = () => {
   const currentIcon = closestHour.weather[0].icon;
 
   return (
-    <div
-    className="fixed top-0 left-0 w-full bg-gray-100 shadow-md"
-  >
-    <header
-      className="flex items-center justify-between cursor-pointer"
-      onClick={() => setExpanded(!expanded)}
-    >
-       <div className="flex items-center">
-          <Image 
-            src='/logoNoBGblack.png' 
+    <div className="fixed top-0 left-0 w-full bg-gray-100 shadow-md">
+      <header
+        className="flex items-center justify-between cursor-pointer"
+        onClick={() => setExpanded(!expanded)}
+      >
+        <div className="flex items-center">
+          <Image
+            src="/logoNoBGblackSmaller.png"
             alt="Logo"
-            width={80} 
-            height={40} 
-            className="mr-4" 
+            width={150}
+            height={30}
+            className="mr-1"
           />
         </div>
-        {/* הצגת המיקום עם אייקון של Location */}
-        <div className="flex items-center space-x-2">
-          <MapPin className="w-6 h-6 text-gray-600" />
-          <span className="text-lg font-semibold">{cityName}</span>
-        </div>
+        {/* תוכן בצד שמאל */}
+        {isLoading? (
+          <>טוען נתונים...</>
+        ) : (
+          <div className="flex flex-col items-end w-full md:w-auto ml-2 mt-3 mb-1 space-x-2 space-y-1">
+            {/* מיקום */}
+            <div className="flex items-center justify-end space-x-3 text-sm text-gray-900 font-semibold">
+              <MapPin className="w-4 h-4 text-gray-600" />
+              <span>{cityName}</span>
+            </div>
 
-        <div className="flex items-center space-x-4">
-          {/* הצגת הזמן הנוכחי */}
-          <div className="text-lg font-semibold hidden md:block">
-            {currentTime.toLocaleTimeString("he-IL", {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: false,
-            })}
-          </div>
+            {/* מעלות, אייקון ותיאור מזג האוויר */}
+            <div className="flex items-center justify-end space-x-1">
+              <div className="text-lg font-semibold ml-3 hidden md:block">
+                {currentTime.toLocaleTimeString("he-IL", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false,
+                })}
+              </div>
 
-          {/* הצגת התחזית הנוכחית */}
-          <div className="flex items-center cursor-pointer hover:bg-gray-200 p-2 rounded-md">
-            {getWeatherIcon(currentIcon)}
-            <span className="mr-2 text-ml">
-              {currentTemp.toFixed(1)}°C - {currentDesc}
-            </span>
+              {/* אייקון מזג האוויר */}
+              <div className="mr-3 ">{getWeatherIcon(currentIcon)}</div>
+              {/* מעלות */}
+              <span className="text-lg font-semibold">
+                {currentTemp.toFixed(1)}°C
+              </span>
+              {/* תיאור מזג האוויר */}
+              <span className="text-sm text-gray-500">{currentDesc}</span>
+            </div>
+
+            {/* חץ למטה */}
+            <ChevronDown
+              className={`transform transition-transform ${
+                expanded ? "rotate-180" : ""
+              }`}
+            />
           </div>
-        </div>
+        )}
       </header>
 
       {expanded && (
-        <div className="absolute top-full left-0 w-full bg-white shadow-md z-10">
+        <div className="absolute top-full left-0 w-full bg-white shadow-md z-[9999] pointer-events-auto">
           {/* תחזית שעתית */}
           <div className="flex justify-between overflow-x-auto p-2">
             {hourlyWeather.slice(0, 8).map((hourlyData) => {
