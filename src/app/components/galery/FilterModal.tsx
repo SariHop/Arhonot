@@ -59,7 +59,8 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose, activeTab 
             onOk={onClose}
             onCancel={onClose}
             footer={null}
-            className="px-1"
+            className="px-1 max-h-full"
+            bodyStyle={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}
         >
             <div className="space-y-4 px-3">
                 {/* צבע */}
