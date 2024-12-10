@@ -80,35 +80,29 @@ const useOutfits = create<OutfitsStore>((set) => ({
             outfitSelectedTags: tags,
         }));
     },
-    setOutfitSearchContent: (contant) => {
-        // const searchLowerCase = contant.toLowerCase();
-        set((state) => {
-            const filteredOutfits = filterOutfits(state.outfits, { ...state })
-                .filter(outfit => {
-                    return (
-                        outfit.desc.toLowerCase().includes(contant) ||
-                        (outfit.season && outfit.season.toLowerCase().includes(contant)) ||
-                        outfit.tags.some(tag => tag.toLowerCase().includes(contant))
-                    );
-                });
 
+    setOutfitSearchContent: (content) => {
+        set((state) => {
+            const filteredOutfits = filterOutfits(state.outfits, state);
+            const searchFilteredOutfits = filterOutfitsByContent(filteredOutfits, content);
             // עדכון ה-state עם הערכים המפולטרים
             return {
-                outfitSearchContent: contant,
-                sortedOutfits: filteredOutfits,
+                outfitSearchContent: content,
+                sortedOutfits: searchFilteredOutfits,
             };
         });
     },
     outfitStartFilter: () => {
-        set((state) => ({
-            sortedOutfits: filterOutfits(state.outfits, {
-                outfitSelectedRate: state.outfitSelectedRate,
-                outfitSelectedSeason: state.outfitSelectedSeason,
-                outfitSelectedRange: state.outfitSelectedRange,
-                outfitSelectedTags: state.outfitSelectedTags,
-            }),
-        }));
+        set((state) => {
+            const filteredOutfits = filterOutfits(state.outfits, state);
+            const searchFilteredOutfits = filterOutfitsByContent(filteredOutfits, state.outfitSearchContent); // משתמש ב-content מה-state
+            return {
+                ...state, // ודא שאתה משאיר את יתר ה-state ללא שינוי
+                sortedOutfits: searchFilteredOutfits,
+            };
+        });
     },
+
 }));
 
 function filterOutfits(
@@ -131,5 +125,16 @@ function filterOutfits(
         return matchesRate && matchesSeason && matchesRange && matchesTags;
     });
 }
+
+function filterOutfitsByContent(outfits: IOutfit[], content: string): IOutfit[] {
+    return outfits.filter(outfit => {
+        return (
+            outfit.desc.toLowerCase().includes(content) ||
+            (outfit.season && outfit.season.toLowerCase().includes(content)) ||
+            outfit.tags.some((tag: string) => tag.toLowerCase().includes(content))
+        );
+    });
+}
+
 
 export default useOutfits;

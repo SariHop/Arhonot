@@ -17,20 +17,30 @@ const Canvas = () => {
   const closeModal = () => { setOpenModal(false); };
 
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
-
   const [arreyOfGarmentInCanvas, setArrayOfGarmentInCanvas] = useState<string[]>([]);
 
 
   useEffect(() => {
     // Responsive sizing
-    const width = window.innerWidth < 1024 ? window.innerWidth : window.innerWidth * 0.5;
-    const height = window.innerWidth < 1024 ? window.innerHeight * 0.66 : window.innerHeight;
+    const isMobile = window.innerWidth < 1100; // Typical mobile breakpoint
+    const width = isMobile
+      ? window.innerWidth
+      : window.innerWidth / 2;
+
+    const height = width; // Keep it square
 
     const c = new fabric.Canvas("canvas", {
-      height: height,
-      width: width,
-      backgroundColor: "black",
+      height: height - 30,
+      width: width - 30,
+      backgroundColor: 'rgba(0,0,0,0.1)',
     });
+
+    // Ensure canvas is visible immediately
+    const canvasElement = document.getElementById("canvas");
+    if (canvasElement) {
+      canvasElement.style.visibility = 'visible';
+      canvasElement.style.backgroundColor = 'rgba(0,0,0,0.1)'; // Slight visibility
+    }
 
     setCanvas(c);
 
@@ -61,7 +71,7 @@ const Canvas = () => {
       if (arreyOfGarmentInCanvas.includes(garmenId)) {
         toast.info("הבגד כבר נוסף ללוק בהצלחה!");
         return;
-      } 
+      }
     } else {
       console.error("garmenId is not a string", garmenId);
       return;
@@ -95,7 +105,7 @@ const Canvas = () => {
       canvas.requestRenderAll();
 
       setArrayOfGarmentInCanvas(prevArray => [...prevArray, garmenId]);// אם הגיע עד לפה להוסיף בגד למערך
-      
+
     } catch (error) {
       console.error("Failed to load image:", error);
     }
@@ -121,27 +131,27 @@ const Canvas = () => {
 
 
   return (
-    <div className="flex flex-col lg:flex-row w-full h-screen">
+    <div className="flex flex-col xl:flex-row w-full justify-center mt-3">
       <CanvasContext.Provider value={{ canvas, addImageToCanvas, arreyOfGarmentInCanvas }}>
 
-        {/* Canvas with responsive sizing */}
-        <div className="w-full lg:w-1/2 h-2/3 lg:h-full bg-black flex items-center justify-center">
-          <canvas
-            id="canvas"
-            className="max-w-full max-h-full object-contain"
-          />
-        </div>
-
-        {/* Gallery and Image Addition */}
-        <div className="w-full lg:w-1/2 h-1/3 lg:h-full overflow-auto">
-          <ShowGallery />
+        <div>
           <button
             onClick={exportCanvasAsImage}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="m-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             Save Image
           </button>
+
+          <div>
+            <ShowGallery />
+          </div>
         </div>
+
+
+        <div className="m-auto my-3">
+          <canvas id="canvas" />
+        </div>
+
 
         {openModal && <GarmentForm closeModal={closeModal} outfitImgurl={outfitImgurl} />}
 

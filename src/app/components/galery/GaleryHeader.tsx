@@ -4,10 +4,13 @@ import { SearchOutlined } from "@ant-design/icons";
 import FilterModal from "./FilterModal";
 import { IGalleryHeaderProps } from '../../types/IGarment'
 import useGarments from '../../store/garmentsStore';
+import useOutfit from '../../store/outfitsStore';
+
 
 const GaleryHeader: React.FC<IGalleryHeaderProps> = ({ activeTab, setActiveTab, isForOutfit }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const { garmentSearchContent, setGarmentSearchContent } = useGarments();
+    const { outfitSearchContent, setOutfitSearchContent } = useOutfit();
 
     return (
         <nav className="bg-white text-gray-800 p-6 flex flex-col items-start w-full">
@@ -16,8 +19,8 @@ const GaleryHeader: React.FC<IGalleryHeaderProps> = ({ activeTab, setActiveTab, 
                     type="text"
                     placeholder="חיפוש..."
                     className="p-2 text-lg rounded-r-md w-full sm:w-64 border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 h-10"
-                    value={activeTab === "garments" ? garmentSearchContent : ""}
-                    onChange={activeTab === "garments" ? (e) => setGarmentSearchContent(e.target.value) : () => console.log("outfit search")}
+                    value={activeTab === "garments" ? garmentSearchContent : outfitSearchContent}
+                    onChange={activeTab === "garments" ? (e) => setGarmentSearchContent(e.target.value) : (e) => setOutfitSearchContent(e.target.value)}
                 />
                 <button className="bg-gray-200 text-gray-800 p-2 rounded-l-md h-10">
                     <SearchOutlined className="h-5 w-5 text-gray-600" />
