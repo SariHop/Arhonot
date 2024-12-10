@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Sun, Cloud, CloudRain, Snowflake, MapPin ,ChevronDown} from "lucide-react";
+import { Sun, Cloud, CloudRain, Snowflake, MapPin } from "lucide-react";
 import { useWeatherQuery } from "@/app/hooks/weatherQueryHook";
 import { useLocationTracking } from "@/app/hooks/locationHook";
+import Image from "next/image"; 
 
 const getWeatherIcon = (condition: string) => {
   const iconMap = {
@@ -18,23 +19,9 @@ const getWeatherIcon = (condition: string) => {
 const WeatherHeader: React.FC = () => {
   const { hasSignificantLocationChange, resetLocationChange } =useLocationTracking();
   const [currentTime, setCurrentTime] = useState(new Date());
+
   const [expanded, setExpanded] = useState(false);
-  const [errorOccurred, setErrorOccurred] = useState(false);
- 
-  // בדיקה אם הנתונים כבר תקפים (לא עברו 24 שעות)
-//   const isStaleData = () => {
-//     const lastFetchTime = localStorage.getItem('lastFetchTime');
-//     if (!lastFetchTime) return true;
-//     const elapsed = Date.now() - Number(lastFetchTime);
-//     return elapsed > 24 * 60 * 60 * 1000; // אם עברו יותר מ-24 שעות
-//   };
-
-    // הגדרת enabled לפי התנאים
-//   const { data: weatherData, isLoading, error, refetch } = useWeatherQuery({
-//     enabled: hasSignificantLocationChange || !isStaleData() // אם המיקום השתנה או אם נתונים כבר לא עדכניים
-//   });
-const { data: weatherData, isLoading, error, refetch} = useWeatherQuery();
-
+  const { data: weatherData, isLoading, error, refetch} = useWeatherQuery();
 
   useEffect(() => {
     const timeInterval = setInterval(() => {
@@ -44,34 +31,15 @@ const { data: weatherData, isLoading, error, refetch} = useWeatherQuery();
     return () => clearInterval(timeInterval);
   }, []);
   useEffect(() => {
-    if (hasSignificantLocationChange && !errorOccurred) {
-      refetch()
-        .catch(() => setErrorOccurred(true)); 
-        
-         resetLocationChange();  
-          }
-  }, [hasSignificantLocationChange, refetch, resetLocationChange, errorOccurred]);
-  console.log("isLoading:", isLoading);
-  console.log("error:", error);
-  console.log("errorOccurred:", errorOccurred);
-  console.log("weatherData:", weatherData);
-  if (isLoading) return <div>טוען נתוני מזג אוויר...</div>;
-  if (error||errorOccurred) return <div>שגיאה בטעינת נתונים</div>;
+    if (hasSignificantLocationChange) {
+      refetch();
+      resetLocationChange();
+    }
+  }, [hasSignificantLocationChange, refetch, resetLocationChange]);
+
+  if (isLoading) return <div className="fixed top-0 left-0 w-full bg-gray-100 z-50 shadow-md">טוען נתוני מזג אוויר...</div>;
+  if (error) return <div>שגיאה בטעינת נתונים</div>;
   if (!weatherData) return null;
-
-   // לוגיקה להדפסת נתונים אם הם מהשרת או מהקאש
-//   useEffect(() => {
-//     if (isStaleData()) {
-//       console.log("נתונים חדשים: הנתונים הושגו מהשרת.");
-//     } else {
-//       console.log("נתונים מקאש: הנתונים הושגו מהקאש.");
-//     }
-
-//     // עדכון קונסול אחרי טעינת הנתונים
-//     if (!isLoading && weatherData) {
-//       console.log("נתונים שהתקבלו:", weatherData); // פה את יכולה גם לראות את הנתונים עצמם אם תרצי
-//     }
-//   }, [weatherData, isLoading]);  // תנאי לבדוק את הנתונים לאחר טעינה או שינוי
 
   const cityName = weatherData.city.name;
   const hourlyWeather = weatherData.list; //מערך תחזית שעות ל5 ימים קרובים
@@ -94,33 +62,51 @@ const { data: weatherData, isLoading, error, refetch} = useWeatherQuery();
 
   const closestHour = getClosestHour();
 
+  // פרטי תחזית נוכחית
+  const currentTemp = closestHour.main.temp;
+  const currentDesc = closestHour.weather[0].description;
+  const currentIcon = closestHour.weather[0].icon;
+
   return (
     <div
-      className="fixed top-0 left-0 w-full bg-gray-100 z-50 shadow-md"
+    className="fixed top-0 left-0 w-full bg-gray-100 shadow-md"
+  >
+    <header
+      className="flex items-center justify-between cursor-pointer"
+      onClick={() => setExpanded(!expanded)}
     >
-      <header
-        className="p-4 flex items-center justify-between cursor-pointer"
-        onClick={() => setExpanded(!expanded)}
-      >
+       <div className="flex items-center">
+          <Image 
+            src='/logoNoBGblack.png' 
+            alt="Logo"
+            width={80} 
+            height={40} 
+            className="mr-4" 
+          />
+        </div>
+        {/* הצגת המיקום עם אייקון של Location */}
         <div className="flex items-center space-x-2">
           <MapPin className="w-6 h-6 text-gray-600" />
           <span className="text-lg font-semibold">{cityName}</span>
         </div>
+
         <div className="flex items-center space-x-4">
-          <div className="text-lg font-semibold">
+          {/* הצגת הזמן הנוכחי */}
+          <div className="text-lg font-semibold hidden md:block">
             {currentTime.toLocaleTimeString("he-IL", {
               hour: "2-digit",
               minute: "2-digit",
               hour12: false,
             })}
           </div>
-          <div className="flex items-center">
-            {getWeatherIcon(closestHour.weather[0].main)}
-            <span className="mr-2">
-              {closestHour.main.temp.toFixed(1)}°C - {closestHour.weather[0].description}
+
+          {/* הצגת התחזית הנוכחית */}
+          <div className="flex items-center cursor-pointer hover:bg-gray-200 p-2 rounded-md">
+            {getWeatherIcon(currentIcon)}
+            <span className="mr-2 text-ml">
+              {currentTemp.toFixed(1)}°C - {currentDesc}
             </span>
           </div>
-          <ChevronDown className={`transform transition-transform ${expanded ? "rotate-180" : ""}`} />
         </div>
       </header>
 
@@ -158,4 +144,5 @@ const { data: weatherData, isLoading, error, refetch} = useWeatherQuery();
     </div>
   );
 };
+
 export default WeatherHeader;
