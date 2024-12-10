@@ -6,6 +6,8 @@ import { CanvasContextType } from "@/app/types/canvas"
 import GarmentForm from "./FormCreateOutfit";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ToolBar from "./ToolBar";
+import CanvasSettings from "@/app/components/createOutfit/SizeCanvas"
 
 
 export const CanvasContext = createContext<CanvasContextType | null>(null)
@@ -19,46 +21,22 @@ const Canvas = () => {
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
   const [arreyOfGarmentInCanvas, setArrayOfGarmentInCanvas] = useState<string[]>([]);
 
-
   useEffect(() => {
-    // Responsive sizing
-    const isMobile = window.innerWidth < 1100; // Typical mobile breakpoint
-    const width = isMobile
-      ? window.innerWidth
-      : window.innerWidth / 2;
 
-    const height = width; // Keep it square
-
-    const c = new fabric.Canvas("canvas", {
-      height: height - 30,
-      width: width - 30,
-      backgroundColor: 'rgba(0,0,0,0.1)',
-    });
+    const c = new fabric.Canvas("canvas", { backgroundColor: 'white',});
+ 
 
     // Ensure canvas is visible immediately
     const canvasElement = document.getElementById("canvas");
     if (canvasElement) {
       canvasElement.style.visibility = 'visible';
-      canvasElement.style.backgroundColor = 'rgba(0,0,0,0.1)'; // Slight visibility
+      canvasElement.style.backgroundColor = 'white';
     }
-
     setCanvas(c);
-
-    // Add resize listener for responsiveness
-    // const handleResize = () => {
-    //   const newWidth = window.innerWidth < 1024 ? window.innerWidth : window.innerWidth * 0.5;
-    //   const newHeight = window.innerWidth < 1024 ? window.innerHeight * 0.66 : window.innerHeight;
-
-    //   c.setWidth(newWidth);
-    //   c.setHeight(newHeight);
-    //   c.renderAll();
-    // };
-
-    // window.addEventListener('resize', handleResize);
 
     return () => {
       c.dispose();
-      // window.removeEventListener('resize', handleResize);
+       
     };
   }, []);
 
@@ -131,27 +109,31 @@ const Canvas = () => {
 
 
   return (
-    <div className="flex flex-col xl:flex-row w-full justify-center mt-3">
+    <div className="flex flex-col justify-center mt-3">
       <CanvasContext.Provider value={{ canvas, addImageToCanvas, arreyOfGarmentInCanvas }}>
 
-        <div>
-          <button
+        <div className="mb-3">
+         
+
+          <div >
+            <ShowGallery />
+          </div>
+        </div>
+
+        <div className="bg-checkered-pattern flex justify-center items-center gap-5 p-5 flex-col ">
+           <button
             onClick={exportCanvasAsImage}
             className="m-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
             Save Image
           </button>
-
-          <div>
-            <ShowGallery />
-          </div>
+          <CanvasSettings/>
+          <canvas id="canvas" className="shadow-lg max-w-full h-auto">
+            Your browser does not support the canvas element.
+          </canvas>
+          <ToolBar />
+          
         </div>
-
-
-        <div className="m-auto my-3">
-          <canvas id="canvas" />
-        </div>
-
 
         {openModal && <GarmentForm closeModal={closeModal} outfitImgurl={outfitImgurl} />}
 
