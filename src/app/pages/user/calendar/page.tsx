@@ -5,6 +5,9 @@ import type { Dayjs } from "dayjs";
 import "@/app/globals.css";
 import "dayjs/locale/he"; // ייבוא של השפה העברית
 import heIL from "antd/locale/he_IL"; // Import the Hebrew locale
+// import Image from 'next/image'
+// import useUser from "@/app/store/userStore";
+// import { dayLooks } from "@/app/services/daysService";
 const customDayNames = ["יום א", "יום ב", "יום ג", "יום ד", "יום ה", "יום ו", "שבת"];
 
 
@@ -13,15 +16,8 @@ const Page: React.FC = () => {
   const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear()); // שנה נבחרת
   const [cellHeight, setCellHeight] = useState<string>(""); // גובה התא
   const [calendarMode, setCalendarMode] = useState<CalendarProps<Dayjs>["mode"]>("month"); // מצב היומן (חודש/שנה)
+  // const currentUser = useUser();
 
-
-  const calculateCellHeight = () => {
-    const calendarHeight = 75; // הגובה המקסימלי של התאים (ב-vh)
-    const numberOfWeeks = getNumberOfWeeks(currentMonth, currentYear);
-    const heightPerCell = Math.floor(calendarHeight / numberOfWeeks);
-
-    setCellHeight(`${heightPerCell}vh`);
-  };
 
   useEffect(() => {
     calculateCellHeight();
@@ -53,6 +49,13 @@ const Page: React.FC = () => {
     };
   }, [currentMonth, currentYear]);
 
+  const calculateCellHeight = () => {
+    const calendarHeight = 75; // הגובה המקסימלי של התאים (ב-vh)
+    const numberOfWeeks = getNumberOfWeeks(currentMonth, currentYear);
+    const heightPerCell = Math.floor(calendarHeight / numberOfWeeks);
+
+    setCellHeight(`${heightPerCell}vh`);
+  };
 
   const fullCellRender = (current: Dayjs) => {
     const isInDisplayedMonth =
@@ -65,7 +68,17 @@ const Page: React.FC = () => {
         <div
           className="ant-picker-calendar-date w-full " style={{ maxHeight: cellHeight }}>
           <div className="ant-picker-calendar-date-value text-right">{current.date()}</div>
-          <div className="ant-picker-calendar-date-content  "></div>
+          <div className="ant-picker-calendar-date-content  ">
+          {/* <>{getLooks(current.toDate())}</> */}
+          {/* <Image
+            src="https://img.icons8.com/ios/50/skirt.png"
+            alt="Skirt Icon"
+            // layout="intrinsic"
+            className="size-8"
+            width={50}
+            height={50}
+          /> */}
+          </div>
           {/* </div> */}
         </div>
       );
@@ -129,10 +142,16 @@ const Page: React.FC = () => {
     
   }
 
+  // const getLooks = (date: Date) => {
+  //   dayLooks(currentMonth, currentUser._id);
+  //   console.log(date);
+    
+  // }
+
 
   return (
     <ConfigProvider locale={heIL}> 
-      <div className="h-[90vh] w-full max-w-[800px] m-auto mb-[10vh]  border-2 ">
+      <div className="h-[90vh] w-full max-w-[800px] m-auto  border-2 ">
         <Calendar
           onPanelChange={onPanelChange}
           fullCellRender={calendarMode === "month" ? fullCellRender : undefined}
@@ -143,6 +162,5 @@ const Page: React.FC = () => {
     </ConfigProvider>
   );
 };
-
 
 export default Page;
