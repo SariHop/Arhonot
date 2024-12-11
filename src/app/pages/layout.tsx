@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <QueryClientProvider client={queryClient}>
 
-      <div style={{ paddingTop:"5vh",paddingBottom: "10vh" }}>
+      <div style={{ paddingTop:"15vh",paddingBottom: "10vh" }}>
       <div style={{ position: 'relative', zIndex: 1000 }}>
           <Header />
         </div>

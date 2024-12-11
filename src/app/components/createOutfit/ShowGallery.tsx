@@ -12,17 +12,10 @@ const ShowGallery: React.FC = () => {
 
   return (
     <div className="w-full">
-      {/* Large screen (2xl) layout - always show gallery */}
-      <div className="hidden xl:block">
-        <Gallery isForOutfit={true} />
-      </div>
-
-      {/* Mobile and smaller screens - with toggle button */}
-      <div className="xl:hidden">
-        {/* Toggle Button */}
-        <button 
+      <div className=" bg-white">
+        <button
           onClick={toggleGallery}
-          className="w-full bg-gray-100 py-3 px-4 flex items-center justify-center 
+          className="sticky top-0 z-50 w-full bg-gray-100 py-4 px-4 flex items-center justify-center 
                      border-t border-b border-gray-200 
                      hover:bg-gray-200 transition-colors duration-300"
         >
@@ -32,11 +25,10 @@ const ShowGallery: React.FC = () => {
           {isGalleryOpen ? <ChevronUp /> : <ChevronDown />}
         </button>
 
-        {/* Gallery with slide animation */}
-        <div 
+        <div
           className={`overflow-hidden transition-all duration-500 ease-in-out ${
-            isGalleryOpen 
-              ? "max-h-screen opacity-100" 
+            isGalleryOpen
+              ? "max-h-screen opacity-100"
               : "max-h-0 opacity-0"
           }`}
         >
@@ -45,6 +37,6 @@ const ShowGallery: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
 export default ShowGallery;

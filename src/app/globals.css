@@ -30,14 +30,12 @@ body {
   @apply mb-[10vh]
 }
 
-
-/* הוספה לקובץ ה-CSS */
-/* .rtl-tabs .ant-tabs-nav {
-  direction: rtl;
-} */
-
-
-
+.bg-checkered-pattern {
+  background-image: linear-gradient(45deg, #f1f1f1 25%, transparent 25%, transparent 75%, #f1f1f1 75%, #f1f1f1),
+                    linear-gradient(45deg, #f1f1f1 25%, transparent 25%, transparent 75%, #f1f1f1 75%, #f1f1f1);
+  background-size: 16px 16px;
+  background-position: 0 0, 8px 8px;
+}
 
 .rtl-tabs .ant-tabs-nav {
   flex-direction: row-reverse;
