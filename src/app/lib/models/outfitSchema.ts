@@ -3,7 +3,7 @@ import IOutfit from "@/app/types/IOutfit";
 import mongoose, { Model, Schema, Types } from "mongoose";
 
 
-const OutfitSchema: Schema<IOutfit> = new Schema({
+export const OutfitSchema: Schema<IOutfit> = new Schema({
     userId: { type: Types.ObjectId, required: true, ref: "User" },
     clothesId: { 
         type: [Types.ObjectId], 

@@ -1,53 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
 import connect from "@/app/lib/db/mongoDB";
+import Day from "@/app/lib/models/daySchema";
+import { OutfitSchema } from '@/app/lib/models/outfitSchema';  // שינוי לפי המיקום של המודל
+import mongoose from 'mongoose';
+import IOutfit from "@/app/types/IOutfit";
 
+if (!mongoose.models.Outfit) {
+     mongoose.model<IOutfit>('Outfit', OutfitSchema);
+  }
 
-// export async function GET() {
-//   try {
-//     await connect();
-//     const days = await Day.find({});
-//     return NextResponse.json({ message: "success", data: days });
-//   } catch (error: unknown) {
-//     console.error("Error fetching days:", error);
-//     if (error instanceof Error) {
-//       return NextResponse.json(
-//         { message: "Error fetching days", error: error.message },
-//         { status: 500 }
-//       );
-//     } else {
-//       return NextResponse.json(
-//         { message: "Error fetching days", error: "Unknown error occurred" },
-//         { status: 501 }
-//       );
-//     }
-//   }
-// }
 
 export async function POST(request: NextRequest) {
   try {
-    await connect();
-    const {userId, month} = await request.json();
-    console.log(userId, month);
+    await connect(); // חיבור לבסיס הנתונים
+    const { userId, month, year }:{userId:string, month:number, year:number} = await request.json();
+
+    const startDate = new Date(Date.UTC(year, month, 1));  // החודש 0-based
+    const endDate = new Date(Date.UTC(year, month + 1, 0));        // סוף החודש הנוכחי
+    endDate.setUTCHours(23, 59, 59, 999); // עד סוף היום האחרון בחודש
     
-    // const newday = new Day(body);
-    // console.log(newday);
+    const days = await Day.find({
+    userId: userId,
+    date: { $gte: startDate, $lte: endDate}
+    }).populate("looks"); // שימוש ב-Populate כדי להחזיר את המידע של ה-Outfits
+
+    // .sort({ date: 1 });
     
-    // await newday.validate();
-    // const savedday = await newday.save();
-    // return NextResponse.json(
-    //   { success: true, data: savedday },
-    //   { status: 201 }
-    // );
+    return NextResponse.json(days, { status: 200 }); // החזרת הימים שנמצאו
   } catch (error: unknown) {
-    console.error("Error add day:", error);
+    console.error("Error getting days of user:", error);
     if (error instanceof Error) {
       return NextResponse.json(
-        { message: "Error add day", error: error.message },
+        { message: "Error getting days of user", error: error.message },
         { status: 500 }
       );
     } else {
       return NextResponse.json(
-        { message: "Error add day", error: "Unknown error occurred" },
+        { message: "Error getting days of user", error: "Unknown error occurred" },
         { status: 501 }
       );
     }
