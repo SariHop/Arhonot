@@ -35,8 +35,8 @@ const Logout = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-full p-6">
-      <UserOutlined className="text-5xl mb-6" />
-      <Title level={3} className="text-center mb-4">
+      <UserOutlined className="text-5xl mb-14" />   
+      <Title level={3} className="text-center">
         האם אתה בטוח שברצונך להתנתק?
       </Title>
       <Button
