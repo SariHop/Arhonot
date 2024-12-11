@@ -1,7 +1,6 @@
 
 import mongoose, { Document, Types } from "mongoose";
 import { z } from 'zod'
-import { useCityQuery } from '../hooks/cityQueryHook';
 import { fetchCities } from '../services/categoriesService';
 export default interface IUser extends Document {
     children: Types.ObjectId[];
