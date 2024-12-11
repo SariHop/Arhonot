@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image"; // שימוש ב-Image מ-next/image
 import IGarment from "@/app/types/IGarment";
 import Garment from "./Garment";

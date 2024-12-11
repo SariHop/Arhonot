@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { IOutfitType, outfitSchemaZod } from '@/app/types/IOutfit'
 import Image from "next/image";
 import { Modal, Rate } from "antd";

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, createContext, useRef } from "react";
+import React, {useEffect, useRef } from "react";
 import * as fabric from 'fabric';
 import ShowGallery from "@/app/components/createOutfit/ShowGallery";
 import ToolBox from "@/app/components/createOutfit/toolBox/ToolBox"
@@ -40,7 +40,7 @@ const Canvas = () => {
         initCanvas.dispose();
       }
     }
-  }, []);
+  }, [canvas, setCanvas]);
 
   return (
     <div className="flex flex-col justify-center mt-3">
