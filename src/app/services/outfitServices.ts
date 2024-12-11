@@ -1,7 +1,9 @@
 import axios from "axios";
-// import { IGarmentType } from "@/app/types/IGarment";
+import { toast } from "react-toastify";
+import { IOutfitType } from "@/app/types/IOutfit";
 
 export const apiUrl = "/api/";
+
 
 export const fetchOutfits = async (userId: string) => {
     try {
@@ -13,3 +15,18 @@ export const fetchOutfits = async (userId: string) => {
         console.error("Failed to fetch outfits:", error);
     }
 };
+
+export async function createOutfit(formData: IOutfitType) {
+  try {
+    const response = await axios.post(`${apiUrl}outfitRoute`, formData);
+    return response.data.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      const serverError = error.response?.data?.error || "Unknown server error";
+      toast.error(`Server Error: ${serverError}`);
+    } else {
+      toast.error("An unexpected error occurred");
+    }
+    throw error;
+  }
+}

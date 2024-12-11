@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from "react";
 import Gallery from "../galery/Galery";
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { FaChevronUp, FaChevronDown } from "react-icons/fa6";
 
 const ShowGallery: React.FC = () => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
@@ -22,7 +22,7 @@ const ShowGallery: React.FC = () => {
           <span className="mr-2 text-gray-700">
             {isGalleryOpen ? "סגירת הגלריה" : "פתיחת הגלריה"}
           </span>
-          {isGalleryOpen ? <ChevronUp /> : <ChevronDown />}
+          {isGalleryOpen ? <FaChevronUp /> : <FaChevronDown />}
         </button>
 
         <div

@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from "react";
 import {
-  Sun,
-  Cloud,
-  CloudRain,
-  Snowflake,
-  MapPin,
-  ChevronDown,
-} from "lucide-react";
+  FaRegSun ,
+  FaCloud,
+  FaCloudRain,
+  FaSnowflake,
+  FaChevronDown,
+} from "react-icons/fa6";
+import { IoLocationOutline } from "react-icons/io5";
 import { useWeatherQuery } from "@/app/hooks/weatherQueryHook";
 import { useLocationTracking } from "@/app/hooks/locationHook";
 import Image from "next/image";
 
 const getWeatherIcon = (condition: string) => {
   const iconMap = {
-    Clear: <Sun className="w-6 h-6" />,
-    Clouds: <Cloud className="w-6 h-6" />,
-    Rain: <CloudRain className="w-6 h-6" />,
-    Snow: <Snowflake className="w-6 h-6" />,
+    Clear: <FaRegSun className="w-6 h-6" />,
+    Clouds: <FaCloud className="w-6 h-6" />,
+    Rain: <FaCloudRain className="w-6 h-6" />,
+    Snow: <FaSnowflake className="w-6 h-6" />,
   };
   return (
-    iconMap[condition as keyof typeof iconMap] || <Sun className="w-6 h-6" />
+    iconMap[condition as keyof typeof iconMap] || <FaRegSun className="w-6 h-6" />
   );
 };
 
@@ -102,7 +102,7 @@ const WeatherHeader: React.FC = () => {
           <div className="flex flex-col items-end w-full md:w-auto ml-2 mt-3 mb-1 space-x-2 space-y-1">
             {/* מיקום */}
             <div className="flex items-center justify-end space-x-3 text-sm text-gray-900 font-semibold">
-              <MapPin className="w-4 h-4 text-gray-600" />
+              <IoLocationOutline  className="w-4 h-4 text-gray-600" />
               <span>{cityName}</span>
             </div>
 
@@ -127,7 +127,7 @@ const WeatherHeader: React.FC = () => {
             </div>
 
             {/* חץ למטה */}
-            <ChevronDown
+            <FaChevronDown
               className={`transform transition-transform ${
                 expanded ? "rotate-180" : ""
               }`}
