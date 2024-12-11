@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Card from "./Card";
 import useGarments from '../../../store/garmentsStore';
+import { useWeatherQuery } from "@/app/hooks/weatherQueryHook"; // השימוש ב-hook לקריאת מזג האוויר
 
 const ITEMS_PER_PAGE = 4;
 
@@ -15,9 +16,62 @@ const GarmentsGallery = ({ isForOutfit }: { isForOutfit: boolean }) => {
 
     const totalPages = Math.ceil(sortedGarments.length / ITEMS_PER_PAGE);
 
+    const [temperature, setTemperature] = useState<number | null>(null); // מצב הטמפרטורה
+    const { data: weatherData } = useWeatherQuery(); // שימוש ב-hook לקריאת נתוני מזג האוויר
+    useEffect(() => {
+        if (weatherData) {
+            const currentTemp = weatherData.list[0].main.temp; // שליפת הטמפרטורה
+            setTemperature(currentTemp); // עדכון המעלות ב-state
+        }
+    }, [weatherData]); // התעדכנות עם כל פעם שיש נתונים חדשים
+
     useEffect(() => {
         setCurrentPage(1);
     }, [sortedGarments]);
+    // פונקציה ממוינת לבגדים
+    const getCircleColor = (garmentRange: number, currentTemperature: number | null): number => {
+        // הגדרת טווחים לפי הנתונים שלך עם Record
+        const temperatureRanges: Record<number, { min: number; max: number }> = {
+            1: { min: 35, max: 90 },
+            2: { min: 30, max: 35 },
+            3: { min: 25, max: 30 },
+            4: { min: 20, max: 25 },
+            5: { min: 15, max: 20 },
+            6: { min: 5, max: 15 },
+            7: { min: -20, max: 5 },
+        };
+
+        // מציאת הטווח של הבגד
+        const garmentTempRange = temperatureRanges[garmentRange];
+
+        // אם הטווח לא קיים, מחזירים צבע אפור
+        if (!garmentTempRange) {
+            return 3;
+        }
+
+        const { min, max } = garmentTempRange;
+        if (currentTemperature) {
+            if (currentTemperature >= min && currentTemperature <= max) {
+                return 1; // ירוק
+            }
+
+            if (currentTemperature >= temperatureRanges[garmentRange - 1]?.min && currentTemperature <= temperatureRanges[garmentRange - 1]?.max ||
+                currentTemperature >= temperatureRanges[garmentRange + 1]?.min && currentTemperature <= temperatureRanges[garmentRange + 1]?.max) {
+                return 2; // כתום
+            }
+
+            return 3; // אדום
+        }
+        return 4;
+    };
+
+
+    const sortedGarmentsByColor = sortedGarments.sort((garmentA, garmentB) => {
+        const colorA = getCircleColor(garmentA.range, temperature);
+        const colorB = getCircleColor(garmentB.range, temperature);
+
+        return colorA - colorB; // ממיין לפי ערך החזרה של הפונקציה
+    });
 
     const goToPreviousPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
     const goToNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
@@ -29,7 +83,7 @@ const GarmentsGallery = ({ isForOutfit }: { isForOutfit: boolean }) => {
                     <Card key={String(garment._id)} garment={garment} isForOutfit={isForOutfit} />
                 ))}
             </div>
-            {sortedGarments.length > ITEMS_PER_PAGE && (
+            {sortedGarmentsByColor.length > ITEMS_PER_PAGE && (
                 <div className="flex justify-center items-center mt-6 space-x-6">
                     <button
                         onClick={goToPreviousPage}

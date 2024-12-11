@@ -3,6 +3,7 @@ import { Modal, Slider, Tag, Rate } from "antd";
 import { IFilterModalProps } from "@/app/types/IGarment";
 import useGarments from '../../store/garmentsStore';
 import useOutfit from '../../store/outfitsStore';
+import { tags, validSeasons, typeCategories } from '../../data/staticArrays'
 
 const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose, activeTab }) => {
     const { garmentSelectedColors, garmentSelectedCategory, garmentSelectedSeason, garmentSelectedRange, garmentSelectedTags, setGarmentSelectedColors, setGarmentSelectedCategory, setGarmentSelectedSeason, setGarmentSelectedRange, setGarmentSelectedTags, garmentsStartFilter } = useGarments();
@@ -12,9 +13,6 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose, activeTab 
     const [localOutfitSelectedTags, setOutfitLocalSelectedTags] = useState<string[]>(outfitSelectedTags);
     const [localOutfitSelectedRate, setOutfitLocalSelectedRate] = useState<number | undefined>(outfitSelectedRate);
 
-    const categories = ["Shirts", "Pants", "Dresses"];
-    const seasons = ["Winter", "Spring", "Summer", "Fall"];
-    const tags = ["Casual", "Formal", "Sporty", "Vintage"];
     const colors = [
         { bg: "bg-red-600", name: "red" },
         { bg: "bg-blue-400", name: "blue" },
@@ -42,13 +40,40 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose, activeTab 
             setGarmentSelectedSeason(localGarmentSelectedSeason);
             setGarmentSelectedRange(localGarmentSelectedRange);
             setGarmentSelectedTags(localGarmentSelectedTags);
+            debugger;
             garmentsStartFilter(localGarmentSelectedColors, localGarmentSelectedCategory, localGarmentSelectedSeason, localGarmentSelectedRange, localGarmentSelectedTags);
         } else {
             setOutfitSelectedSeason(localOutfitSelectedSeason);
             setOutfitSelectedRange(localOutfitSelectedRange);
             setOutfitSelectedTags(localOutfitSelectedTags);
             setOutfitSelectedRate(localOutfitSelectedRate);
-            outfitStartFilter(localOutfitSelectedRate, localOutfitSelectedSeason, localOutfitSelectedRange, localOutfitSelectedTags,);
+            outfitStartFilter(localOutfitSelectedRate, localOutfitSelectedSeason, localOutfitSelectedRange, localOutfitSelectedTags);
+        }
+    }
+    const onCleere = async () => {
+        if (activeTab === "garments") {
+            setGarmentLocalSelectedColors([]);
+            setGarmentLocalSelectedCategory('');
+            setGarmentLocalSelectedSeason('');
+            setGarmentLocalSelectedRange(1);
+            setGarmentLocalSelectedTags([]);
+            setGarmentSelectedColors([]);
+            setGarmentSelectedCategory('');
+            setGarmentSelectedSeason('');
+            setGarmentSelectedRange(1);
+            setGarmentSelectedTags([]);
+            garmentsStartFilter([], '', '', 1, []);
+        }
+        else {
+            setOutfitLocalSelectedSeason('');
+            setOutfitLocalSelectedRange(undefined);
+            setOutfitLocalSelectedTags([]);
+            setOutfitLocalSelectedRate(undefined);
+            setOutfitSelectedSeason('');
+            setOutfitSelectedRange(undefined);
+            setOutfitSelectedTags([]);
+            setOutfitSelectedRate(undefined);
+            outfitStartFilter(undefined, '', undefined, []);
         }
     }
 
@@ -59,13 +84,14 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose, activeTab 
             onOk={onClose}
             onCancel={onClose}
             footer={null}
-            className="px-1"
+            className="px-1 max-h-full"
+            bodyStyle={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}
         >
-            <div className="space-y-4 px-3">
+            <div className="space-y- px-3">
                 {/* צבע */}
                 {activeTab === "garments" &&
                     <div>
-                        <h3 className="text-lg mb-3">בחר צבע</h3>
+                        <h3 className="text-sm mb-3">בחר צבע/ים</h3>
                         <div className="flex gap-2 flex-wrap">
                             {colors.map(({ bg, name }) => (
                                 <div
@@ -88,9 +114,9 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose, activeTab 
                 {/* קטגוריה */}
                 {activeTab === "garments" &&
                     <div>
-                        <h3 className="text-lg mb-3">בחר קטגוריה</h3>
-                        <div className="flex gap-4">
-                            {categories.map((category) => (
+                        <h3 className="text-sm mb-3">בחר קטגוריה</h3>
+                        <div className="flex gap-4 flex-wrap">
+                            {typeCategories.map((category) => (
                                 <Tag
                                     key={category}
                                     color={localGarmentSelectedCategory === category ? "blue" : "default"}
@@ -110,14 +136,14 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose, activeTab 
 
                 {/* עונה */}
                 <div>
-                    <h3 className="text-lg mb-3">בחר עונה</h3>
+                    <h3 className="text-sm mb-3">בחר עונה</h3>
                     <div className="flex gap-4">
-                        {seasons.map((season) => (
+                        {validSeasons.map((season) => (
                             <Tag
                                 key={season}
-                                color={localGarmentSelectedSeason === season ? "blue" : "default"}
+                                color={activeTab === "garments" ? localGarmentSelectedSeason === season ? "blue" : "default" : localOutfitSelectedSeason === season ? "blue" : "default"}
                                 onClick={() =>
-                                    activeTab === "outfits" ?
+                                    activeTab === "garments" ?
                                         setGarmentLocalSelectedSeason(
                                             localGarmentSelectedSeason === season ? undefined : season
                                         )
@@ -135,25 +161,29 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose, activeTab 
                 </div>
 
                 {/* רמת חום */}
-                <div>
-                    <h3 className="text-lg mb-3">בחר רמת חום</h3>
+                <div className="pl-3">
+                    <h3 className="text-sm mb-3">בחר רמת חום</h3>
                     <Slider
                         min={1}
                         max={7}
-                        value={activeTab === "outfits" ? localGarmentSelectedRange : localOutfitSelectedRange}
-                        onChange={activeTab === "outfits" ? (value) => setGarmentLocalSelectedRange(value) : (value) => setOutfitLocalSelectedRange(value)}
+                        value={activeTab === "garments" ? localGarmentSelectedRange : localOutfitSelectedRange}
+                        onChange={activeTab === "garments" ? (value) => setGarmentLocalSelectedRange(value) : (value) => setOutfitLocalSelectedRange(value)}
                         className="w-full"
                     />
                 </div>
 
                 {/* תגיות */}
                 <div>
-                    <h3 className="text-lg mb-3">בחר תגיות</h3>
+                    <h3 className="text-sm mb-3">בחר תגיות</h3>
                     <div className="flex gap-2">
                         {tags.map((tag) => (
                             <Tag
                                 key={tag}
-                                color={localGarmentSelectedTags.includes(tag) ? "blue" : "default"}
+                                color={
+                                    activeTab === "outfits"
+                                        ? (localOutfitSelectedTags.includes(tag) ? "blue" : "default")
+                                        : (localGarmentSelectedTags.includes(tag) ? "blue" : "default")
+                                }
                                 onClick={() => {
                                     if (activeTab === "outfits") {
                                         if (localOutfitSelectedTags.includes(tag)) {
@@ -178,19 +208,25 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose, activeTab 
                 </div>
             </div>
             {/* רמת דירוג */}
-
-            {activeTab === "outfits" &&
-                <div>
-                    <h3 className="text-lg mb-3">בחר רמת דירוג</h3>
+            {
+                activeTab === "outfits" &&
+                <div className="pt-3">
+                    <h3 className="text-sm mb-3">בחר רמת דירוג</h3>
                     <Rate
                         value={localOutfitSelectedRate}
                         onChange={(value) => setOutfitLocalSelectedRate(value)}
-                        className="w-full"
+                    // className="w-full"
                     />
                 </div>
             }
 
-            <div className="flex justify-end mt-6 space-x-4 gap-5">
+            <div className="flex justify-end mt-6 gap-5 pl-4">
+                <button
+                    onClick={() => { console.log("cleer clicked"); onCleere(); onClose(); }}
+                    className="px-4 py-2 bg-blue-400 text-white rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                    נקה בחירה
+                </button>
                 <button
                     onClick={() => { console.log("Cancel clicked"); onClose() }}
                     className="px-4 py-2 bg-red-400 text-white rounded-lg hover:bg-gray-300 transition-colors"
@@ -199,10 +235,11 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose, activeTab 
                 </button>
                 <button
                     onClick={() => { console.log("Confirm clicked"); onFilter(); onClose() }}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                 >
                     אישור
                 </button>
+
             </div>
         </Modal >
     );

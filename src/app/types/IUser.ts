@@ -1,8 +1,7 @@
 
 import mongoose, { Document, Types } from "mongoose";
 import { z } from 'zod'
-// import { fetchCities } from "../services/categoriesService";
-
+import { fetchCities } from '../services/categoriesService';
 export default interface IUser extends Document {
     children: Types.ObjectId[];
     password: string;
@@ -13,7 +12,7 @@ export default interface IUser extends Document {
     dateOfBirth: Date;
     city: string;
     sensitive: string;
-    userDays: Types.ObjectId[];
+    // userDays: Types.ObjectId[];
 }
 
 export interface IToken extends Document {
@@ -57,21 +56,32 @@ export const userSchemaZod = z.object({
         .regex(/^[A-Za-z]+$/, "שם משתמש חייב להיות באנגלית ובאותיות בלבד")
         .min(2, "שם משתמש חייב להכיל 2 אותיות לפחות"),
     gender: z.enum(["זכר", "נקבה"]),
-    age:z.number().min(0,'גיל לא יקטן מ0').max(120,'גיל לא יחרוג מ120'),
+    age: z.number().min(0, 'גיל לא יקטן מ0').max(120, 'גיל לא יחרוג מ120'),
     dateOfBirth: z.date().refine(
         (date) => date <= new Date(),
         { message: "תאריך לידה לא יכול להיות עתידי" }
     ),
-    city: z.string()
-    // .refine(
-    //     async (city) => {
-    //         // Fetch the list of cities from the API and validate.
-    //         const cities: string[] = ["ירושלים"];
-    //         return cities.includes(city);
+    // city: z.string()
+    //     .refine(
+    //         async (city) => {
+    //             // Fetch the list of cities from the API and validate.
+    //             const cities: string[] = ["ירושלים"];
+    //             return cities.includes(city);
 
-    //     },
-    //     { message: "עיר חייבת להבחר מרשימת הערים בישראל" })
-        ,
+    //         },
+    //         { message: "עיר חייבת להבחר מרשימת הערים בישראל" })
+    // ,
+    city: z
+        .string()
+        .refine(
+            async (city) => {
+                // קריאה ל-fetchCities כדי להביא את רשימת הערים מהשרת
+                const cities = await fetchCities();
+                const cityNames: string[] = cities;
+                return cityNames.includes(city);
+            },
+            { message: "עיר חייבת להבחר מרשימת הערים בישראל" }
+        ),
     sensitive: z.enum(["cold", "heat", "none"]),
 
 })
@@ -86,7 +96,7 @@ export type IUserTypeWithId = Omit<IUserType, "confirmPassword"> & { _id: string
 
 
 // טיפוס ליצירת משתמש (ללא _id ועם שדות נדרשים בלבד)
-export type CreateUserType = Omit<IUser, "_id"/* | "children" | "userDays"*/>;
+export type CreateUserType = Omit<IUser, "_id"/* | "children" */>;
 
 // טיפוס לעדכון יוזר בסטור (כולל ה-ID, כל השדות אופציונליים)
 export type UpdateUserTypeForStore = Partial<IUser> & { _id: string };

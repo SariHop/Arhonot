@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import { GarmentProps } from "@/app/types/IGarment";
+import {rangeWheatherDeescription} from '../../../data/staticArrays'
 
 const Garment = ({ garment, closeModal }: GarmentProps) => {
     const handleCloseClick = (e: React.MouseEvent) => {
@@ -41,7 +42,8 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
                             <strong>עונה:</strong> {garment.season}
                         </p>
                         <p className="text-gray-700">
-                            <strong>טווח:</strong> {garment.range}
+                            <strong>מותאם למזג אויר: </strong>
+                            <span>{rangeWheatherDeescription[garment.range - 1]}</span>
                         </p>
                         <p className="text-gray-700">
                             <strong>קטגוריה:</strong> {garment.category}

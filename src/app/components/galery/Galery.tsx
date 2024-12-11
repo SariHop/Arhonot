@@ -54,10 +54,11 @@ const Gallery = ({ isForOutfit }: { isForOutfit: boolean }) => {
         )
     }
     return (
-        <>
-            <GaleryHeader activeTab={activeTab} setActiveTab={setActiveTab} isForOutfit={isForOutfit} />
-            {activeTab === "garments" ? <GarmentsGallery isForOutfit={isForOutfit} /> : <OutfitsGallary />}
-        </>
+        <div className="mt-10">
+            < GaleryHeader activeTab={activeTab} setActiveTab={setActiveTab} isForOutfit={isForOutfit} />
+            {activeTab === "garments" ? <GarmentsGallery isForOutfit={isForOutfit} /> : <OutfitsGallary />
+            }
+        </div>
     );
 };
 

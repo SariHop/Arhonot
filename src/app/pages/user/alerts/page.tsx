@@ -12,7 +12,7 @@ import {fetchUsersConnectionReq,updateConnections,updateRequestReadable,updateRe
 
 const Page = () => {
   const decreaseAlertCounter = useAlertsCounter((state) => state.decrease);
-  const user = useUser();
+  const user = useUser((state) => state);
   const [alerts, setAlerts] = useState<AlertTypeFotCollapse[]>([]);
   const [requests, setRequests] = useState<RequestTypeFotCollapse[]>([]);
 
@@ -323,7 +323,7 @@ const Page = () => {
 
 
   return (
-    <div className="mb-[10vh]">
+    <div className="">
 
       {/* התראות על מלאי */}
       <div className="p-6 pt-2 h-[40vh]">

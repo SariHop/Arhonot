@@ -20,7 +20,7 @@ const NavBar = () => {
   );
   // const setAlertsCounter = useAlertsCounter((state) => state.setAlertsCounter);
   const router = useRouter();
-  const user = useUser();
+  const user = useUser((state) => state);
 
   useEffect(() => {
     
