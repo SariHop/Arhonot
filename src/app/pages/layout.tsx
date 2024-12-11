@@ -3,7 +3,7 @@ import NavBar from "../components/NavBar";
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import Header from "../components/Header";
+// import Header from "../components/Header";
 
 
 
@@ -18,7 +18,7 @@ export default function RootLayout({
     <QueryClientProvider client={queryClient}>
 
       <div style={{ paddingBottom: "10vh" }}>
-        <Header />
+        {/* <Header /> */}
         {children}
         <NavBar />
       </div>
