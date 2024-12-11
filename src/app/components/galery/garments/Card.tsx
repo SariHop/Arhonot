@@ -15,7 +15,7 @@ const Card = ({ garment, isForOutfit }: { garment: IGarment; isForOutfit: boolea
     }
 
     const [temperature, setTemperature] = useState<number | null>(null); // מצב הטמפרטורה
-    const { data: weatherData} = useWeatherQuery(); // שימוש ב-hook לקריאת נתוני מזג האוויר
+    const { data: weatherData } = useWeatherQuery(); // שימוש ב-hook לקריאת נתוני מזג האוויר
 
     useEffect(() => {
         if (weatherData) {
@@ -62,11 +62,14 @@ const Card = ({ garment, isForOutfit }: { garment: IGarment; isForOutfit: boolea
         return 'red-500'; // אדום
     };
 
+
     const { addImageToCanvas } = useCanvasStore();
+    const handleClickcard = isForOutfit ? addImageToCanvas : undefined;
+
 
     return (
         <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm relative"
-            onClick={isForOutfit ?()=>{ addImageToCanvas(garment.img, garment._id)}  : openModal}
+            onClick={handleClickcard ? () => handleClickcard(garment.img, garment._id) : openModal}
         >
             <Image
                 src={garment.img}

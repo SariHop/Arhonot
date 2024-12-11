@@ -40,7 +40,7 @@ const Canvas = () => {
         initCanvas.dispose();
       }
     }
-  }, [canvas, setCanvas]);
+  }, []);
 
   return (
     <div className="flex flex-col justify-center mt-3">
