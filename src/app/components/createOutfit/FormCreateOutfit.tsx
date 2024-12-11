@@ -9,7 +9,7 @@ import useUser from "@/app/store/userStore";
 import { validSeasons, tags, rangeWheatherDeescription } from "@/app/data/staticArrays"
 import { cloudinaryUploud } from "@/app/services/image/saveToCloudinary";
 import { toast } from "react-toastify";
-import { createOutfit } from "@/app/services/outfitsService"
+import { createOutfit } from "@/app/services/outfitServices"
 import "react-toastify/dist/ReactToastify.css";
 import {OutfitFormProps} from "@/app/types/canvas"
 
