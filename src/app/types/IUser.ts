@@ -1,8 +1,8 @@
 
 import mongoose, { Document, Types } from "mongoose";
 import { z } from 'zod'
-// import { fetchCities } from "../services/categoriesService";
-
+import { useCityQuery } from '../hooks/cityQueryHook';
+import { fetchCities } from '../services/categoriesService';
 export default interface IUser extends Document {
     children: Types.ObjectId[];
     password: string;
@@ -57,21 +57,32 @@ export const userSchemaZod = z.object({
         .regex(/^[A-Za-z]+$/, "שם משתמש חייב להיות באנגלית ובאותיות בלבד")
         .min(2, "שם משתמש חייב להכיל 2 אותיות לפחות"),
     gender: z.enum(["זכר", "נקבה"]),
-    age:z.number().min(0,'גיל לא יקטן מ0').max(120,'גיל לא יחרוג מ120'),
+    age: z.number().min(0, 'גיל לא יקטן מ0').max(120, 'גיל לא יחרוג מ120'),
     dateOfBirth: z.date().refine(
         (date) => date <= new Date(),
         { message: "תאריך לידה לא יכול להיות עתידי" }
     ),
-    city: z.string()
-    // .refine(
-    //     async (city) => {
-    //         // Fetch the list of cities from the API and validate.
-    //         const cities: string[] = ["ירושלים"];
-    //         return cities.includes(city);
+    // city: z.string()
+    //     .refine(
+    //         async (city) => {
+    //             // Fetch the list of cities from the API and validate.
+    //             const cities: string[] = ["ירושלים"];
+    //             return cities.includes(city);
 
-    //     },
-    //     { message: "עיר חייבת להבחר מרשימת הערים בישראל" })
-        ,
+    //         },
+    //         { message: "עיר חייבת להבחר מרשימת הערים בישראל" })
+    // ,
+    city: z
+        .string()
+        .refine(
+            async (city) => {
+                // קריאה ל-fetchCities כדי להביא את רשימת הערים מהשרת
+                const cities = await fetchCities();
+                const cityNames: string[] = cities;
+                return cityNames.includes(city);
+            },
+            { message: "עיר חייבת להבחר מרשימת הערים בישראל" }
+        ),
     sensitive: z.enum(["cold", "heat", "none"]),
 
 })

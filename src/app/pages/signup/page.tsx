@@ -11,8 +11,6 @@ import { useCityQuery } from "@/app/hooks/cityQueryHook";
 import { Select } from "antd";
 import { DefaultOptionType } from "antd/es/select";
 
-
-
 const SignUp = () => {
   const [formData, setFormData] = useState<IUserType>({
     password: "",
@@ -89,7 +87,7 @@ const SignUp = () => {
   const handleCityChange = (value: string) => {
     setFormData((prev) => ({ ...prev, city: value }));
   };
-  
+
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 pb-20">
@@ -264,15 +262,15 @@ const SignUp = () => {
             >
               City
             </label>
-            
+
             <Select
-            id="city"
-            showSearch
-            onChange={handleCityChange}
-            options={cityOptions}
-            placeholder="בחר עיר"
-            className="w-full mt-1 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 h-10"
-          />
+              id="city"
+              showSearch
+              onChange={handleCityChange}
+              options={cityOptions}
+              placeholder="בחר עיר"
+              className="w-full mt-1 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 h-10"
+            />
             {errors.city && (
               <p className="text-red-500 text-sm">{errors.city}</p>
             )}
