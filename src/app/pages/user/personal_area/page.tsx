@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Button, Tooltip } from "antd";
-import {SettingOutlined, LogoutOutlined, PlusOutlined, LinkOutlined, DisconnectOutlined, SwapOutlined, CloseOutlined,} from "@ant-design/icons";
+import {SettingOutlined,LogoutOutlined,PlusOutlined, LinkOutlined,DisconnectOutlined,SwapOutlined, CloseOutlined} from "@ant-design/icons";
 import useUser from "@/app/store/userStore";
 import Settings from "@/app/components/userPersonalArea/Settings";
 import Logout from "@/app/components/userPersonalArea/Logout";
@@ -30,7 +30,7 @@ const PersonalArea = () => {
   return (
     <div
       className="flex h-screen w-screen"
-      style={{ paddingTop: "10vh", paddingBottom: "10vh" }} // מרווחים בחלק העליון והתחתון
+      style={{ paddingTop: "10vh", paddingBottom: "10vh" }}
     >
       {/* תפריט */}
       <div
@@ -43,27 +43,28 @@ const PersonalArea = () => {
           </h1>
         )}
         {[
-          { key: "settings", icon: <SettingOutlined />, label: "הגדרות" },
-          { key: "logout", icon: <LogoutOutlined />, label: "התנתקות" },
-          { key: "create_sub_account", icon: <PlusOutlined />, label: "חשבון בן חדש" },
-          { key: "connect_existing", icon: <LinkOutlined />, label: "התחברות לחשבון קיים" },
-          { key: "disconnect_account", icon: <DisconnectOutlined />, label: "ניתוק חשבון מקושר" },
-          { key: "switch_accounts", icon: <SwapOutlined />, label: "מעבר בין חשבונות" },
+          {key: "settings", icon: <SettingOutlined />, label: "הגדרות" },
+          {key: "logout", icon: <LogoutOutlined />, label: "התנתקות" },
+          {key: "create_sub_account",icon: <PlusOutlined />, label: "חשבון בן חדש"},
+          {key: "connect_existing",icon: <LinkOutlined />, label: "קישור חשבון אחר"},
+          {key: "disconnect_account", icon: <DisconnectOutlined />, label: "ניתוק חשבון מקושר"},
+          {key: "switch_accounts",icon: <SwapOutlined />,label: "מעבר בין חשבונות"},
         ].map(({ key, icon, label }) => (
           <Tooltip
-            title={isMobile ? label : ""}
+            title={isMobile ? label : ""} // Tooltip יופיע רק במובייל
             key={key}
             placement="right"
             className="w-full"
           >
             <Button
-              className={`w-4/5 mb-3 flex items-center justify-center sm:justify-start ${
+              className={`w-4/5 mb-3 flex items-center justify-start ${
                 activeKey === key ? "bg-blue-500 text-white" : ""
               }`}
               icon={icon}
               onClick={() => handleTogglePanel(key)}
             >
-              {!isMobile && <span className="hidden sm:inline">{label}</span>}
+              {/* הצג טקסט רק בתצוגה גדולה, לא במובייל */}
+              {!isMobile && label}
             </Button>
           </Tooltip>
         ))}
@@ -83,7 +84,7 @@ const PersonalArea = () => {
                 shape="circle"
                 icon={<CloseOutlined />}
                 onClick={() => handleTogglePanel(null)}
-                className="absolute top-4 left-4 "
+                className="absolute left-4 "
               />
             )}
             {renderContent()}
