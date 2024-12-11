@@ -11,11 +11,8 @@ import { cloudinaryUploud } from "@/app/services/image/saveToCloudinary";
 import { toast } from "react-toastify";
 import { createOutfit } from "@/app/services/outfitsService"
 import "react-toastify/dist/ReactToastify.css";
+import {OutfitFormProps} from "@/app/types/canvas"
 
-interface OutfitFormProps {
-  closeModal: () => void;
-  outfitImgurl: string;
-}
 
 const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => {
   const { _id: userId } = useUser((state) => state);

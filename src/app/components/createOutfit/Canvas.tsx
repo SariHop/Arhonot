@@ -1,43 +1,46 @@
 "use client";
-import React, { useState, useEffect, createContext } from "react";
+import React, { useState, useEffect, createContext, useRef } from "react";
 import * as fabric from 'fabric';
 import ShowGallery from "@/app/components/createOutfit/ShowGallery";
 import { CanvasContextType } from "@/app/types/canvas"
 import GarmentForm from "./FormCreateOutfit";
 import { toast } from "react-toastify";
+import ToolBox from "@/app/components/createOutfit/toolBox/ToolBox"
 import "react-toastify/dist/ReactToastify.css";
-import ToolBar from "./ToolBar";
-import CanvasSettings from "@/app/components/createOutfit/SizeCanvas"
-
 
 export const CanvasContext = createContext<CanvasContextType | null>(null)
 
 const Canvas = () => {
-  const [openModal, setOpenModal] = useState(false);
   const [outfitImgurl, setOutfitImgurl] = useState("");
+  const [openModal, setOpenModal] = useState(false);
   const showModal = () => { setOpenModal(true); };
   const closeModal = () => { setOpenModal(false); };
 
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
   const [arreyOfGarmentInCanvas, setArrayOfGarmentInCanvas] = useState<string[]>([]);
 
   useEffect(() => {
 
-    const c = new fabric.Canvas("canvas", { backgroundColor: 'white',});
- 
-
-    // Ensure canvas is visible immediately
-    const canvasElement = document.getElementById("canvas");
-    if (canvasElement) {
-      canvasElement.style.visibility = 'visible';
-      canvasElement.style.backgroundColor = 'white';
+    const calcWidth:()=>number = () => {
+      const min = Math.min(window.innerWidth, window.innerHeight)
+      return (min*90)/100
     }
-    setCanvas(c);
 
-    return () => {
-      c.dispose();
-       
-    };
+    if (canvasRef.current) {
+      const len = calcWidth()
+      const initCanvas = new fabric.Canvas(canvasRef.current, {
+        width: len,
+        height: len
+      })
+      initCanvas.backgroundColor = "white"
+      initCanvas.renderAll()
+      setCanvas(initCanvas);
+
+      return () => {
+        initCanvas.dispose();
+      }
+    }
   }, []);
 
 
@@ -56,7 +59,7 @@ const Canvas = () => {
     }
 
     try {
-      const img = await fabric.Image.fromURL(garmentURL, {
+      const img = await fabric.FabricImage.fromURL(garmentURL, {
         crossOrigin: "anonymous",
       });
 
@@ -100,43 +103,25 @@ const Canvas = () => {
     });
     setOutfitImgurl(dataURL)
     showModal()
-
-    // const link = document.createElement("a");
-    // link.href = dataURL;
-    // link.download = "canvas_image.png";
-    // link.click();
   };
 
 
   return (
     <div className="flex flex-col justify-center mt-3">
-      <CanvasContext.Provider value={{ canvas, addImageToCanvas, arreyOfGarmentInCanvas }}>
+      <CanvasContext.Provider value={{ canvas, addImageToCanvas, arreyOfGarmentInCanvas, exportCanvasAsImage }}>
 
         <div className="mb-3">
-         
-
           <div >
             <ShowGallery />
           </div>
         </div>
 
         <div className="bg-checkered-pattern flex justify-center items-center gap-5 p-5 flex-col ">
-           <button
-            onClick={exportCanvasAsImage}
-            className="m-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Save Image
-          </button>
-          <CanvasSettings/>
-          <canvas id="canvas" className="shadow-lg max-w-full h-auto">
-            Your browser does not support the canvas element.
-          </canvas>
-          <ToolBar />
-          
+          <ToolBox />
+          <canvas id="canvas" ref={canvasRef} className="shadow-lg max-w-full h-auto" />
         </div>
 
         {openModal && <GarmentForm closeModal={closeModal} outfitImgurl={outfitImgurl} />}
-
       </CanvasContext.Provider>
     </div>
   )
