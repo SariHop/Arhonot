@@ -4,21 +4,21 @@ import React, { useState, useEffect, useContext } from "react";
 import { IOutfitType, outfitSchemaZod } from '@/app/types/IOutfit'
 import Image from "next/image";
 import { Modal, Rate } from "antd";
-import { CanvasContext } from "@/app/components/createOutfit/Canvas";
 import useUser from "@/app/store/userStore";
 import { validSeasons, tags, rangeWheatherDeescription } from "@/app/data/staticArrays"
 import { cloudinaryUploud } from "@/app/services/image/saveToCloudinary";
 import { toast } from "react-toastify";
 import { createOutfit } from "@/app/services/outfitServices"
 import "react-toastify/dist/ReactToastify.css";
-import {OutfitFormProps} from "@/app/types/canvas"
+import {OutfitFormProps} from "@/app/types/props"
+import useCanvasStore from "@/app/store/canvasStore";
 
 
 const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => {
   const { _id: userId } = useUser((state) => state);
 
-  const context = useContext(CanvasContext);
-  const arreyOfGarmentInCanvas = context?.arreyOfGarmentInCanvas || [];
+  // const arreyOfGarmentInCanvas = context?.arreyOfGarmentInCanvas || [];
+  const { garments } = useCanvasStore();
 
   // State for form fields
   const [season, setSeason] = useState<string>("");
@@ -61,7 +61,7 @@ const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => 
 
     const outfitFinal: IOutfitType = {
       userId: userId,
-      clothesId: arreyOfGarmentInCanvas,
+      clothesId: garments,
       desc: description,
       season: season,
       tags: selectedTags,

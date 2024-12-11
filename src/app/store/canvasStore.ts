@@ -1,36 +1,69 @@
-// import { create } from 'zustand';
-// import * as fabric from 'fabric';
+import { create } from 'zustand';
+import * as fabric from 'fabric';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-// type CanvasStore = {
-//   canvas: fabric.Canvas | null;
-//   setCanvas: (canvas: fabric.Canvas) => void;
-//   garments: string[];
-//   addGarment: (garmentId: string) => void;
-//   saveCanvasState: () => void;
-//   loadCanvasState: () => void;
-// }
+type CanvasStore = {
+  canvas: fabric.Canvas | null;
+  setCanvas: (canvas: fabric.Canvas) => void;
+  garments: string[];
+  addGarment: (garmentId: string) => void;
+  addImageToCanvas: (imageUrl: string, garmentId: string | unknown) => Promise<void>,
+};
 
-// const useCanvasStore = create<CanvasStore>((set, get) => ({
-//   canvas: null,
-//   setCanvas: (canvas) => set({ canvas }),
-//   garments: [],
-//   addGarment: (garmentId) => {
-//     if (!get().garments.includes(garmentId)) {
-//       set((state) => ({ garments: [...state.garments, garmentId] }));
-//     }
-//   },
-//   saveCanvasState: () => {
-//     const canvas = get().canvas;
-//     if (canvas) {
-//       const canvasData = canvas.toJSON();
-//       localStorage.setItem('canvasState', JSON.stringify(canvasData));
-//     }
-//   },
-//   loadCanvasState: () => {
-//     const canvas = get().canvas;
-//     const savedState = localStorage.getItem('canvasState');
-//     if (savedState && canvas) {
-//       canvas.loadFromJSON(savedState, () => canvas.renderAll());
-//     }
-//   },
-// }));
+const useCanvasStore = create<CanvasStore>((set, get) => ({
+  canvas: null,
+  setCanvas: (canvas) => set({ canvas }),
+  garments: [],
+  addGarment: (garmentId) => {
+    if (!get().garments.includes(garmentId)) {
+      set((state) => ({ garments: [...state.garments, garmentId] }));
+    }
+  },
+  addImageToCanvas: async (garmentURL: string, garmentId: string | unknown) => {
+    debugger
+    const canvas = get().canvas; // Correctly accessing canvas from the state
+    if (!canvas || typeof garmentId !== 'string') {
+      return;
+    }
+
+    if (get().garments.includes(garmentId)) {
+      toast.info("הבגד כבר נוסף ללוק בהצלחה!");
+      return;
+    }
+
+    try {
+      const img = await fabric.FabricImage.fromURL(garmentURL, {
+        crossOrigin: "anonymous",
+      });
+
+      // Ensure canvas width and height are valid
+      if (!canvas.width || !canvas.height) {
+        console.error("Canvas dimensions are invalid.");
+        return;
+      }
+
+      // Calculate scale to fit canvas while maintaining aspect ratio
+      const canvasScale = Math.min(
+        canvas.width / img.width,
+        canvas.height / img.height
+      ) * 0.5; // 50% of max scale to leave some margin
+
+      img.set({
+        left: canvas.width / 2 - (img.width * canvasScale) / 2,
+        top: canvas.height / 2 - (img.height * canvasScale) / 2,
+        scaleX: canvasScale,
+        scaleY: canvasScale,
+      });
+
+      canvas.add(img);
+      canvas.requestRenderAll();
+      get().addGarment(garmentId);
+
+    } catch (error) {
+      console.error("Failed to load image:", error);
+    }
+  },
+}));
+
+export default useCanvasStore;
