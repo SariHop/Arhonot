@@ -12,12 +12,6 @@ const ShowGallery: React.FC = () => {
 
   return (
     <div className="w-full">
-      {/* <div className="hidden xl:block">
-        <Gallery isForOutfit={true} />
-      </div> */}
-
-      {/* Mobile and smaller screens - with toggle button */}
-      {/* <div className="xl:hidden bg-white pt-2"> */}
       <div className=" bg-white">
         <button
           onClick={toggleGallery}
@@ -31,7 +25,6 @@ const ShowGallery: React.FC = () => {
           {isGalleryOpen ? <ChevronUp /> : <ChevronDown />}
         </button>
 
-        {/* Gallery with slide animation */}
         <div
           className={`overflow-hidden transition-all duration-500 ease-in-out ${
             isGalleryOpen
