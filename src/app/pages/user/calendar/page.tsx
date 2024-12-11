@@ -3,18 +3,14 @@ import { Calendar, CalendarProps, ConfigProvider } from "antd";
 import React, { useEffect, useState } from "react";
 import type { Dayjs } from "dayjs";
 import "@/app/globals.css";
-import "dayjs/locale/he"; // ייבוא של השפה העברית
-import heIL from "antd/locale/he_IL"; // Import the Hebrew locale
+import "dayjs/locale/he"; 
+import heIL from "antd/locale/he_IL"; 
 import Image from 'next/image'
-// import IOutfit from "@/app/types/IOutfit";
-// import IDay from "@/app/types/IDay";
 import useUser from "@/app/store/userStore";
-// import { IDayResult, looks } from "@/app/services/daysService";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { IDayResult, looks } from "@/app/services/daysService";
 import IOutfit from "@/app/types/IOutfit";
-// import { dayLooks } from "@/app/services/daysService";
 const customDayNames = ["יום א", "יום ב", "יום ג", "יום ד", "יום ה", "יום ו", "שבת"];
 
 
@@ -82,17 +78,17 @@ const Page: React.FC = () => {
         <div
           className="ant-picker-calendar-date w-full " style={{ maxHeight: cellHeight }}>
           <div className="ant-picker-calendar-date-value text-right">{current.date()}</div>
-          <div className="ant-picker-calendar-date-content flex overflow-hidden text-base text-center ">
+          <div className="ant-picker-calendar-date-content flex flex-col md:flex-row md:items-start justify-center items-center overflow-hidden text-base text-center ">
           {dayLooks.looks && dayLooks.looks.map((look:IOutfit, index) => (
-            index<2 ?
+            index<1 ?
               (<Image
                 key={index}
                 src={look.img}
                 alt={`Look ${index + 1}`}
                 className="w-8 h-8 rounded-full object-cover m-1 inline-block"
-                width={30}
-                height={30}
-              />):(index===2 &&"+")
+                width={25}
+                height={25}
+              />):(index===1 &&"+")
             ))}
           </div>
           {/* </div> */}
