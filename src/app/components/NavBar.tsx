@@ -64,7 +64,7 @@ const NavBar = () => {
   ];
 
   return (
-    <div className="fixed bottom-0 bg-white left-0 w-full border-t-2 h-[10vh] flex justify-between items-center shadow-md pr-6 pl-6">
+    <div className="  bg-white left-0 w-full border-t-2 h-[10vh] flex justify-between items-center shadow-md pr-6 pl-6">
       {/* פרטי משתמש */}
       <Tooltip title="פרטי משתמש">
         <UserOutlined

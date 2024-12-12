@@ -323,10 +323,10 @@ const Page = () => {
 
 
   return (
-    <div className="">
+    <div className="pb-6">
 
       {/* התראות על מלאי */}
-      <div className="p-6 pt-2 h-[40vh]">
+      <div className="p-6 pt-2 h-[30vh]">
         <p className="font-sans text-base pb-2 font-thin">
           התראות
         </p>
@@ -376,7 +376,7 @@ const Page = () => {
       <Divider className="mb-0" />
 
       {/* בקשות התחברות */}
-      <div className="p-6 pt-2 h-[40vh]">
+      <div className="p-6 pt-2 h-[30vh]">
         <p className="font-sans text-base font-thin">
           בקשות התחברות
         </p>
