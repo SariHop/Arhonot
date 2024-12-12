@@ -1,6 +1,5 @@
 "use client"
-import React,{useState} from 'react'
-import OutfitForm from '@/app/components/createOutfit/FormCreateOutfit';
+import React from 'react'
 import useCanvasStore from '@/app/store/canvasStore';
 
 const ButtonCreateOutfit = () => {
