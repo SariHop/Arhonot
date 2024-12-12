@@ -80,7 +80,7 @@ const useCanvasStore = create<CanvasStore>((set, get) => ({
     console.log("הקנבס נשמר בהצלחה!");
   },
   loadCanvasFromLocalStorage: () => {
-    debugger
+
     const canvas = get().canvas;
     if (!canvas) {
       console.error("Canvas not initialized.");
