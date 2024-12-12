@@ -1,42 +1,49 @@
-"use client"
-import React, { useState } from "react";
-import Gallery from "../galery/Galery";
-import { FaChevronUp, FaChevronDown } from "react-icons/fa6";
+import * as React from 'react';
+import { Global } from '@emotion/react';
+// import CssBaseline from '@mui/material/CssBaseline';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import Gallery from '../galery/Galery';
 
-const ShowGallery: React.FC = () => {
-  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
-  const toggleGallery = () => {
-    setIsGalleryOpen(!isGalleryOpen);
+export default function SwipeableEdgeDrawer() {
+  const [open, setOpen] = React.useState(false);
+
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpen(newOpen);
   };
 
   return (
-    <div className="w-full">
-      <div className=" bg-white">
-        <button
-          onClick={toggleGallery}
-          className="sticky top-0 z-50 w-full bg-gray-100 py-4 px-4 flex items-center justify-center 
-                     border-t border-b border-gray-200 
-                     hover:bg-gray-200 transition-colors duration-300"
-        >
-          <span className="mr-2 text-gray-700">
-            {isGalleryOpen ? "סגירת הגלריה" : "פתיחת הגלריה"}
-          </span>
-          {isGalleryOpen ? <FaChevronUp /> : <FaChevronDown />}
-        </button>
-
-        <div
-          className={`overflow-hidden transition-all duration-500 ease-in-out ${
-            isGalleryOpen
-              ? "max-h-screen opacity-100"
-              : "max-h-0 opacity-0"
-          }`}
-        >
+    <div className='height-full'>
+      {/* <CssBaseline /> */}
+      <Global
+        styles={{
+          '.MuiDrawer-root > .MuiPaper-root': {
+            height: `95%`,
+            overflow: 'visible',
+          },
+        }}
+      />
+      <Box sx={{ textAlign: 'center', pt: 1 }}>
+        <Button onClick={toggleDrawer(true)} >פתח גלריה</Button>
+      </Box>
+      <SwipeableDrawer
+        anchor="bottom"
+        open={open}
+        onClose={toggleDrawer(false)}
+        onOpen={toggleDrawer(true)}
+        disableSwipeToOpen={false}
+        ModalProps={{
+          keepMounted: true,
+        }}
+      >
+       
+        <div className='px-2 pb-2, height-full, overflow-auto'>
+        <Button onClick={toggleDrawer(false)}>הסתר גלריה</Button>
           <Gallery isForOutfit={true} />
         </div>
-      </div>
+      </SwipeableDrawer>
     </div>
   );
 }
-
-export default ShowGallery;
