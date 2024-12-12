@@ -175,7 +175,7 @@ const loadDayLooks = async () => {
 
   return (
     <ConfigProvider locale={heIL}> 
-      <div className="h-[90vh] w-full max-w-[800px] m-auto  border-2 ">
+      <div className=" w-full max-w-[800px] m-auto  border-2 ">
         <Calendar
           onPanelChange={onPanelChange}
           fullCellRender={calendarMode === "month" ? fullCellRender : undefined}

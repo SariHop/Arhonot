@@ -47,7 +47,7 @@ const WeatherHeader: React.FC = () => {
 
   if (isLoading)
     return (
-      <div className="fixed top-0 left-0 w-full bg-gray-100 z-50 shadow-md">
+      <div className="left-0 w-full bg-gray-100 shadow-md">
         טוען נתוני מזג אוויר...
       </div>
     );
@@ -81,7 +81,7 @@ const WeatherHeader: React.FC = () => {
   const currentIcon = closestHour.weather[0].icon;
 
   return (
-    <div className="fixed top-0 left-0 w-full bg-gray-100 shadow-md">
+    <div className="sticky top-0 left-0 w-full bg-gray-100 shadow-md">
       <header
         className="flex items-center justify-between cursor-pointer"
         onClick={() => setExpanded(!expanded)}
