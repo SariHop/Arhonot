@@ -1,10 +1,10 @@
 //user home page
 
 import React from 'react'
-
+import ImageCaruseka from '../../components/swiper/ImageCaruseka'
 const page = () => {
   return (
-    <div>page</div>
+    <ImageCaruseka />
   )
 }
 
