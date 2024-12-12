@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 
 interface ImageData {
     src: string; // Accepts string (URL) for external images
@@ -161,13 +161,13 @@ export default function ImageCaruseka() {
                 className="absolute left-0 top-1/2 transform h-[459px] rounded-xl hover:bg-[#1a222f] mx-1 -mt-[10px] -translate-y-1/2 bg-[#111927] text-white p-2 group"
                 onClick={prevSlide}
             >
-                <ChevronLeft className="text-gray-400 group-hover:text-white" />
+                <FaCaretLeft  className="text-gray-400 group-hover:text-white" />
             </button>
             < button
                 className="absolute right-0 top-1/2 transform h-[459px] rounded-xl hover:bg-[#1a222f] mx-1 -mt-[10px] -translate-y-1/2 bg-[#111927] text-white p-2 group"
                 onClick={nextSlide}
             >
-                <ChevronRight className="text-gray-400 group-hover:text-white" />
+                <FaCaretRight className="text-gray-400 group-hover:text-white" />
             </button>
 
             {/* Indicator dots */}
