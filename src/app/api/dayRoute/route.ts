@@ -27,7 +27,12 @@ export async function POST(request: NextRequest) {
   try {
     await connect();
     const body = await request.json();
-    const newday = new Day(body);
+    const nextDay = new Date(body.date);
+    nextDay.setDate(nextDay.getDate() + 1);    
+    console.log(nextDay);
+    
+    
+    const newday = new Day({...body, date: nextDay});
     console.log(newday);
     
     await newday.validate();

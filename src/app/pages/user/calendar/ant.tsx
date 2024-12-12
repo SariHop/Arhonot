@@ -1,5 +1,5 @@
 "use client";
-import { Calendar, CalendarProps, ConfigProvider } from "antd";
+import { Calendar, CalendarProps, ConfigProvider, Modal } from "antd";
 import React, { useEffect, useState } from "react";
 import type { Dayjs } from "dayjs";
 import "@/app/globals.css";
@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { IDayResult, looks } from "@/app/services/daysService";
 import IOutfit from "@/app/types/IOutfit";
-import OutfitsModal from "@/app/components/OutfitsModal";
 const customDayNames = ["יום א", "יום ב", "יום ג", "יום ד", "יום ה", "יום ו", "שבת"];
 
 
@@ -24,9 +23,7 @@ const Page: React.FC = () => {
   const [dayData, setDayData] = useState<Record<string, IDayResult>>({}); // מפת לוקים לפי תאריך
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [selectedDay, setSelectedDay] = useState<string>("");
-
-
+  const [selectedLooks, setSelectedLooks] = useState<IOutfit[]>([]);
 
 
 
@@ -158,7 +155,7 @@ const Page: React.FC = () => {
   const onSelect = (value: Dayjs) => {
     const formattedDay = value.format("YYYY-MM-DD");
     if (dayData[formattedDay]?.looks) {
-      setSelectedDay(formattedDay);
+      setSelectedLooks(dayData[formattedDay].looks);
       setIsModalVisible(true);
     }
   };
@@ -191,7 +188,30 @@ const loadDayLooks = async () => {
           className="h-full flex flex-col justify-center  "
           onSelect={onSelect}
         />
-        <OutfitsModal isOpen={isModalVisible} setIsOpen={setIsModalVisible} dateDetails={dayData[selectedDay]}/>
+        <Modal
+          title="הלוקים ליום הנבחר"
+          visible={isModalVisible}
+          onCancel={() => setIsModalVisible(false)}
+          footer={null}
+        >
+          <div className="flex flex-wrap justify-center">
+            {selectedLooks.map((look, index) => (
+              <div
+                key={index}
+                className="m-2 flex flex-col items-center justify-center"
+              >
+                <Image
+                  src={look.img}
+                  alt={`Look ${index + 1}`}
+                  className="w-24 h-36 object-cover"
+                  width={96}
+                  height={144}
+                />
+                <span className="mt-2 text-sm">עונה: {look.season}</span>
+              </div>
+            ))}
+          </div>
+        </Modal>
       </div>
     </ConfigProvider>
   );
