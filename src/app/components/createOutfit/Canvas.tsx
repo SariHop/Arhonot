@@ -8,7 +8,7 @@ import useCanvasStore from "@/app/store/canvasStore";
 const Canvas = () => {
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const { canvas, setCanvas } = useCanvasStore();
+  const { setCanvas, loadCanvasFromLocalStorage, canvas } = useCanvasStore();
 
   useEffect(() => {
 
@@ -24,16 +24,8 @@ const Canvas = () => {
         height: len
       })
       initCanvas.backgroundColor = "white"
-
-      const savedState = localStorage.getItem("canvasState");
-      if (savedState && canvas) {
-        canvas.loadFromJSON(savedState, () => {
-          canvas.renderAll();
-          console.log("Canvas state loaded!");
-        });
-      }
-
       initCanvas.renderAll()
+      
       setCanvas(initCanvas);
 
       return () => {
@@ -42,6 +34,12 @@ const Canvas = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (canvas) {
+      loadCanvasFromLocalStorage()
+    }
+  }, [canvas]);
+
   return (
     <div className="flex flex-col justify-center mt-3">
 
@@ -49,7 +47,7 @@ const Canvas = () => {
         <ToolBox />
 
         <div className="bg-checkered-pattern flex justify-center items-center gap-5 p-5 flex-col ">
-          <canvas id="canvas" ref={canvasRef} className="shadow-lg max-w-full h-auto" />
+          <canvas key="canvas" id="canvas" ref={canvasRef} className="shadow-lg max-w-full h-auto" />
         </div>
     </div>
   )

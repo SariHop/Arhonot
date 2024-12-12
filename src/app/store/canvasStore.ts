@@ -8,7 +8,11 @@ type CanvasStore = {
   setCanvas: (canvas: fabric.Canvas) => void;
   garments: string[];
   addGarment: (garmentId: string) => void;
-  addImageToCanvas: (imageUrl: string, garmentId: string | unknown) => Promise<void>,
+  addImageToCanvas: (imageUrl: string, garmentId: string | unknown) => Promise<void>;
+  saveCanvasToLocalStorage: () => void;
+  loadCanvasFromLocalStorage: () => void;
+  cleanCanvasLocalStorage: ()=>void
+  // לשמור מערך תמונות והאם עריכה או יצירה
 };
 
 const useCanvasStore = create<CanvasStore>((set, get) => ({
@@ -21,7 +25,7 @@ const useCanvasStore = create<CanvasStore>((set, get) => ({
     }
   },
   addImageToCanvas: async (garmentURL: string, garmentId: string | unknown) => {
-    debugger
+    
     const canvas = get().canvas; // Correctly accessing canvas from the state
     if (!canvas || typeof garmentId !== 'string') {
       return;
@@ -64,6 +68,37 @@ const useCanvasStore = create<CanvasStore>((set, get) => ({
       console.error("Failed to load image:", error);
     }
   },
+  saveCanvasToLocalStorage: () => {
+    const canvas = get().canvas;
+    if (!canvas) {
+      console.error("Canvas not initialized.");
+      return;
+    }
+
+    const json = canvas.toJSON();
+    localStorage.setItem("canvasData", JSON.stringify(json));
+    console.log("הקנבס נשמר בהצלחה!");
+  },
+  loadCanvasFromLocalStorage: () => {
+    debugger
+    const canvas = get().canvas;
+    if (!canvas) {
+      console.error("Canvas not initialized.");
+      return;
+    }
+
+    const json = localStorage.getItem("canvasData");
+    if (!json) {return};
+
+    canvas.loadFromJSON(
+      JSON.parse(json),
+      () => {
+        canvas.requestRenderAll();
+      }    
+    );
+  },
+  cleanCanvasLocalStorage:()=>{
+    localStorage.removeItem("canvasData");  }
 }));
 
 export default useCanvasStore;
