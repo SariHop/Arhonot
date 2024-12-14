@@ -18,7 +18,7 @@ const PersonalArea = () => {
   const renderContent = () => {
     switch (activeKey) {
       case "settings":
-        return <Settings />;
+        return <Settings/>;
       case "logout":
         return <Logout />;
       default:
@@ -82,7 +82,7 @@ const PersonalArea = () => {
 
       {/*  תוכן הקומפוננטה המוצגת כעת*/}
       <div
-        className={`transition-all duration-500 bg-white shadow-inner p-6 flex-1 relative ${
+        className={`transition-all duration-500 bg-white shadow-inner flex-1 relative ${
           isMobile && activeKey ? "w-full" : "w-1/2"
         }`}
       >

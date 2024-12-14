@@ -102,8 +102,7 @@ export async function PUT(
 
     const body = await request.json();
     const existingEmail = await User.findOne({ email: body.email });
-    if (existingEmail && existingEmail._id !== _id) {
-      console.log('existingEmail',existingEmail,'existingEmail._id',existingEmail._id,'_id',_id)
+    if (existingEmail && String(existingEmail._id) !== _id) {
       return NextResponse.json(
         { error: "Email already in use by another user" },
         { status: 404 }
