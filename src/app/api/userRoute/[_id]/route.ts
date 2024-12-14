@@ -101,7 +101,13 @@ export async function PUT(
     }
 
     const body = await request.json();
-
+    const existingEmail = await User.findOne({ email: body.email });
+    if (existingEmail && String(existingEmail._id) !== _id) {
+      return NextResponse.json(
+        { error: "Email already in use by another user" },
+        { status: 404 }
+      );
+    }
     const updatedUser = await User.findByIdAndUpdate(_id, body, {
       new: true, // מחזיר את המסמך המעודכן
       runValidators: true, // מפעיל ולידציות על הנתונים החדשים
