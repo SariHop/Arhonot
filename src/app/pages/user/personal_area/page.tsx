@@ -28,8 +28,8 @@ const PersonalArea = () => {
 
   return (
     <div
-      className="flex h-screen w-screen"
-      style={{ paddingTop: "10vh", paddingBottom: "10vh" }}
+      className="flex h-full w-screen"
+      // style={{ paddingTop: "10vh", paddingBottom: "10vh" }}
     >
       {/* תפריט */}
       <div

@@ -1,15 +1,12 @@
 "use client";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image"; // שימוש ב-Image מ-next/image
 import IGarment from "@/app/types/IGarment";
 import Garment from "./Garment";
-import { CanvasContext } from "@/app/components/createOutfit/Canvas";
-import { CanvasContextType } from "@/app/types/canvas";
 import { useWeatherQuery } from "@/app/hooks/weatherQueryHook"; // השימוש ב-hook לקריאת מזג האוויר
+import useCanvasStore from "@/app/store/canvasStore";
 
 const Card = ({ garment, isForOutfit }: { garment: IGarment; isForOutfit: boolean }) => {
-
-    const context: CanvasContextType = useContext(CanvasContext);
 
     const [isModalOpen, setIsModalOpen] = useState(false); // מצב הפופ-אפ (פתוח/סגור)
     const openModal = () => setIsModalOpen(true); // לפתוח את הפופ-אפ
@@ -18,7 +15,10 @@ const Card = ({ garment, isForOutfit }: { garment: IGarment; isForOutfit: boolea
     }
 
     const [temperature, setTemperature] = useState<number | null>(null); // מצב הטמפרטורה
-    const { data: weatherData} = useWeatherQuery(); // שימוש ב-hook לקריאת נתוני מזג האוויר
+    const { data: weatherData } = useWeatherQuery(); // שימוש ב-hook לקריאת נתוני מזג האוויר
+
+    const { addImageToCanvas } = useCanvasStore();
+    const handleClickcard = isForOutfit ? addImageToCanvas : undefined;
 
     useEffect(() => {
         if (weatherData) {
@@ -26,8 +26,6 @@ const Card = ({ garment, isForOutfit }: { garment: IGarment; isForOutfit: boolea
             setTemperature(currentTemp); // עדכון המעלות ב-state
         }
     }, [weatherData]); // התעדכנות עם כל פעם שיש נתונים חדשים
-
-    const handleClickcard = isForOutfit && context ? context.addImageToCanvas : undefined;
 
     if (!garment || !garment.img) {
         return <div>פרטי הבגד אינם זמינים</div>;
@@ -66,8 +64,6 @@ const Card = ({ garment, isForOutfit }: { garment: IGarment; isForOutfit: boolea
 
         return 'red-500'; // אדום
     };
-
-
 
     return (
         <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm relative"

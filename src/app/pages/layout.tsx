@@ -17,12 +17,22 @@ export default function RootLayout({
   return (
     <QueryClientProvider client={queryClient}>
 
-      <div style={{ paddingTop:"5vh",paddingBottom: "10vh" }}>
-      <div style={{ position: 'relative', zIndex: 1000 }}>
+      {/* <div style={{ paddingTop:"15vh",paddingBottom: "10vh" }}> */}
+      <div className="min-h-[100dvh] grid grid-rows-[auto,1fr,auto] grid-cols-[minmax(0,1fr)]">
+
+        {/* Header */}
+        <div className="sticky top-0 z-50 ">
           <Header />
         </div>
-      {children}
-        <NavBar />
+
+        {/* Body */}
+        {children}
+
+        {/* Footer */}
+        <div className="sticky bottom-0">
+          <NavBar />
+        </div>
+        
       </div>
 
       <ReactQueryDevtools initialIsOpen={false} />

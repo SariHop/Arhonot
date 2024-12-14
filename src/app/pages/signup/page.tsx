@@ -10,6 +10,7 @@ import { EyeInvisibleTwoTone, EyeTwoTone } from "@ant-design/icons";
 import { useCityQuery } from "@/app/hooks/cityQueryHook";
 import { Select } from "antd";
 import { DefaultOptionType } from "antd/es/select";
+import { useRouter } from 'next/navigation'; // ייבוא מתוך next/navigation
 
 const SignUp = () => {
   const [formData, setFormData] = useState<IUserType>({
@@ -30,6 +31,7 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { data: cities, isLoading, error } = useCityQuery();
+  const router = useRouter(); // שימוש ב-router מתוך next/navigation
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -52,7 +54,7 @@ const SignUp = () => {
 
       if (result.success) {
         console.log("Signup successful:", result.data);
-        // הפניה לעמוד הבית או המשך תהליך
+        router.push('/pages/user'); // כאן אנחנו מפנים לעמוד הבית
       } else {
         console.error("Signup failed:", result.message);
         if (result.status == 404) {
