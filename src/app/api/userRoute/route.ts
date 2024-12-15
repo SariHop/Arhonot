@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { password, email, city, ...otherFields } = body;
 
-    await validateCity(city);
+    // await validateCity(city);
 
     if (!password || typeof password !== 'string') {
       return NextResponse.json(
