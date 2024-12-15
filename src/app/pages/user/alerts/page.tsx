@@ -12,7 +12,7 @@ import {fetchUsersConnectionReq,updateConnections,updateRequestReadable,updateRe
 
 const Page = () => {
   const decreaseAlertCounter = useAlertsCounter((state) => state.decrease);
-  const user = useUser((state) => state);
+  const user = useUser();
   const [alerts, setAlerts] = useState<AlertTypeFotCollapse[]>([]);
   const [requests, setRequests] = useState<RequestTypeFotCollapse[]>([]);
 
