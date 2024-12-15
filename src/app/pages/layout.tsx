@@ -3,7 +3,7 @@ import NavBar from "../components/NavBar";
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import Header from "../components/Header";
+// import Header from "../components/Header";
 
 
 
@@ -21,9 +21,9 @@ export default function RootLayout({
       <div className="min-h-[100dvh] grid grid-rows-[auto,1fr,auto] grid-cols-[minmax(0,1fr)]">
 
         {/* Header */}
-        <div className="sticky top-0 z-50 ">
+        {/* <div className="sticky top-0 z-50 ">
           <Header />
-        </div>
+        </div> */}
 
         {/* Body */}
         {children}
