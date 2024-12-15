@@ -13,7 +13,7 @@ import bcrypt from 'bcrypt';
 // const validateCity = async (city: string) => {
 //   let cities = [];
 //   const filePath = path.join(process.cwd(), 'src/app/data/cities.json');
-  
+
 //   try {
 //     const stats = await fs.stat(filePath);
 //     const lastModifiedTime = stats.mtime;  // זמן השינוי האחרון בקובץ
@@ -29,12 +29,12 @@ import bcrypt from 'bcrypt';
 //       const citiesData = await fs.readFile(filePath, 'utf-8');
 //       cities = JSON.parse(citiesData);
 //       console.log(cities);
-      
+
 //     }
 //   } catch (error) {
 //     // אם הקובץ לא קיים או קרתה שגיאה, קרא את הערים מה-API ושמור אותן
 //     console.error(error);
-    
+
 //     try {
 //       const response = await axios.get(`${apiUrl}/cities`);      
 //       await fs.writeFile(filePath, JSON.stringify(response.data.cities));
@@ -51,9 +51,6 @@ import bcrypt from 'bcrypt';
 //     throw new Error(`Invalid city: ${city}`);
 //   }
 // };
-
-
-
 
 export async function GET() {
   try {
@@ -83,6 +80,12 @@ export async function POST(request: NextRequest) {
     const { password, email, city, ...otherFields } = body;
 
     // await validateCity(city);
+    if (city && city.length > 25) {
+      return NextResponse.json(
+        { message: "Invalid city" },
+        { status: 402 }
+      );
+    }
 
     if (!password || typeof password !== 'string') {
       return NextResponse.json(
