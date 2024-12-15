@@ -37,4 +37,5 @@ export interface IOutfitsModalProps {
     isOpen: boolean; 
     setIsOpen: (bool:boolean) => void;
     dateDetails: IDayResult;
+    date: string;
   }

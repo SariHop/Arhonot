@@ -19,4 +19,22 @@ export async function createOutfit(formData: IOutfitType) {
   }
 }
 
+export async function updateOutfitFavorite(outfitId: string, favorite: number) {
+  try {
+    const response = await axios.put(`${apiUrl}outfitRoute/${outfitId}`, {favorite});
+    return response.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      const serverError = error.response?.data?.error || "Unknown server error";
+      toast.error(`Server Error: ${serverError}`);
+    } else {
+      toast.error("An unexpected error occurred");
+    }
+    throw error;
+  }
+}
+
+
+
+
 // הסרוויס של אסתי

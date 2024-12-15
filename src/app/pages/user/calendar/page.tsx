@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { IDayResult, looks } from "@/app/services/daysService";
 import IOutfit from "@/app/types/IOutfit";
-import OutfitsModal from "@/app/components/OutfitsModal";
+import OutfitsModal from "@/app/components/calendar/OutfitsModal";
 const customDayNames = ["יום א", "יום ב", "יום ג", "יום ד", "יום ה", "יום ו", "שבת"];
 
 
@@ -20,7 +20,7 @@ const Page: React.FC = () => {
   const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear()); // שנה נבחרת
   const [cellHeight, setCellHeight] = useState<string>(""); // גובה התא
   const [calendarMode, setCalendarMode] = useState<CalendarProps<Dayjs>["mode"]>("month"); // מצב היומן (חודש/שנה)
-  const {_id} = useUser((state) => state);
+  let {_id} = useUser();
   const [dayData, setDayData] = useState<Record<string, IDayResult>>({}); // מפת לוקים לפי תאריך
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -31,8 +31,8 @@ const Page: React.FC = () => {
 
 
   useEffect(() => {
-    console.log("\n\n\n\nTh user is\n\n\n\n",_id);
-    
+    console.log("\n\n\n\nThe user is:\n\n\n\n",_id);
+    _id= "675007691ba3350d49f9b4e5";
     calculateCellHeight();
     loadDayLooks();
     const updateDayHeaders = () => {
@@ -152,7 +152,6 @@ const Page: React.FC = () => {
     setCurrentMonth(value.month());
     setCurrentYear(value.year());
     setCalendarMode(mode); 
-    console.log(value.format("YYYY-MM-DD"), mode);
   };
 
   const onSelect = (value: Dayjs) => {
@@ -191,7 +190,7 @@ const loadDayLooks = async () => {
           className="h-full flex flex-col justify-center  "
           onSelect={onSelect}
         />
-        <OutfitsModal isOpen={isModalVisible} setIsOpen={setIsModalVisible} dateDetails={dayData[selectedDay]}/>
+        {selectedDay !== "" && <OutfitsModal isOpen={isModalVisible} setIsOpen={setIsModalVisible} dateDetails={dayData[selectedDay]} date={selectedDay}/>}
       </div>
     </ConfigProvider>
   );
