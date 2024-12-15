@@ -10,11 +10,12 @@ export default function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter(); // שימוש ב-router מתוך next/navigation
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setIsSubmitting(true);
     if (!email || !password) {
       setError('Both email and password are required.');
       return;
@@ -34,17 +35,19 @@ export default function SignInPage() {
         else {
           toast.error(`Signin failed: \n${result.message}`);
         }
+        setIsSubmitting(false);
       }
     } catch (error) {
       console.error("Unexpected error:", error);
       toast.error("שגיאה לא צפויה. אנא נסה שנית.");
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="max-w-md w-full bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center mb-6 text-gray-700">Sign In</h2>
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-700">התחברות</h2>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -89,9 +92,11 @@ export default function SignInPage() {
           </div>
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            className={`w-full py-2 px-4 text-white rounded-md ${isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500 hover:bg-indigo-600"
+              }`}
+            disabled={isSubmitting}
           >
-            התחברות
+            {isSubmitting ? "מתחבר..." : "התחבר/י"}
           </button>
         </form>
       </div>
