@@ -12,7 +12,6 @@ export default interface IUser extends Document {
     dateOfBirth: Date;
     city: string;
     sensitive: string;
-    // userDays: Types.ObjectId[];
 }
 
 export interface IToken extends Document {

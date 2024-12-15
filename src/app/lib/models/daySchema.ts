@@ -23,6 +23,7 @@ const daySchema: Schema<IDay> = new Schema({
 });
 
 
+daySchema.index({ userId: 1, date: 1 }, { unique: true });
 
 const Day:Model<IDay> = mongoose.models.Day || mongoose.model<IDay>('Day',daySchema);
 
