@@ -15,7 +15,7 @@ export default function SwipeableEdgeDrawer() {
   };
 
   return (
-    <div className='height-full'>
+    <div className='height-full my-1'>
       {/* <CssBaseline /> */}
       <Global
         styles={{
@@ -26,7 +26,7 @@ export default function SwipeableEdgeDrawer() {
         }}
       />
       <Box sx={{ textAlign: 'center', pt: 1 }}>
-        <Button onClick={toggleDrawer(true)} >פתח גלריה</Button>
+        <Button sx={{ width: "100%", backgroundColor: "#d0f19f", color: "black" }} onClick={toggleDrawer(true)} >פתח גלריה</Button>
       </Box>
       <SwipeableDrawer
         anchor="bottom"
@@ -38,9 +38,13 @@ export default function SwipeableEdgeDrawer() {
           keepMounted: true,
         }}
       >
-       
-        <div className='px-2 pb-2, height-full, overflow-auto'>
-        <Button onClick={toggleDrawer(false)}>הסתר גלריה</Button>
+
+        <div className='my-3 height-full, overflow-auto'>
+        <div className="w-8 h-1.5 bg-gray-400 rounded-lg absolute top-2 left-1/2 transform -translate-x-1/2 m-2 block sm:hidden"></div>
+
+          <Box sx={{ textAlign: 'center', pt: 3 }}>
+            <Button sx={{ width: "100%", backgroundColor: "#d0f19f", color: "black" }} onClick={toggleDrawer(false)} >הסתר גלריה</Button>
+          </Box>
           <Gallery isForOutfit={true} />
         </div>
       </SwipeableDrawer>

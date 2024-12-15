@@ -6,18 +6,21 @@ import "react-toastify/dist/ReactToastify.css";
 type CanvasStore = {
   canvas: fabric.Canvas | null;
   setCanvas: (canvas: fabric.Canvas) => void;
-  garments: string[];
+  garments: string[]; //להשאיר כי אני עושה עליו בדיקות בלקוח
   addGarment: (garmentId: string) => void;
   addImageToCanvas: (imageUrl: string, garmentId: string | unknown) => Promise<void>;
-  saveCanvasToLocalStorage: () => void;
-  loadCanvasFromLocalStorage: () => void;
-  cleanCanvasLocalStorage: ()=>void
-  // לשמור מערך תמונות והאם עריכה או יצירה
+  // saveCanvasToLocalStorage: () => void;
+  // loadCanvasFromLocalStorage: () => void;
+  // cleanCanvasLocalStorage: ()=>void
+  
+  // האם עריכה או יצירה
+  // מצב הקנבס הנוכחי
+  // גודל המסך?
 };
 
 const useCanvasStore = create<CanvasStore>((set, get) => ({
   canvas: null,
-  setCanvas: (canvas) => set({ canvas }),
+  setCanvas: (canvas:fabric.Canvas) => set({ canvas }),
   garments: [],
   addGarment: (garmentId) => {
     if (!get().garments.includes(garmentId)) {
