@@ -20,7 +20,7 @@ const Page: React.FC = () => {
   const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear()); // שנה נבחרת
   const [cellHeight, setCellHeight] = useState<string>(""); // גובה התא
   const [calendarMode, setCalendarMode] = useState<CalendarProps<Dayjs>["mode"]>("month"); // מצב היומן (חודש/שנה)
-  let {_id} = useUser();
+  const user = useUser();
   const [dayData, setDayData] = useState<Record<string, IDayResult>>({}); // מפת לוקים לפי תאריך
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -31,8 +31,8 @@ const Page: React.FC = () => {
 
 
   useEffect(() => {
-    console.log("\n\n\n\nThe user is:\n\n\n\n",_id);
-    _id= "675007691ba3350d49f9b4e5";
+    // console.log("\n\n\n\nThe user is:\n\n\n\n",_id);
+    // _id= "675007691ba3350d49f9b4e5";
     calculateCellHeight();
     loadDayLooks();
     const updateDayHeaders = () => {
@@ -164,7 +164,7 @@ const Page: React.FC = () => {
 
 const loadDayLooks = async () => {
     try {
-      const response = await looks(currentMonth,currentYear, _id); // החלף ב-ID של המשתמש
+      const response = await looks(currentMonth,currentYear, user._id); // החלף ב-ID של המשתמש
       const  days  = response; // נניח ש-days מחזיק את נתוני הימים
       setDayData(days);
     } 

@@ -60,6 +60,8 @@ const SignUp = () => {
         console.error("Signup failed:", result.message);
         if (result.status == 404) {
           toast.error("אימייל זה כבר קיים במערכת,\nנסה אולי התחברות");
+        } else if (result.status == 402) {
+          toast.error("העיר שנבחרה לא תקינה");
         } else {
           toast.error(`Signup failed: \n${result.message}`);
         }
@@ -103,7 +105,7 @@ const SignUp = () => {
         className="bg-white p-8 shadow-md rounded-md w-full max-w-md"
       >
         <h2 className="text-2xl font-semibold mb-4 text-gray-800">
-          Registration
+          הרשמה:
         </h2>
         <div className="grid grid-cols-2 gap-4 mb-4">
           {/* UserName */}
@@ -112,7 +114,7 @@ const SignUp = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="userName"
             >
-              User Name
+              שם משתמש
             </label>
             <input
               id="userName"
@@ -133,7 +135,7 @@ const SignUp = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="email"
             >
-              Email
+              אימייל
             </label>
             <input
               id="email"
@@ -154,7 +156,7 @@ const SignUp = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="password"
             >
-              Password
+              סיסמא
             </label>
             <input
               id="password"
@@ -185,7 +187,7 @@ const SignUp = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="confirmPassword"
             >
-              Confirm Password
+              אימות סיסמא
             </label>
             <input
               id="confirmPassword"
@@ -215,7 +217,7 @@ const SignUp = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="gender"
             >
-              Gender
+              מין
             </label>
             <select
               id="gender"
@@ -237,7 +239,7 @@ const SignUp = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="dateOfBirth"
             >
-              Date of Birth
+              תאריך לידה
             </label>
             <input
               type="date"
@@ -268,7 +270,7 @@ const SignUp = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="city"
             >
-              City
+              עיר מגורים
             </label>
 
             <Select
@@ -289,7 +291,7 @@ const SignUp = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="sensitive"
             >
-              Sensitive To:
+              יש רגישות ל:
             </label>
             <select
               id="sensitive"
