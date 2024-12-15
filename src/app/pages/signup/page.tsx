@@ -317,7 +317,7 @@ const SignUp = () => {
             }`}
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Submitting..." : "Register"}
+          {isSubmitting ? "נרשם..." : "הרשם/י"}
         </button>
         <Link href="/pages/signin" className="user-link">
           התחברות
