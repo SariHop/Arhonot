@@ -4,13 +4,15 @@ import {FaCog, FaSignOutAlt, FaPlus, FaLink, FaUnlink, FaExchangeAlt, FaTimes,} 
 import useUser from "@/app/store/userStore";
 import Settings from "@/app/components/userPersonalArea/Settings";
 import Logout from "@/app/components/userPersonalArea/Logout";
+import CreateSubAccount from '@/app/components/userPersonalArea/CreateSubAccount'
+import ConnectExisting from '@/app/components/userPersonalArea/ConnectExisting'
+import DisconnectAccount from '@/app/components/userPersonalArea/DisconnectAccount'
+import SwitchAccounts from '@/app/components/userPersonalArea/SwitchAccounts'
 
 const PersonalArea = () => {
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const { userName } = useUser();
-
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-
   const handleTogglePanel = (key: string | null) => {
     setActiveKey(key);
   };
@@ -21,6 +23,14 @@ const PersonalArea = () => {
         return <Settings/>;
       case "logout":
         return <Logout />;
+      case "create_sub_account":
+        return <CreateSubAccount/>;
+      case 'connect_existing':
+        return <ConnectExisting/>;
+      case 'disconnect_account':
+        return <DisconnectAccount/>;
+      case 'switch_accounts':
+        return <SwitchAccounts/>;
       default:
         return null;
     }
@@ -48,10 +58,10 @@ const PersonalArea = () => {
         )}
         <div className="flex flex-col gap-3 w-full">
           {[{key: "settings", icon: <FaCog />, label: "הגדרות" },
-            {key: "logout", icon: <FaSignOutAlt />, label: "התנתקות" },
+            {key: "logout", icon: <FaSignOutAlt />,label: "התנתקות" },
             {key: "create_sub_account", icon: <FaPlus />,label: "חשבון בן חדש",},
-            {key: "connect_existing", icon: <FaLink />,label: "קישור חשבון אחר",},
-            {key: "disconnect_account", icon: <FaUnlink />, label: "ניתוק חשבון מקושר",},
+            {key: "connect_existing", icon: <FaLink />,label: "התקשרות לחשבון אחר",},
+            {key: "disconnect_account", icon: <FaUnlink />,label: "ניתוק חשבון מקושר",},
             {key: "switch_accounts",icon: <FaExchangeAlt />,label: "מעבר בין חשבונות",},
           ].map(({ key, icon, label }) => (
             <button
