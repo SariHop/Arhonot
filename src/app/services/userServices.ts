@@ -4,6 +4,7 @@ export const apiUrl = "/api/userRoute";
 import useUser from "@/app/store/userStore";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import useOriginUser from '@/app/store/originUserStore'
 
 async function hashPassword(password: string): Promise<string> {
   const encoder = new TextEncoder();
@@ -31,6 +32,7 @@ function calculateAge(birthDate: Date): number {
 }
 
 export const signup = async (formData: IUserType) => {
+  const {setOriginUser} =useOriginUser.getState();
   const { setUser } = useUser.getState();
   try {
     const encryptedPassword = await hashPassword(formData.password); // השתמש ב-await כדי לקבל את התוצאה המגובבת
@@ -48,6 +50,9 @@ export const signup = async (formData: IUserType) => {
       console.log("Response Data after signup:", response.data.data);
       setUser(response.data.data); // עדכון ה-store
       console.log("User state after signup:", useUser.getState());
+      setOriginUser(response.data.data) //עדכון הUserOriginStore
+      console.log("Origin user state after signup:", useOriginUser.getState());
+      
       return { success: true, data: response.data };
     } else {
       const message =
