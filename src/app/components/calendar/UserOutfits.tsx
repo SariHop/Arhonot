@@ -2,7 +2,7 @@ import React, {  useState } from 'react'
 import Image from 'next/image'
 import { Rate } from 'antd'
 import IOutfit from '@/app/types/IOutfit'
-import { updateOutfitFavorite } from '@/app/services/outfitsService'
+import { updateOutfitFavorite } from '@/app/services/outfitServices'
 
 export interface IUserOutfits{
     looks: IOutfit[];
