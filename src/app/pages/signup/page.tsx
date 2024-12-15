@@ -13,6 +13,7 @@ import { DefaultOptionType } from "antd/es/select";
 import { useRouter } from 'next/navigation'; // ייבוא מתוך next/navigation
 
 const SignUp = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<IUserType>({
     password: "",
     confirmPassword: "",
@@ -45,7 +46,7 @@ const SignUp = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setIsSubmitting(true);
     try {
       const validationResult = await userSchemaZod.parseAsync(formData);
       console.log("הנתונים תקינים:", validationResult);
@@ -62,6 +63,7 @@ const SignUp = () => {
         } else {
           toast.error(`Signup failed: \n${result.message}`);
         }
+        setIsSubmitting(false);
       }
     } catch (err) {
       // עדכון השגיאות במידה ו- Zod לא אישר את הנתונים
@@ -75,6 +77,7 @@ const SignUp = () => {
         setErrors(fieldErrors);
         console.log("lllll", err);
       }
+      setIsSubmitting(false);
     }
   };
 
@@ -243,12 +246,15 @@ const SignUp = () => {
                   ? new Date(formData.dateOfBirth).toISOString().split("T")[0]
                   : ""
               }
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  dateOfBirth: new Date(e.target.value),
-                })
-              }
+              onChange={(e) => {
+                if (e.target.value) {
+                  // עדכון הערך רק אם המשתמש מזין תאריך תקין
+                  setFormData({ ...formData, dateOfBirth: new Date(e.target.value) });
+                } else {
+                  // החזרת הערך הנוכחי אם מנסים לנקות
+                  e.target.value = new Date(formData.dateOfBirth).toISOString().split("T")[0];
+                }
+              }}
             />
             {errors.dateOfBirth && (
               <p className="text-red-500 text-sm">{errors.dateOfBirth}</p>
@@ -305,9 +311,11 @@ const SignUp = () => {
         {/* Submit */}
         <button
           type="submit"
-          className="w-full py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+          className={`w-full py-2 px-4 text-white rounded-md ${isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500 hover:bg-indigo-600"
+            }`}
+          disabled={isSubmitting}
         >
-          Register
+          {isSubmitting ? "Submitting..." : "Register"}
         </button>
         <Link href="/pages/signin" className="user-link">
           התחברות
