@@ -9,22 +9,17 @@ import { toast } from 'react-toastify';
 
 
 const OutfitsModal: React.FC<IOutfitsModalProps> = ({isOpen, setIsOpen, dateDetails, date}) => {
-
   const [childrensLooks, setChildrensLooks] = useState<Record<string, IDayResult>>({});
 
     
     useEffect(() => {
-      console.log("the date is", date)
-        loadDayLooks();
-        console.log("date details", dateDetails);
-        
+        loadDayLooks();        
     }, [dateDetails]);
+
 
     const loadDayLooks = async () => {
       try {
-        // const response = await getChildrenLooks( String(dateDetails.userId), date); // החלף ב-ID של המשתמש
-        const response = await getChildrenLooks("675007691ba3350d49f9b4e5", date); // החלף ב-ID של המשתמש
-
+        const response = await getChildrenLooks(String(dateDetails.userId), date); // החלף ב-ID של המשתמש
         const  days  = response; // נניח ש-days מחזיק את נתוני הימים
         setChildrensLooks(days);
       } 
