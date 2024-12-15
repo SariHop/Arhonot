@@ -2,6 +2,9 @@ import { IUserType, ResetPasswordResponse } from "../types/IUser";
 import axios from "axios";
 export const apiUrl = "/api/userRoute";
 import useUser from "@/app/store/userStore";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import useOriginUser from '@/app/store/originUserStore'
 
 async function hashPassword(password: string): Promise<string> {
   const encoder = new TextEncoder();
@@ -29,6 +32,7 @@ function calculateAge(birthDate: Date): number {
 }
 
 export const signup = async (formData: IUserType) => {
+  const {setOriginUser} =useOriginUser.getState();
   const { setUser } = useUser.getState();
   try {
     const encryptedPassword = await hashPassword(formData.password); // השתמש ב-await כדי לקבל את התוצאה המגובבת
@@ -46,6 +50,9 @@ export const signup = async (formData: IUserType) => {
       console.log("Response Data after signup:", response.data.data);
       setUser(response.data.data); // עדכון ה-store
       console.log("User state after signup:", useUser.getState());
+      setOriginUser(response.data.data) //עדכון הUserOriginStore
+      console.log("Origin user state after signup:", useOriginUser.getState());
+      
       return { success: true, data: response.data };
     } else {
       const message =
@@ -143,7 +150,7 @@ export const resetPassword = async (
 
 export const forgotPassword = async (email: string) => {
   try {
-    const response = await axios.post('/api/reset-password', {
+    const response = await axios.post("/api/reset-password", {
       email: email,
     });
     if (response.status === 200) {
@@ -175,14 +182,12 @@ export const forgotPassword = async (email: string) => {
     }
   }
 };
-
-
-
+//פונקציה להתנתקות מהאתר
 export const logout = async (): Promise<void> => {
   const { resetUser } = useUser.getState();
 
   try {
-    // שליחת בקשה לשרת למחיקת הטוקי
+    //שליחת בקשה לשרת למחיקת הטוקן
     await axios.post("/api/logoutRoute", null, { withCredentials: true });
     // איפוס המשתמש ב-Store
     resetUser();
@@ -190,5 +195,27 @@ export const logout = async (): Promise<void> => {
     console.log("User has been logged out successfully.");
   } catch (error) {
     console.error("Error during logout:", error);
+  }
+};
+//פונקציה לעדכון פרטי משתמש
+export const updateUser = async (_id: string, body: object) => {
+  const { setUser } = useUser.getState();
+  try {
+    const response = await axios.put(`${apiUrl}/${_id}`, body, {
+      headers: { "Content-Type": "application/json" },
+    });
+    console.log("User updated successfully:", response.data);
+    setUser(response.data.data); // עדכון ה-store
+      console.log("User state after signup:", useUser.getState());
+    return response.data;
+  } catch (error: unknown) {
+    console.error("Failed to update connection request:", error);
+    if (axios.isAxiosError(error)) {
+      const serverError = error.response?.data?.error || "Unknown server error";
+      toast.error(`Server Error: ${serverError}`);
+    } else {
+      toast.error("An unexpected error occurred");
+    }
+    throw error;
   }
 };

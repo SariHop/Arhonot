@@ -1,10 +1,7 @@
 'use client';
-import NavBar from "../components/NavBar";
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import Header from "../components/Header";
-
 
 
 export default function RootLayout({
@@ -16,15 +13,7 @@ export default function RootLayout({
 
   return (
     <QueryClientProvider client={queryClient}>
-
-      <div style={{ paddingTop:"15vh",paddingBottom: "10vh" }}>
-      <div style={{ position: 'relative', zIndex: 1000 }}>
-          <Header />
-        </div>
-      {children}
-        <NavBar />
-      </div>
-
+        {children}
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

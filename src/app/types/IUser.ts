@@ -12,7 +12,6 @@ export default interface IUser extends Document {
     dateOfBirth: Date;
     city: string;
     sensitive: string;
-    // userDays: Types.ObjectId[];
 }
 
 export interface IToken extends Document {
@@ -53,7 +52,7 @@ export const userSchemaZod = z.object({
     email: z.string().email("כתובת מייל לא חוקית"),
     userName: z
         .string()
-        .regex(/^[A-Za-z]+$/, "שם משתמש חייב להיות באנגלית ובאותיות בלבד")
+        .regex(/^[\u0590-\u05FF\w\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/, "שם משתמש יכול לכלול אותיות בעברית, אנגלית, ספרות ותווים מיוחדים")
         .min(2, "שם משתמש חייב להכיל 2 אותיות לפחות"),
     gender: z.enum(["זכר", "נקבה"]),
     age: z.number().min(0, 'גיל לא יקטן מ0').max(120, 'גיל לא יחרוג מ120'),
@@ -94,6 +93,11 @@ export const userSchemaZod = z.object({
 export type IUserType = z.infer<typeof userSchemaZod>;
 export type IUserTypeWithId = Omit<IUserType, "confirmPassword"> & { _id: string };
 
+// הסרת השדות password ו-confirmPassword מסכמת userSchemaZod
+export const updateUserSchemaZod = z.object(userSchemaZod._def.schema.shape).omit({
+    password: true,
+    confirmPassword: true,
+});
 
 // טיפוס ליצירת משתמש (ללא _id ועם שדות נדרשים בלבד)
 export type CreateUserType = Omit<IUser, "_id"/* | "children" */>;
@@ -104,7 +108,10 @@ export type UpdateUserTypeForStore = Partial<IUser> & { _id: string };
 // טיפוס לעדכון משתמש (כל השדות אופציונליים מלבד _id)- צריך לעדכן אילו שדות ניתן להשאיר ריקים ואלו לא
 export type UpdateUserDBType = Omit<Partial<IUser>, "_id"> & { _id: string };
 
+// טיפוס עבור עדכון פרטי משתמש ללא עדכון סיסמה
+export type UpdateUserType = z.infer<typeof updateUserSchemaZod>;
 
+//טיפוס עבור איפוס סיסמה
 export type ResetPasswordResponse =
     | string // אם זה שגיאה
     | {

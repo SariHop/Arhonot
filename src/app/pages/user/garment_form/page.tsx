@@ -8,9 +8,7 @@ import { ZodError } from "zod";
 import UploadImage from "@/app/components/imagesUploud/UploudButton";
 import Image from "next/image";
 import { ColorPicker } from "antd";
-import { useTagQuery } from "@/app/hooks/tagsQueryHook";
-import { useTypeQuery } from "@/app/hooks/typeQueryHook";
-import { useSeasonQuery } from "@/app/hooks/seasonQueryHook";
+import {validSeasons, typeCategories, tags, rangeWheatherDeescription} from "@/app/data/staticArrays"
 
 const GarmentForm = () => {
   const { _id } = useUser((state) => state);
@@ -27,9 +25,7 @@ const GarmentForm = () => {
     tags: [],
   });
 
-  const { data: tags, isLoading: isLoadingTag, error: errorTag } = useTagQuery();
-  const { data: seasons, isLoading: isLoadingSeason, error: errorSeason } = useSeasonQuery();
-  const { data: categories, isLoading: isLoadingCategory, error: errorCategory } = useTypeQuery();
+  // const { data: tags, isLoading: isLoadingTag, error: errorTag } = useTagQuery();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [imageUrl, setImageUrl] = useState<string>("");
 
@@ -117,14 +113,10 @@ const GarmentForm = () => {
     }
   };
 
-
-  if (isLoadingTag || isLoadingSeason || isLoadingCategory) return <div>Loading...</div>;
-  if (errorTag || errorSeason || errorCategory) return <div>Error loading details  </div>;
-
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-4xl mx-auto p-4 bg-white rounded shadow-md space-y-4 mb-12"
+      className="max-w-4xl mx-auto p-7 bg-white rounded shadow-md space-y-4 "
     >
       <h1 className="text-2xl font-semibold text-center">Create Garment</h1>
       <UploadImage setCloudinary={setImageUrl} />
@@ -144,7 +136,7 @@ const GarmentForm = () => {
         className="w-full p-2 border rounded"
       >
         <option value="">Select Season</option>
-        {seasons.map((season:string) => (
+        {validSeasons.map((season:string) => (
           <option key={season} value={season}>
             {season}
           </option>
@@ -159,7 +151,7 @@ const GarmentForm = () => {
         className="w-full p-2 border rounded"
       >
         <option value="">Select Category</option>
-        {categories.map((category:string) => (
+        {typeCategories.map((category:string) => (
           <option key={category} value={category}>
             {category}
           </option>
@@ -180,8 +172,9 @@ const GarmentForm = () => {
         {/* שדה הטווח */}
         <div className="w-1/2 flex flex-col items-center">
           <div className="flex justify-between w-full">
-            <span className="text-sm">קר</span>
+            {/* <p>לאיזה מזג אוויר הלוק הזה מתאים?</p> */}
             <span className="text-sm">חם</span>
+            <span className="text-sm">קר</span>
           </div>
           <input
             type="range"
@@ -193,7 +186,7 @@ const GarmentForm = () => {
             onChange={handleChange}
             className="w-full mt-2"
           />
-          <p className="text-center mt-2"> {formData.range}</p>
+           <p className="text-center mt-2"> {rangeWheatherDeescription[formData.range-1]}</p>
         </div>
 
         {/* שדה המחיר */}

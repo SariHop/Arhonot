@@ -47,7 +47,11 @@ const useUser = create(
         age: user.age ?? 0,
         gender: user.gender || "",
         city: user.city || "",
-        dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth) : null,
+        dateOfBirth: user.dateOfBirth 
+        ? (user.dateOfBirth instanceof Date 
+            ? user.dateOfBirth 
+            : new Date(user.dateOfBirth))
+        : null,
         sensitive: user.sensitive || "none",
         children: user.children ?? [],
       };
