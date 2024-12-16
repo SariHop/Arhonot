@@ -8,7 +8,7 @@ import useCanvasStore from "@/app/store/canvasStore";
 const Canvas = () => {
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const { setCanvas, canvas } = useCanvasStore();
+  const { setCanvas } = useCanvasStore();
 
   useEffect(() => {
 
@@ -33,12 +33,6 @@ const Canvas = () => {
       }
     }
   }, []);
-
-  // useEffect(() => {
-  //   if (canvas) {
-  //     loadCanvasFromLocalStorage()
-  //   }
-  // }, [canvas]);
 
   return (
     <div className="flex flex-col justify-center mt-3">

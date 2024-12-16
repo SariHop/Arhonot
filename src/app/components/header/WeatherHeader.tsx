@@ -10,7 +10,6 @@ import {
 import { IoLocationOutline } from "react-icons/io5";
 import { useWeatherQuery } from "@/app/hooks/weatherQueryHook";
 import { useLocationTracking } from "@/app/hooks/locationHook";
-import Image from "next/image";
 
 
 const getWeatherIcon = (condition: string) => {
