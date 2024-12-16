@@ -1,5 +1,6 @@
 import { Document, ObjectId, Types } from "mongoose";
 import {z} from 'zod'
+import { IDayResult } from "../services/daysService";
 
 export default interface IDay extends Document{
     userId: ObjectId;
@@ -32,3 +33,9 @@ export type IDayTypeWithId = z.infer<typeof daySchemaZod> & {
     _id: string;
 };
 
+export interface IOutfitsModalProps {
+    isOpen: boolean; 
+    setIsOpen: (bool:boolean) => void;
+    dateDetails: IDayResult;
+    date: string;
+  }

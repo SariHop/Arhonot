@@ -13,6 +13,7 @@ import { DefaultOptionType } from "antd/es/select";
 import { useRouter } from 'next/navigation'; // ייבוא מתוך next/navigation
 
 const SignUp = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<IUserType>({
     password: "",
     confirmPassword: "",
@@ -45,7 +46,7 @@ const SignUp = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setIsSubmitting(true);
     try {
       const validationResult = await userSchemaZod.parseAsync(formData);
       console.log("הנתונים תקינים:", validationResult);
@@ -59,9 +60,12 @@ const SignUp = () => {
         console.error("Signup failed:", result.message);
         if (result.status == 404) {
           toast.error("אימייל זה כבר קיים במערכת,\nנסה אולי התחברות");
+        } else if (result.status == 402) {
+          toast.error("העיר שנבחרה לא תקינה");
         } else {
           toast.error(`Signup failed: \n${result.message}`);
         }
+        setIsSubmitting(false);
       }
     } catch (err) {
       // עדכון השגיאות במידה ו- Zod לא אישר את הנתונים
@@ -75,6 +79,7 @@ const SignUp = () => {
         setErrors(fieldErrors);
         console.log("lllll", err);
       }
+      setIsSubmitting(false);
     }
   };
 
@@ -100,7 +105,7 @@ const SignUp = () => {
         className="bg-white p-8 shadow-md rounded-md w-full max-w-md"
       >
         <h2 className="text-2xl font-semibold mb-4 text-gray-800">
-          Registration
+          הרשמה:
         </h2>
         <div className="grid grid-cols-2 gap-4 mb-4">
           {/* UserName */}
@@ -109,7 +114,7 @@ const SignUp = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="userName"
             >
-              User Name
+              שם משתמש
             </label>
             <input
               id="userName"
@@ -130,7 +135,7 @@ const SignUp = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="email"
             >
-              Email
+              אימייל
             </label>
             <input
               id="email"
@@ -151,7 +156,7 @@ const SignUp = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="password"
             >
-              Password
+              סיסמא
             </label>
             <input
               id="password"
@@ -182,7 +187,7 @@ const SignUp = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="confirmPassword"
             >
-              Confirm Password
+              אימות סיסמא
             </label>
             <input
               id="confirmPassword"
@@ -212,7 +217,7 @@ const SignUp = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="gender"
             >
-              Gender
+              מין
             </label>
             <select
               id="gender"
@@ -234,7 +239,7 @@ const SignUp = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="dateOfBirth"
             >
-              Date of Birth
+              תאריך לידה
             </label>
             <input
               type="date"
@@ -243,12 +248,15 @@ const SignUp = () => {
                   ? new Date(formData.dateOfBirth).toISOString().split("T")[0]
                   : ""
               }
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  dateOfBirth: new Date(e.target.value),
-                })
-              }
+              onChange={(e) => {
+                if (e.target.value) {
+                  // עדכון הערך רק אם המשתמש מזין תאריך תקין
+                  setFormData({ ...formData, dateOfBirth: new Date(e.target.value) });
+                } else {
+                  // החזרת הערך הנוכחי אם מנסים לנקות
+                  e.target.value = new Date(formData.dateOfBirth).toISOString().split("T")[0];
+                }
+              }}
             />
             {errors.dateOfBirth && (
               <p className="text-red-500 text-sm">{errors.dateOfBirth}</p>
@@ -262,7 +270,7 @@ const SignUp = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="city"
             >
-              City
+              עיר מגורים
             </label>
 
             <Select
@@ -283,7 +291,7 @@ const SignUp = () => {
               className="block text-sm font-medium text-gray-700"
               htmlFor="sensitive"
             >
-              Sensitive To:
+              יש רגישות ל:
             </label>
             <select
               id="sensitive"
@@ -305,9 +313,11 @@ const SignUp = () => {
         {/* Submit */}
         <button
           type="submit"
-          className="w-full py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+          className={`w-full py-2 px-4 text-white rounded-md ${isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500 hover:bg-indigo-600"
+            }`}
+          disabled={isSubmitting}
         >
-          Register
+          {isSubmitting ? "נרשם..." : "הרשם/י"}
         </button>
         <Link href="/pages/signin" className="user-link">
           התחברות
