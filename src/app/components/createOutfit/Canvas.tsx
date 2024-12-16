@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useRef } from "react";
-import * as fabric from 'fabric';
+import { fabric } from "fabric";
+
 import ShowGallery from "@/app/components/createOutfit/ShowGallery";
 import ToolBox from "@/app/components/createOutfit/toolBox/ToolBox"
 import useCanvasStore from "@/app/store/canvasStore";

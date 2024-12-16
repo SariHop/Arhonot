@@ -1,6 +1,7 @@
 // import React, { useState, useEffect, useContext } from "react";
 // import { Button, IconButton } from "@mui/material";
-// import * as fabric from 'fabric';
+// import { fabric } from "fabric";
+
 // import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 // import ZoomInIcon from '@mui/icons-material/ZoomIn';
 // import { CanvasContext } from "@/app/components/createOutfit/Canvas";

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import * as fabric from 'fabric';
+import { fabric } from "fabric";
+
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import IOutfit from '../types/IOutfit';
@@ -29,35 +30,33 @@ const useCanvasStore = create<CanvasStore>((set, get) => ({
   editOutfit: null,
   setEditOutfit: (outfit: IOutfit | null) => set({ editOutfit: outfit }),
   loadImage: async (garmentURL: string) => {
-    const canvas = get().canvas; 
-    if (!canvas) return
+    const canvas = get().canvas;
+    if (!canvas) return;
 
-    const img = await fabric.FabricImage.fromURL(garmentURL, {
-      crossOrigin: "anonymous",
-    });
+    // הגדרת תמיכה ב-CORS
+    const img = await fabric.Image.fromURL(
+        garmentURL,
+        (img) => {
+            // שינוי תכונות התמונה לפי הצורך
+            img.set({
+                left: 50, // מיקום X
+                top: 50, // מיקום Y
+                scaleX: 0.5, // שינוי גודל התמונה בציר X
+                scaleY: 0.5, // שינוי גודל התמונה בציר Y
+            });
 
-    // Ensure canvas width and height are valid
-    if (!canvas.width || !canvas.height) {
-      console.error("Canvas dimensions are invalid.");
-      return;
-    }
+            // הוספת התמונה לקנבס
+            canvas.add(img);
 
-    // Calculate scale to fit canvas while maintaining aspect ratio
-    const canvasScale = Math.min(
-      canvas.width / img.width,
-      canvas.height / img.height
-    ) * 0.5; // 50% of max scale to leave some margin
+            // אופציונלי: הצגת התמונה במצב "נבחר"
+            canvas.setActiveObject(img);
+        },
+        { crossOrigin: "anonymous" } // הוספת תמיכה ב-CORS
+    );
 
-    img.set({
-      left: canvas.width / 2 - (img.width * canvasScale) / 2,
-      top: canvas.height / 2 - (img.height * canvasScale) / 2,
-      scaleX: canvasScale,
-      scaleY: canvasScale,
-    });
-
-    canvas.add(img);
     canvas.requestRenderAll();
-  },
+},
+
   addImageToCanvasFromGallery: async (garmentURL: string, garmentId: string | unknown) => {
 
     const canvas = get().canvas;

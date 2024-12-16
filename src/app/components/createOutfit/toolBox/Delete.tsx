@@ -11,7 +11,8 @@ export default Delete
 // "use client";
 // import React, { useEffect, useState } from "react";
 // import useCanvasStore from "@/app/store/canvasStore";
-// import * as fabric from 'fabric';
+// import { fabric } from "fabric";
+
 // import { IconButton } from '@mui/material';
 // import { FaTrash } from 'react-icons/fa';
 
