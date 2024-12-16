@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from "react";
 import {
-  FaRegSun ,
+  FaRegSun,
   FaCloud,
   FaCloudRain,
   FaSnowflake,
@@ -11,6 +11,7 @@ import { IoLocationOutline } from "react-icons/io5";
 import { useWeatherQuery } from "@/app/hooks/weatherQueryHook";
 import { useLocationTracking } from "@/app/hooks/locationHook";
 import Image from "next/image";
+
 
 const getWeatherIcon = (condition: string) => {
   const iconMap = {
@@ -24,12 +25,13 @@ const getWeatherIcon = (condition: string) => {
   );
 };
 
-const WeatherHeader: React.FC = () => {
-  const { hasSignificantLocationChange, resetLocationChange } =
-    useLocationTracking();
-  const [currentTime, setCurrentTime] = useState(new Date());
 
+const WeatherHeader: React.FC = () => {
+
+  const [currentTime, setCurrentTime] = useState(new Date());
   const [expanded, setExpanded] = useState(false);
+
+  const { hasSignificantLocationChange, resetLocationChange } = useLocationTracking();
   const { data: weatherData, isLoading, error, refetch } = useWeatherQuery();
 
   useEffect(() => {
@@ -39,6 +41,7 @@ const WeatherHeader: React.FC = () => {
 
     return () => clearInterval(timeInterval);
   }, []);
+
   useEffect(() => {
     if (hasSignificantLocationChange) {
       refetch();
@@ -46,13 +49,8 @@ const WeatherHeader: React.FC = () => {
     }
   }, [hasSignificantLocationChange, refetch, resetLocationChange]);
 
-  if (isLoading)
-    return (
-      <div className="left-0 w-full bg-gray-100 shadow-md">
-        טוען נתוני מזג אוויר...
-      </div>
-    );
-  if (error) return <div>שגיאה בטעינת נתונים</div>;
+  if (isLoading) return (<div className="p-4">טוען נתוני מזג אוויר...  </div>);
+  if (error) return <div className="p-4">שגיאה בטעינת נתונים</div>;
   if (!weatherData) return null;
 
   const cityName = weatherData.city.name;
@@ -82,60 +80,48 @@ const WeatherHeader: React.FC = () => {
   const currentIcon = closestHour.weather[0].icon;
 
   return (
-    <div className="sticky top-0 left-0 w-full bg-gray-100 shadow-md">
-      <header
+    <div>
+      <div
         className="flex items-center justify-between cursor-pointer"
         onClick={() => setExpanded(!expanded)}
       >
-        <div className="flex items-center">
-          <Image
-            src="/logoNoBGblackSmaller.png"
-            alt="Logo"
-            width={150}
-            height={30}
-            className="mr-1"
-          />
-        </div>
-        {/* תוכן בצד שמאל */}
-        {isLoading? (
-          <>טוען נתונים...</>
-        ) : (
-          <div className="flex flex-col items-end w-full md:w-auto ml-2 mt-3 mb-1 space-x-2 space-y-1">
-            {/* מיקום */}
-            <div className="flex items-center justify-end space-x-3 text-sm text-gray-900 font-semibold">
-              <IoLocationOutline  className="w-4 h-4 text-gray-600" />
-              <span>{cityName}</span>
-            </div>
 
-            {/* מעלות, אייקון ותיאור מזג האוויר */}
-            <div className="flex items-center justify-end space-x-1">
-              <div className="text-lg font-semibold ml-3 hidden md:block">
-                {currentTime.toLocaleTimeString("he-IL", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: false,
-                })}
-              </div>
+        <div className="flex flex-col items-end w-full md:w-auto ml-2 mt-3 mb-1 space-x-2 space-y-1">
 
-              {/* אייקון מזג האוויר */}
-              <div className="mr-3 ">{getWeatherIcon(currentIcon)}</div>
-              {/* מעלות */}
-              <span className="text-lg font-semibold">
-                {currentTemp.toFixed(1)}°C
-              </span>
-              {/* תיאור מזג האוויר */}
-              <span className="text-sm text-gray-500">{currentDesc}</span>
-            </div>
-
-            {/* חץ למטה */}
-            <FaChevronDown
-              className={`transform transition-transform ${
-                expanded ? "rotate-180" : ""
-              }`}
-            />
+          {/* מיקום */}
+          <div className="flex items-center justify-end space-x-3 text-sm text-gray-900 font-semibold">
+            <IoLocationOutline className="w-4 h-4 text-gray-600" />
+            <span>{cityName}</span>
           </div>
-        )}
-      </header>
+
+          {/* מעלות, אייקון ותיאור מזג האוויר */}
+          <div className="flex items-center justify-end ">
+            {/* שעה */}
+            <div className="text-lg font-semibold hidden md:block">
+              {currentTime.toLocaleTimeString("he-IL", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              })}
+            </div>
+
+            {/* אייקון מזג האוויר */}
+            <div className="m-2 ">{getWeatherIcon(currentIcon)}</div>
+
+            {/* מעלות */}
+            <span className="text-lg font-semibold">
+              {currentTemp.toFixed(1)}°C
+            </span>
+
+            {/* תיאור מזג האוויר */}
+            <span className="text-sm text-gray-500 mr-3">{currentDesc}</span>
+          </div>
+
+          {/* חץ למטה */}
+          <FaChevronDown className={`transform transition-transform ${expanded ? "rotate-180" : ""}`} />
+
+        </div>
+      </div>
 
       {expanded && (
         <div className="absolute top-full left-0 w-full bg-white shadow-md z-[9999] pointer-events-auto">
@@ -148,11 +134,10 @@ const WeatherHeader: React.FC = () => {
               return (
                 <div
                   key={hourlyData.dt}
-                  className={`text-center flex flex-col items-center p-2 ${
-                    isCurrentHour
-                      ? "font-bold text-blue-600 bg-blue-100 rounded-md"
-                      : "text-gray-700"
-                  }`}
+                  className={`text-center flex flex-col items-center p-2 ${isCurrentHour
+                    ? "font-bold text-blue-600 bg-blue-100 rounded-md"
+                    : "text-gray-700"
+                    }`}
                 >
                   <div>{hourTime.getHours()}:00</div>
                   {getWeatherIcon(hourlyData.weather[0].icon)}
