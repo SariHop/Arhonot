@@ -9,28 +9,27 @@ import Image from "next/image";
 import useUser from "@/app/store/userStore";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { IDayResult, looks } from "@/app/services/daysService";
 import IOutfit from "@/app/types/IOutfit";
+import { IDayWithLooks } from "@/app/types/IDay";
+import { userLooks } from "@/app/services/daysService";
 
-// const customDayNames = ["יום א", "יום ב", "יום ג", "יום ד", "יום ה", "יום ו", "שבת"];
 
 const Page: React.FC = () => {
   const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
   const [cellHeight, setCellHeight] = useState<string>(""); // גובה התא
 
-  const [dayData, setDayData] = useState<Record<string, IDayResult>>({});
+  const [dayData, setDayData] = useState<Record<string, IDayWithLooks>>({});
   const { _id } = useUser((state) => state);
 
   useEffect(() => {
     loadDayLooks();
     calculateCellHeight();
-    // console.log("\n\n\n\n" , cellHeight, "\n\n\n");
   }, [currentMonth, currentYear]);
 
   const loadDayLooks = async () => {
     try {
-      const response = await looks(currentMonth, currentYear, _id);
+      const response = await userLooks(currentMonth, currentYear, _id);
       setDayData(response);
     } catch (error) {
       console.error("Failed to process user looks:", error);
@@ -59,7 +58,7 @@ const Page: React.FC = () => {
     const dayLooks = dayData[dateKey]?.looks || [];
 
     return (
-      <div className="flex flex-col md:flex-row md:items-start justify-center items-center  text-base text-center w-full" style={{ height: cellHeight }}>
+      <div className="flex flex-col md:flex-row md:items-start justify-center items-center  text-base text-center w-full " style={{ height: cellHeight }}>
         {dayLooks && dayLooks.map((look: IOutfit, index) => (
           index < 1 ? (
             <Image

@@ -1,45 +1,27 @@
 import axios from "axios";
-import IDay from "../types/IDay";
-import IOutfit from "../types/IOutfit";
-// import { Types } from "mongoose";
+import { IDayWithLooks } from "../types/IDay";
 
-export type IDayResult = IDay & {
-  looks: IOutfit[];
-};
 
-export const dayLooks = async (userId: string, month: number, year: number) => {
+
+export const userLooks = async (month: number, year: number, userId: string) => {
   try {
-    const response = await axios.post(`/api/dayRoute/daysOutfits/`, {
-      userId: userId,
-      month,
-      year,
-    });
-    console.log("response", response.data);
+    const response = await axios.post(`/api/dayRoute/daysOutfits/`, {userId: userId, month, year});
+    const days: IDayWithLooks[] = response.data;
+    console.log(response)
+    const daysMap: Record<string, IDayWithLooks> = {};
 
-    return response.data;
-  } catch (error: unknown) {
-    console.error("Failed to fetch user looks:", error);
-    throw error;
-  }
-};
-
-export const looks = async (month: number, year: number, userId: string) => {
-  try {
-    const days: IDayResult[] = await dayLooks(userId, month, year);
-
-    const result: Record<string, IDayResult> = {};
-
-    days.forEach((day: IDayResult) => {
+    days.forEach((day: IDayWithLooks) => {
       const formattedDate = new Date(day.date).toISOString().split("T")[0];
       console.log("day", formattedDate);
-      result[formattedDate] = day;
+      daysMap[formattedDate] = day;
     });
-    return result;
+    return daysMap;
   } catch (error: unknown) {
     console.error("Failed to process user looks:", error);
     throw error;
   }
 };
+
 
 export const getChildrenLooks = async ( userId: string, date :string) => {
   try {
@@ -49,15 +31,13 @@ export const getChildrenLooks = async ( userId: string, date :string) => {
       });
 
 
-      console.log("response1234567", "response", response)
-    type DayWithName = IDayResult & { childName: string };
+    type DayWithName = IDayWithLooks & { childName: string };
     const days: DayWithName[] = response.data.days;
+    const result: Record<string, IDayWithLooks> = {};
 
-    const result: Record<string, IDayResult> = {};
-
-    days.forEach((day: IDayResult & { childName: string }) => {
+    days.forEach((day: IDayWithLooks & { childName: string }) => {
       const {childName, ...rest} = day;
-      result[childName] = rest as IDayResult;;
+      result[childName] = rest as IDayWithLooks;
     });
     return result;
   } catch (error: unknown) {
