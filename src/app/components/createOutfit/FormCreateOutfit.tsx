@@ -12,24 +12,40 @@ import { createOutfit } from "@/app/services/outfitServices"
 import "react-toastify/dist/ReactToastify.css";
 import {OutfitFormProps} from "@/app/types/props"
 import useCanvasStore from "@/app/store/canvasStore";
+import { useRouter } from 'next/navigation';
+import { ZodError } from "zod";
 
 
 const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => {
   const { _id: userId } = useUser((state) => state);
 
-  // const arreyOfGarmentInCanvas = context?.arreyOfGarmentInCanvas || [];
-  const { garments } = useCanvasStore();
+  const { garments, editOutfit, setEditOutfit, setGarments } = useCanvasStore();
 
   // State for form fields
-  const [season, setSeason] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [rangeWeather, setRangeWeather] = useState<number>(4);
+  const [season, setSeason] = useState("");
+  const [description, setDescription] = useState("");
+  const [rangeWeather, setRangeWeather] = useState(4);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [rate, setRate] = useState<number>(0);
+  const [rate, setRate] = useState(0);
 
   // Image states
-  const [outfitFromCloudinary, setOutfitFromCloudinary] = useState<string>("");
-  const [isImageLoading, setIsImageLoading] = useState<boolean>(true);
+  const [outfitFromCloudinary, setOutfitFromCloudinary] = useState("");
+  const [isImageLoading, setIsImageLoading] = useState(true);
+
+  const [errormessege, setErrormessege] = useState("");
+
+  const router = useRouter()
+
+  useEffect(() => {
+    if (editOutfit) {
+      setSeason(editOutfit.season);
+      setDescription(editOutfit.desc || "");
+      setRangeWeather(editOutfit.rangeWheather);
+      setSelectedTags(editOutfit.tags);
+      setRate(editOutfit.favorite);
+      setOutfitFromCloudinary(editOutfit.img);
+    }
+  }, [editOutfit]);
 
   useEffect(() => {
     const saveImageToCloudinary = async () => {
@@ -39,11 +55,11 @@ const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => 
         setIsImageLoading(true);
         const { imageUrl } = await cloudinaryUploud(outfitImgurl);
         setOutfitFromCloudinary(imageUrl);
+        setIsImageLoading(false);
       } catch (error) {
         console.error("Image upload error:", error);
-        toast.error("שגיאה בשמירת הלוק");
-      } finally {
-        setIsImageLoading(false);
+        toast.error("שגיאה בטעינת הלוק");
+        closeModal()
       }
     };
 
@@ -73,13 +89,26 @@ const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => 
     try {
       await outfitSchemaZod.parseAsync(outfitFinal);
       await createOutfit(outfitFinal);
-      toast.success("לוק נוצר בהצלחה!");
+      router.push("/pages/user");
       closeModal();
+      toast.success("לוק נוצר בהצלחה!");
+
+      // איך לנקות את הקנבס?
+      setEditOutfit(null)
+      setGarments([])
+
     } catch (err) {
-      console.error("Validation failed:", err);
-      toast.error("שגיאה ביצירת הלוק. נסה שנית!");
+      if (err instanceof ZodError) {
+        const errorMessages = err.errors.map((e) => e.message).join(", ");
+        console.error("Validation failed:", errorMessages);
+        setErrormessege(`שגיאה ביצירת הלוק: ${errorMessages}`);
+      } else {
+        console.error("Unexpected error:", err);
+        setErrormessege("שגיאה ביצירת הלוק. נסה שנית!");
+      }
     }
   };
+
 
   return (
     <Modal
@@ -87,12 +116,12 @@ const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => 
       title="יצירת לוק חדש"
       onCancel={closeModal}
       footer={null}
-      style={{ top: 20 }}
+      style={{ top: 15 }}
     >
       <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-4 space-y-6">
 
-         {/* Image Preview */}
-         <div className="relative flex flex-col items-center">
+        {/* Image Preview */}
+        <div className="relative flex flex-col items-center">
           <div className="relative w-full max-w-sm h-64 overflow-hidden rounded-lg border shadow-sm mb-4">
             {isImageLoading ? (
               <div className="flex items-center justify-center w-full h-full bg-gray-200">
@@ -115,10 +144,10 @@ const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => 
         </div>
 
         {/* Season Selector */}
-        <select 
-          value={season} 
-          onChange={(e) => setSeason(e.target.value)} 
-          className="w-full p-2 border rounded" 
+        <select
+          value={season}
+          onChange={(e) => setSeason(e.target.value)}
+          className="w-full p-2 border rounded"
           required
         >
           <option value="">בחר עונה</option>
@@ -150,8 +179,7 @@ const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => 
               min="1"
               max="7"
               className="w-full"
-            />
-                       
+            />                       
           </div>
         </div>
 
@@ -185,15 +213,16 @@ const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => 
           />
         </div>
 
+        {errormessege && <p className="text-red-500">{errormessege}</p>}
+
         {/* Submit Button */}
         <button
           type="submit"
           disabled={!outfitFromCloudinary || isImageLoading}
-          className={`w-full py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-            !outfitFromCloudinary || isImageLoading 
-              ? "bg-gray-400 cursor-not-allowed" 
-              : "bg-indigo-600 text-white hover:bg-indigo-700"
-          }`}
+          className={`w-full py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 ${!outfitFromCloudinary || isImageLoading
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-indigo-600 text-white hover:bg-indigo-700"
+            }`}
         >
           צור לוק
         </button>

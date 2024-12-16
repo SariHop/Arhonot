@@ -1,13 +1,27 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { IOutfitProps } from "../../../types/IOutfit";
+import IOutfit, { IOutfitProps } from "../../../types/IOutfit";
+import { useRouter } from 'next/navigation';
+import useCanvasStore from "@/app/store/canvasStore";
 
 const Outfit = ({ outfit, closeModal }: IOutfitProps) => {
     const handleCloseClick = (e: React.MouseEvent) => {
         e.stopPropagation(); // מונע פיזור אירוע
         closeModal();
     };
+
+    
+    const router = useRouter()
+    const { setEditOutfit, setGarments } = useCanvasStore();
+
+    const handleEdit = (outfit: IOutfit) => {
+        const garmentIds = outfit.clothesId.map((id) => id.toString());
+        setGarments(garmentIds);
+        setEditOutfit(outfit);
+        router.push("/pages/user/create_outfit");
+      };
+      
 
     return (
         <div
@@ -69,6 +83,11 @@ const Outfit = ({ outfit, closeModal }: IOutfitProps) => {
                                 מעבר לקישור
                             </a>
                         </p>
+
+                        <button onClick={() => { handleEdit(outfit) }}>
+                            פתח לעריכה
+                        </button>
+                        
                     </div>
                 </div>
             </div>
