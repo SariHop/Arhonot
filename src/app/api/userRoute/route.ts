@@ -2,58 +2,55 @@ import { NextRequest, NextResponse } from "next/server";
 import connect from "@/app/lib/db/mongoDB";
 import User from "@/app/lib/models/userSchema";
 import bcrypt from 'bcrypt';
-import fs from 'fs/promises';
-import axios from "axios";
-import path from "path";
+// import fs from 'fs/promises';
+// import axios from "axios";
+// import path from "path";
 
-const baseUrl=process.env.NEXT_PUBLIC_BASE_URL;
-const apiUrl = `${baseUrl}/api/staticData`;
-
-
-const validateCity = async (city: string) => {
-  let cities = [];
-  const filePath = path.join(process.cwd(), 'src/app/data/cities.json');
-  
-  try {
-    const stats = await fs.stat(filePath);
-    const lastModifiedTime = stats.mtime;  // זמן השינוי האחרון בקובץ
-
-    // בדוק אם הקובץ שונה לאחרונה
-    const currentTime = new Date();
-    const timeDiff = (currentTime.getTime() - lastModifiedTime.getTime()) / (1000 * 60 * 60 * 24); // הזמן בימים
-
-    if (timeDiff > 1) {  // אם עבר יותר מיום מאז השינוי האחרון
-      throw new Error("The cities file is older than 1 day. Fetching new data...");
-    } else {
-      // קרא את הערים מהקובץ אם הוא לא ישן יותר מיום
-      const citiesData = await fs.readFile(filePath, 'utf-8');
-      cities = JSON.parse(citiesData);
-      console.log(cities);
-      
-    }
-  } catch (error) {
-    // אם הקובץ לא קיים או קרתה שגיאה, קרא את הערים מה-API ושמור אותן
-    console.error(error);
-    
-    try {
-      const response = await axios.get(`${apiUrl}/cities`);      
-      await fs.writeFile(filePath, JSON.stringify(response.data.cities));
-      cities = response.data.cities;
-    } catch (error) {
-      console.error("Error getting cities:", error);
-      throw error;
-    }
-  }
-
-  // אם העיר לא נמצאת ברשימה, זרוק שגיאה
-  if (!cities.some((c:string) => c.trim() === city.trim()))  {
-    console.error(`Invalid city: ${city}`);
-    throw new Error(`Invalid city: ${city}`);
-  }
-};
+// const baseUrl=process.env.NEXT_PUBLIC_BASE_URL;
+// const apiUrl = `${baseUrl}/api/staticData`;
 
 
+// const validateCity = async (city: string) => {
+//   let cities = [];
+//   const filePath = path.join(process.cwd(), 'src/app/data/cities.json');
 
+//   try {
+//     const stats = await fs.stat(filePath);
+//     const lastModifiedTime = stats.mtime;  // זמן השינוי האחרון בקובץ
+
+//     // בדוק אם הקובץ שונה לאחרונה
+//     const currentTime = new Date();
+//     const timeDiff = (currentTime.getTime() - lastModifiedTime.getTime()) / (1000 * 60 * 60 * 24); // הזמן בימים
+
+//     if (timeDiff > 1) {  // אם עבר יותר מיום מאז השינוי האחרון
+//       throw new Error("The cities file is older than 1 day. Fetching new data...");
+//     } else {
+//       // קרא את הערים מהקובץ אם הוא לא ישן יותר מיום
+//       const citiesData = await fs.readFile(filePath, 'utf-8');
+//       cities = JSON.parse(citiesData);
+//       console.log(cities);
+
+//     }
+//   } catch (error) {
+//     // אם הקובץ לא קיים או קרתה שגיאה, קרא את הערים מה-API ושמור אותן
+//     console.error(error);
+
+//     try {
+//       const response = await axios.get(`${apiUrl}/cities`);      
+//       await fs.writeFile(filePath, JSON.stringify(response.data.cities));
+//       cities = response.data.cities;
+//     } catch (error) {
+//       console.error("Error getting cities:", error);
+//       throw error;
+//     }
+//   }
+
+//   // אם העיר לא נמצאת ברשימה, זרוק שגיאה
+//   if (!cities.some((c:string) => c.trim() === city.trim()))  {
+//     console.error(`Invalid city: ${city}`);
+//     throw new Error(`Invalid city: ${city}`);
+//   }
+// };
 
 export async function GET() {
   try {
@@ -82,7 +79,13 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { password, email, city, ...otherFields } = body;
 
-    await validateCity(city);
+    // await validateCity(city);
+    if (city && city.length > 25) {
+      return NextResponse.json(
+        { message: "Invalid city" },
+        { status: 402 }
+      );
+    }
 
     if (!password || typeof password !== 'string') {
       return NextResponse.json(
