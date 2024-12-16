@@ -17,7 +17,7 @@ import {
   AiOutlineZoomOut,
   AiOutlineRotateLeft,
 } from "react-icons/ai";
-import ButtonCreateOutfit from "@/app/components/createOutfit/toolBox/CreateOutfit";
+import ButtonCreateOutfit from "@/app/components/createOutfit/toolBox/create/CreateOutfit";
 
 const ToolBox = () => {
   const tools = [

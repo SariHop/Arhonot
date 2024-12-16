@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react'
-import OutfitForm from '@/app/components/createOutfit/FormCreateOutfit';
+import OutfitForm from '@/app/components/createOutfit/toolBox/create/FormCreateOutfit';
 import useCanvasStore from '@/app/store/canvasStore';
 import { Button } from '@mui/material';
 
