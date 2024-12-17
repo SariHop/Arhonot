@@ -10,7 +10,7 @@ const baseUrl=process.env.NEXT_PUBLIC_BASE_URL;
 const apiUrl = `${baseUrl}/api/staticData`;
 
 
-const validateCity = async (city: string) => {
+export const validateCity = async (city: string) => {
   let cities = [];
   const filePath = path.join(process.cwd(), 'src/app/data/cities.json');
   

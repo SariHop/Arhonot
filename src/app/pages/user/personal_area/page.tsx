@@ -59,7 +59,7 @@ const PersonalArea = () => {
         <div className="flex flex-col gap-3 w-full">
           {[{key: "settings", icon: <FaCog />, label: "הגדרות" },
             {key: "logout", icon: <FaSignOutAlt />,label: "התנתקות" },
-            {key: "create_sub_account", icon: <FaPlus />,label: "חשבון בן חדש",},
+            {key: "create_sub_account", icon: <FaPlus />,label: "יצירת חשבון מקושר",},
             {key: "connect_existing", icon: <FaLink />,label: "התקשרות לחשבון אחר",},
             {key: "disconnect_account", icon: <FaUnlink />,label: "ניתוק חשבון מקושר",},
             {key: "switch_accounts",icon: <FaExchangeAlt />,label: "מעבר בין חשבונות",},

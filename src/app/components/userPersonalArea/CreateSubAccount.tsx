@@ -1,8 +1,12 @@
 import React from 'react'
 
+
+
 const CreateSubAccount = () => {
+
+
   return (
-    <div>CreateSubAccount</div>
+    <div>יצירת חשבון מקושר</div>
   )
 }
 

@@ -6,14 +6,13 @@ import { Types } from "mongoose";
 type UserStore = {
   _id: string;
   userName: string;
-  password: string;
   email: string;
   age: number;
   gender: string;
   city: string;
   dateOfBirth: Date | null;
   sensitive: string;
-  children: Types.ObjectId[]; // שינה מ-string[] ל-ObjectId[]
+  children: Types.ObjectId[];
   setUser: (user: Partial<UpdateUserTypeForStore>) => void;
   updateUser: (updatedFields: Partial<IUserTypeWithId>) => void;
   resetUser: () => void;
@@ -24,7 +23,6 @@ const useUser = create(
     (set) => ({
   _id: "",
   userName: "",
-  password: "",//למחוק את שמירת הסיסמא
   email: "",
   age: 0,
   gender: "",
@@ -42,7 +40,6 @@ const useUser = create(
       const newState = {
         _id: user._id ?? "",
         userName: user.userName || "",
-        password: user.password || "",//למחוק לאחר הסרת מהסטור
         email: user.email || "",
         age: user.age ?? 0,
         gender: user.gender || "",
@@ -74,7 +71,6 @@ const useUser = create(
   resetUser: () =>
     set({
       _id: "",
-      password:"",// למחוק לאחר הסרת שמירת הסיסמא בסטור
       userName: "",
       email: "",
       age: 0,
