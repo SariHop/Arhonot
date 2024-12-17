@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connect from "@/app/lib/db/mongoDB";
 import User from "@/app/lib/models/userSchema";
-import { validateCity } from "@/app/api/userRoute/route";
+// import { validateCity } from "@/app/api/userRoute/route";
 import bcrypt from "bcrypt";
 import { Types } from "mongoose";
 
@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { password, email, city, creatorId, ...otherFields } = body;
 
-    await validateCity(city);
+    // await validateCity(city);
 
     if (!password || typeof password !== "string") {
       return NextResponse.json(
