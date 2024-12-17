@@ -57,7 +57,7 @@ const useCanvasStore = create<CanvasStore>()(
         const canvas = get().canvas;
         if (!canvas) return;
 
-        const img = await fabric.Image.fromURL(
+        await fabric.Image.fromURL(
           garmentURL,
           (img) => {
             img.set({
