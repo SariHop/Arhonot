@@ -22,7 +22,7 @@ const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }
   const closeModal = () => {
     setIsModalOpen(false);
     setFileWithNoBG(null);
-    setFiles([]);
+    // setFiles([]);
   };
 
   const handleProcess = async (file: File) => {
