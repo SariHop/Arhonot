@@ -231,9 +231,11 @@ export const updateUser = async (_id: string, body: object) => {
 };
 
 export const createSubAccont = async (formData: IUserType) => {
-  const { _id: creatorId,  email, } =  useOriginUser.getState();
+  const { _id: creatorId,  email: creatorEmail, } =  useOriginUser.getState();
+  console.log(creatorId,'creatorId',creatorEmail,'creatorEmail' );
+  
   try {
-    if (!email||email==="") {
+    if (!creatorEmail||creatorEmail==="") {
       return { success: false, message: "האימייל של המשתמש המקורי לא נמצא", status: 400 };
     }
     const enteredPassword = prompt("אנא הזן את סיסמתך לאימות:");
@@ -242,7 +244,7 @@ export const createSubAccont = async (formData: IUserType) => {
     }
     const encryptedPassword = await hashPassword(enteredPassword);
     const authResponse = await axios.post("/api/signIn", {
-      email: email,
+      email: creatorEmail,
       password: encryptedPassword,
     });
     if (authResponse.status !== 200 && authResponse.status !== 201) {
