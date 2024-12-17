@@ -1,7 +1,8 @@
 "use client"
-import React,{useState} from 'react'
+import React, { useState } from 'react'
 import OutfitForm from '@/app/components/createOutfit/FormCreateOutfit';
 import useCanvasStore from '@/app/store/canvasStore';
+import { Button } from '@mui/material';
 
 const ButtonCreateOutfit = () => {
     const [outfitImgurl, setOutfitImgurl] = useState("");
@@ -9,7 +10,7 @@ const ButtonCreateOutfit = () => {
     const showModal = () => { setOpenModal(true); };
     const closeModal = () => { setOpenModal(false); };
 
-    const { canvas } = useCanvasStore();
+    const { canvas, garments } = useCanvasStore();
 
     const exportCanvasAsImage = () => {
         if (!canvas) return;
@@ -26,13 +27,15 @@ const ButtonCreateOutfit = () => {
 
     return (
         <div>
-            <button
-            onClick={exportCanvasAsImage}
-            className="m-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-            Save Image
-        </button>
-        {openModal && <OutfitForm closeModal={closeModal} outfitImgurl={outfitImgurl} />}
+            <Button
+                variant="contained"
+                disabled={garments.length === 0}
+                onClick={exportCanvasAsImage}
+            // className="m-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+                צור לוק
+            </Button>
+            {openModal && <OutfitForm closeModal={closeModal} outfitImgurl={outfitImgurl} />}
         </div>
     )
 }
