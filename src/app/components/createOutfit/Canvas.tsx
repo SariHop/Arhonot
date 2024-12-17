@@ -12,26 +12,25 @@ const Canvas = () => {
   const { setCanvas } = useCanvasStore();
 
   useEffect(() => {
-
     const calcWidth: () => number = () => {
       const min = Math.min(window.innerWidth, window.innerHeight)
       return (min * 90) / 100
     }
-
+  
     if (canvasRef.current) {
-      const len = calcWidth()
+      const len = calcWidth();
       const initCanvas = new fabric.Canvas(canvasRef.current, {
         width: len,
-        height: len
-      })
-      initCanvas.backgroundColor = "white"
-      initCanvas.renderAll()
+        height: len,
+        backgroundColor: "white"
+      });
 
+      initCanvas.renderAll()
       setCanvas(initCanvas);
 
       return () => {
         initCanvas.dispose();
-      }
+      };
     }
   }, []);
 
@@ -44,7 +43,7 @@ const Canvas = () => {
       </div>
 
       <div className="bg-checkered-pattern flex justify-center items-center gap-5 p-5 flex-col ">
-        <canvas key="canvas" id="canvas" ref={canvasRef} className="shadow-lg max-w-full h-auto" />
+        <canvas key="canvas" id="canvas" ref={canvasRef} className="shadow-lg max-w-full h-0 w-0" />
       </div>
     </div>
   )

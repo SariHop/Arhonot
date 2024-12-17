@@ -1,7 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import useCanvasStore from "@/app/store/canvasStore";
-import { fabric } from "fabric";
 import { IconButton } from '@mui/material';
 import { FaTrash } from 'react-icons/fa';
 

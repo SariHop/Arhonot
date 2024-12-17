@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import ButtonCreateOutfit from "@/app/components/createOutfit/toolBox/create/CreateOutfit";
 import DeleteButton from "./x/Delete";
 import useCanvasStore from "@/app/store/canvasStore";
+import ClearButton from "./x/Clear";
 
 const ToolBox = () => {
 
@@ -49,6 +50,14 @@ const ToolBox = () => {
       >
         <DeleteButton />
         <p className="text-sm">מחיקה</p>
+      </div>
+
+      <div
+        className="flex flex-col items-center flex-shrink-0"
+        style={{ minWidth: "fit-content" }}
+      >
+        <ClearButton />
+        <p className="text-sm">ניקוי</p>
       </div>
     </div>
   );
