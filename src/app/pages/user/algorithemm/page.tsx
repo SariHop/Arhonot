@@ -6,7 +6,7 @@ import IOutfit from '@/app/types/IOutfit';
 import React, { useEffect, useState } from 'react';
 
 const Page = () => {
-  const { data: weatherData, isLoading, error, refetch } = useWeatherQuery();
+  const { data: weatherData } = useWeatherQuery();
   const user = useUser();
   const [looks, setLooks] = useState<IOutfit[]>([]);
 
