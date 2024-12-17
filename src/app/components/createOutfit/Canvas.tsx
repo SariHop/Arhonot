@@ -1,5 +1,5 @@
 "use client";
-import React, {useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import * as fabric from 'fabric';
 import ShowGallery from "@/app/components/createOutfit/ShowGallery";
 import ToolBox from "@/app/components/createOutfit/toolBox/ToolBox"
@@ -8,7 +8,7 @@ import useCanvasStore from "@/app/store/canvasStore";
 const Canvas = () => {
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const { setCanvas, loadCanvasFromLocalStorage, canvas } = useCanvasStore();
+  const { setCanvas } = useCanvasStore();
 
   useEffect(() => {
 
@@ -25,7 +25,7 @@ const Canvas = () => {
       })
       initCanvas.backgroundColor = "white"
       initCanvas.renderAll()
-      
+
       setCanvas(initCanvas);
 
       return () => {
@@ -34,21 +34,17 @@ const Canvas = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (canvas) {
-      loadCanvasFromLocalStorage()
-    }
-  }, [canvas]);
-
   return (
     <div className="flex flex-col justify-center mt-3">
 
+      <div className="bg-white">
         <ShowGallery />
         <ToolBox />
+      </div>
 
-        <div className="bg-checkered-pattern flex justify-center items-center gap-5 p-5 flex-col ">
-          <canvas key="canvas" id="canvas" ref={canvasRef} className="shadow-lg max-w-full h-auto" />
-        </div>
+      <div className="bg-checkered-pattern flex justify-center items-center gap-5 p-5 flex-col ">
+        <canvas key="canvas" id="canvas" ref={canvasRef} className="shadow-lg max-w-full h-auto" />
+      </div>
     </div>
   )
 }

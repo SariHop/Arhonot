@@ -1,4 +1,4 @@
-import Header from '@/app/components/Header';
+import HeaderArhonot from '@/app/components/header/Header';
 import NavBar from '@/app/components/NavBar';
 import React from 'react'
 
@@ -10,7 +10,7 @@ const layout = ({ children }: Readonly<{ children: React.ReactNode;}>) => {
 
         {/* Header */}
         <div className="sticky top-0 z-50 ">
-          <Header />
+          <HeaderArhonot />
         </div>
 
         {/* Body */}
