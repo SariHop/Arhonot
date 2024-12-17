@@ -9,6 +9,7 @@ const nextConfig = {
       "www.photo-art.co.il",
       "encrypted-tbn0.gstatic.com",
       "localhost",
+      "media.geeksforgeeks.org",
     ],
   },
 };
