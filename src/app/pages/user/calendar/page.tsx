@@ -110,7 +110,7 @@ const Page: React.FC = () => {
                     className="w-7 h-7 rounded-full  object-cover m-1 inline-block"
                     width={25}
                     height={25}
-                  />):(index===1 && <p className="text-xs text-gray-500">+{dayLooks.looks.length - 1}</p>)
+                  />):(index===1 && <p key={index} className="text-xs text-gray-500">+{dayLooks.looks.length - 1}</p>)
                 ))}
             </div>
           </div>
