@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import { apiUrl } from "@/app/services/garmentService";
-import { Position } from "@/app/types/IWeather";
+import { Position, WeatherData } from "@/app/types/IWeather";
 
 export const fetchWeatherData = async () => {
   try {
@@ -28,3 +28,39 @@ export const fetchWeatherData = async () => {
     }
   }
 };
+
+
+// פונקציה לחישוב הטמפרטורה המקסימלית ליום מסוים
+export const getMaxTemperatureForDate = (list: WeatherData[], targetDate: Date) => {
+  // return 5;
+  const dailyForecasts = list.filter((entry) => {
+    // חילוץ התאריך (ללא השעה) מהשדה dt_txt
+    const date = entry.dt_txt.split(" ")[0];
+    return date === targetDate.toISOString().split("T")[0];
+  });
+
+  // אם אין נתונים ליום המבוקש, נחזיר null
+  if (dailyForecasts.length === 0) {
+    return null;
+  }
+
+  const maxTemp = dailyForecasts.reduce((max, entry) => {
+    return Math.max(max, entry.main.temp_max);
+  }, -Infinity);
+  return maxTemp;
+};
+
+
+
+export const fetchUserOutfits = async (userId: string) => {
+  try {
+    const response = await axios.get(`${apiUrl}outfitRoute/userOutfits/${userId}`);
+    return response.data.data;
+
+  } 
+  catch (error) {
+    console.log("לא הצלחנו לגשת חנתוני הלוקים שלך");
+    throw error;
+  }
+};
+

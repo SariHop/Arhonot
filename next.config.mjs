@@ -8,6 +8,7 @@ const nextConfig = {
       "hahacanvas.co.il",
       "www.photo-art.co.il",
       "encrypted-tbn0.gstatic.com",
+      "localhost",
     ],
   },
 };

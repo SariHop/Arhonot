@@ -9,9 +9,10 @@ import Image from 'next/image'
 import useUser from "@/app/store/userStore";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { IDayResult, looks } from "@/app/services/daysService";
 import IOutfit from "@/app/types/IOutfit";
 import OutfitsModal from "@/app/components/calendar/OutfitsModal";
+import { IDayWithLooks } from "@/app/types/IDay";
+import { userLooks } from "@/app/services/daysService";
 const customDayNames = ["יום א", "יום ב", "יום ג", "יום ד", "יום ה", "יום ו", "שבת"];
 
 
@@ -20,102 +21,54 @@ const Page: React.FC = () => {
   const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear()); // שנה נבחרת
   const [cellHeight, setCellHeight] = useState<string>(""); // גובה התא
   const [calendarMode, setCalendarMode] = useState<CalendarProps<Dayjs>["mode"]>("month"); // מצב היומן (חודש/שנה)
-  let {_id} = useUser();
-  const [dayData, setDayData] = useState<Record<string, IDayResult>>({}); // מפת לוקים לפי תאריך
-
+  const user = useUser();
+  const [dayData, setDayData] = useState<Record<string, IDayWithLooks>>({}); // מפת לוקים לפי תאריך
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [selectedDay, setSelectedDay] = useState<string>("");
 
 
 
-
-
   useEffect(() => {
-    console.log("\n\n\n\nThe user is:\n\n\n\n",_id);
-    _id= "675007691ba3350d49f9b4e5";
     calculateCellHeight();
     loadDayLooks();
-    const updateDayHeaders = () => {
-      const headers = document.querySelectorAll(
-        ".ant-picker-calendar .ant-picker-content thead th"
-      );
-      headers.forEach((header, index) => {
-        if (customDayNames[index]) {
-          header.textContent = customDayNames[index];
-        }
-      });
-    };
-    // עדכון שמות הימים לאחר הרינדור
     updateDayHeaders();
-
-    // עדכון בעת שינוי התצוגה
-    const observer = new MutationObserver(() => {
-      updateDayHeaders();
-    });
-
-    const calendarContainer = document.querySelector(".ant-picker-calendar");
-    if (calendarContainer) {
-      observer.observe(calendarContainer, { childList: true, subtree: true });
-    }
-
-    return () => {
-      observer.disconnect();
-    };
   }, [currentMonth, currentYear]);
 
+
   const calculateCellHeight = () => {
-    const calendarHeight = 75; // הגובה המקסימלי של התאים (ב-vh)
+    const calendarHeight = 60; // הגובה המקסימלי של התאים (ב-vh)
     const numberOfWeeks = getNumberOfWeeks(currentMonth, currentYear);
     const heightPerCell = Math.floor(calendarHeight / numberOfWeeks);
-
     setCellHeight(`${heightPerCell}vh`);
   };
 
-  const fullCellRender = (current: Dayjs) => {
-    const isInDisplayedMonth =
-      current.month() === currentMonth && current.year() === currentYear;
 
-    // בדוק אם התאריך שייך לחודש הנוכחי
-    if (isInDisplayedMonth) {
-      const dateKey = current.format("YYYY-MM-DD");
-      const dayLooks = dayData[dateKey] || []; // קבלת תמונות לוקים ליום זה
-      return (
-        // <div className="ant-picker-cell-inner w-full ">
-        <div
-          className="ant-picker-calendar-date w-full " style={{ maxHeight: cellHeight }}>
-          <div className="ant-picker-calendar-date-value text-right">{current.date()}</div>
-          <div className="ant-picker-calendar-date-content flex flex-col md:flex-row md:items-start justify-center items-center overflow-hidden text-base text-center ">
-          {dayLooks.looks && dayLooks.looks.map((look:IOutfit, index) => (
-            index<1 ?
-              (<Image
-                key={index}
-                src={look.img}
-                alt={`Look ${index + 1}`}
-                className="w-8 h-8 rounded-full object-cover m-1 inline-block"
-                width={25}
-                height={25}
-              />):(index===1 && `+${dayLooks.looks.length - 1}`)
-            ))}
-          </div>
-          {/* </div> */}
-        </div>
-      );
-    }
-    //בדוק אם התאריך משלים את השבועות של החודש הנוכחי
-    if (isFillerDay(current)) {
-      return (
-        <div
-          className="ant-picker-calendar-date w-full text-gray-400 "
-          style={{ maxHeight: cellHeight }}
-        >
-          <div className="ant-picker-calendar-date-value text-right">{current.date()}</div>
-          <div className="ant-picker-calendar-date-content "></div>
-        </div>
-      );
-    }
-    // עבור ימים מחוץ לחודש הנוכחי, נסתיר רק אם הם בשורה האחרונה
-    return <div style={{ display: "none" }} />;
+  const updateDayHeaders = () => {
+    const headers = document.querySelectorAll(
+      ".ant-picker-calendar .ant-picker-content thead th"
+    );
+    headers.forEach((header, index) => {
+      if (customDayNames[index]) {
+        header.textContent = customDayNames[index];
+      }
+    });
   };
+
+
+  const getNumberOfWeeks = (month: number, year: number) => {
+    const firstDayOfMonth = new Date(year, month, 1);
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+
+    const startWeek = firstDayOfMonth.getDay();
+    const endWeek = lastDayOfMonth.getDay();
+
+    //חישוב של מספר השבועות האמצעיים- לא כולל השבוע הראשון והאחרון
+    const fillerDays = (7-startWeek) + (endWeek + 1);
+    const fullWeeks = Math.floor((Number(lastDayOfMonth.getDate()) - Number(firstDayOfMonth.getDate()) + 1 - fillerDays) / 7);
+    const partialWeeks = 2;
+    return fullWeeks + partialWeeks;
+  };
+
 
   const isFillerDay = (current: Dayjs) => {
     // אם הוא בשבוע שמכיל גם ימים מהחודש הנוכחי
@@ -134,25 +87,59 @@ const Page: React.FC = () => {
     return hasDaysFromCurrentMonth;
   };
 
-  const getNumberOfWeeks = (month: number, year: number) => {
-    const firstDayOfMonth = new Date(year, month, 1);
-    const lastDayOfMonth = new Date(year, month + 1, 0);
+  
+  const fullCellRender = (current: Dayjs) => {
+    const isInDisplayedMonth =
+      current.month() === currentMonth && current.year() === currentYear;
 
-    const startWeek = firstDayOfMonth.getDay();
-    const endWeek = lastDayOfMonth.getDay();
-
-    //חישוב של מספר השבועות האמצעיים- לא כולל השבוע הראשון והאחרון
-    const fillerDays = (7-startWeek) + (endWeek + 1);
-    const fullWeeks = Math.floor((Number(lastDayOfMonth.getDate()) - Number(firstDayOfMonth.getDate()) + 1 - fillerDays) / 7);
-    const partialWeeks = 2;
-    return fullWeeks + partialWeeks;
+    // בדוק אם התאריך שייך לחודש הנוכחי
+    if (isInDisplayedMonth) {
+      const dateKey = current.format("YYYY-MM-DD");
+      const dayLooks = dayData[dateKey] || []; // קבלת תמונות לוקים ליום זה
+      return (
+        <div className="ant-picker-calendar-date w-full"  style={{ height: cellHeight }}>
+          <div className="ant-picker-calendar-date-content flex flex-col xl:flex-row xl:items-start justify-between items-center overflow-hidden text-base text-center ">
+            <p className="ant-picker-calendar-date-value text-right text-sm">{current.date()}</p>
+            <div className=" flex flex-col h-[65%] md:flex-row justify-center align-middle items-center  overflow-hidden">
+              {dayLooks.looks && dayLooks.looks.map((look:IOutfit, index) => (
+                index<1 ?
+                  (<Image
+                    key={index}
+                    src={look.img}
+                    alt={`Look ${index + 1}`}
+                    className="w-7 h-7 rounded-full  object-cover m-1 inline-block"
+                    width={25}
+                    height={25}
+                  />):(index===1 && <p key={index} className="text-xs text-gray-500">+{dayLooks.looks.length - 1}</p>)
+                ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+    //בדוק אם התאריך משלים את השבועות של החודש הנוכחי
+    if (isFillerDay(current)) {
+      return (
+        <div
+          className="ant-picker-calendar-date w-full text-gray-400"
+          style={{ height: cellHeight }}
+        >
+          <div className="ant-picker-calendar-date-value text-right">{current.date()}</div>
+          <div className="ant-picker-calendar-date-content "></div>
+        </div>
+      );
+    }
+    // עבור ימים מחוץ לחודש הנוכחי, נסתיר רק אם הם בשורה האחרונה
+    return <div style={{ display: "none" }} />;
   };
-  // עדכון החודש והשנה כאשר היומן משתנה
+
+
   const onPanelChange = (value: Dayjs, mode: CalendarProps<Dayjs>["mode"]) => {
     setCurrentMonth(value.month());
     setCurrentYear(value.year());
     setCalendarMode(mode); 
   };
+
 
   const onSelect = (value: Dayjs) => {
     const formattedDay = value.format("YYYY-MM-DD");
@@ -162,9 +149,10 @@ const Page: React.FC = () => {
     }
   };
 
-const loadDayLooks = async () => {
+
+  const loadDayLooks = async () => {
     try {
-      const response = await looks(currentMonth,currentYear, _id); // החלף ב-ID של המשתמש
+      const response = await userLooks(currentMonth,currentYear, user._id); // החלף ב-ID של המשתמש
       const  days  = response; // נניח ש-days מחזיק את נתוני הימים
       setDayData(days);
     } 
@@ -183,11 +171,11 @@ const loadDayLooks = async () => {
 
   return (
     <ConfigProvider locale={heIL}> 
-      <div className=" w-full max-w-[800px] m-auto  border-2 ">
+      <div className=" w-full max-w-[800px] m-auto ">
         <Calendar
           onPanelChange={onPanelChange}
           fullCellRender={calendarMode === "month" ? fullCellRender : undefined}
-          className="h-full flex flex-col justify-center  "
+          className="md:h-[75vh] h-[79vh] flex flex-col justify-center  "
           onSelect={onSelect}
         />
         {selectedDay !== "" && <OutfitsModal isOpen={isModalVisible} setIsOpen={setIsModalVisible} dateDetails={dayData[selectedDay]} date={selectedDay}/>}

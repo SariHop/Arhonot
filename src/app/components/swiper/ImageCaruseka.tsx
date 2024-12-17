@@ -4,20 +4,13 @@ import Image from "next/image";
 import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 
 interface ImageData {
-    src: string; // Accepts string (URL) for external images
+    src: string;
 }
-
-const positions = [
-    '0%',// אופציה 5: במרכז
-    '-10%', // אופציה 2: שמאל קרוב
-    '-20%', // אופציה 1: שמאל יותר רחוק
-    '20%',  // אופציה 4: ימין יותר רחוק
-    '10%',  // אופציה 3: ימין קרוב
-];
 
 const images: ImageData[] = [
     {
-        src: "https://www.photo-art.co.il/wp-content/uploads/2015/09/BY1A4457.webp",
+        src: "/pluss.jpg" // השתמש בנתיב היחסי של הקובץ בתיקיית public
+
     },
     {
         src: "https://hahacanvas.co.il/wp-content/uploads/2021/11/%D7%AA%D7%9E%D7%95%D7%A0%D7%95%D7%AA-%D7%99%D7%A4%D7%95%D7%AA-%D7%9C%D7%94%D7%93%D7%A4%D7%A1%D7%94-20.jpg",
@@ -31,6 +24,14 @@ const images: ImageData[] = [
     {
         src: "https://hahacanvas.co.il/wp-content/uploads/2021/11/%D7%AA%D7%9E%D7%95%D7%A0%D7%95%D7%AA-%D7%99%D7%A4%D7%95%D7%AA-%D7%9C%D7%94%D7%93%D7%A4%D7%A1%D7%94-12.jpg",
     },
+];
+
+const positions = [
+    '0%',// אופציה 5: במרכז
+    '-10%', // אופציה 2: שמאל קרוב
+    images.length > 3 ? '-20%' : '10%', // אופציה 1: שמאל יותר רחוק
+    images.length > 4 ? '20%' : '10%',  // אופציה 4: ימין יותר רחוק
+    '10%',  // אופציה 3: ימין קרוב
 ];
 
 export default function ImageCaruseka() {
@@ -108,8 +109,8 @@ export default function ImageCaruseka() {
                         clipPath: "circle(50% at 50% 50%)", // Ensure it's fully circular
                         transition: "transform 0.5s ease-in-out", // Smooth transition
                         zIndex: 10, // Bring selected image to the front
-                        width: "50vmin", // Set the width relative to the minimum of viewport width and height (vmin)
-                        height: "50vmin", // Set the height relative to the minimum of viewport width and height (vmin)
+                        width: "30vmin", // Set the width relative to the minimum of viewport width and height (vmin)
+                        height: "30vmin", // Set the height relative to the minimum of viewport width and height (vmin)
                     }
                     }
                 >
@@ -124,10 +125,17 @@ export default function ImageCaruseka() {
                 {/* Display the other images in a circle, with them close together */}
                 {
                     images.map((image, index) => {
-                        const positionIndex = (index + positions.length - currentIndex) % positions.length; // מחשב את מיקום התמונה ביחס לאינדקס הנוכחי
+                        const positionIndex = (index + images.length - currentIndex) % images.length; // מחשב את מיקום התמונה ביחס לאינדקס הנוכחי
+                        // const positionIndex = (index + positions.length - currentIndex) % positions.length; // מחשב את מיקום התמונה ביחס לאינדקס הנוכחי
                         const zIndex = positionIndex == 4 || positionIndex == 1 ? 2 : 1;
-                        const size = positionIndex == 4 || positionIndex == 1 ? '40vmin' : '30vmin';
-                        console.log(positionIndex, positionIndex in [4, 1, 3]);
+                        const size = positions[positionIndex] == '-10%' || positions[positionIndex] == '10%' ? '25vmin' : '15vmin';
+                        console.log("positionIndex: ", positionIndex, zIndex, `50% + ${positions[positionIndex]}`);
+                        const elementStyle = {
+                            left: `calc(50% + ${positions[positionIndex]})`, // מחיל את המיקום בהתאם לרשימה
+                        };
+
+                        // פלט למטרות בדיקה
+                        console.log(elementStyle.left); // "calc(50% + 10%)"
                         return (
                             index !== currentIndex && (
                                 <div
@@ -140,6 +148,7 @@ export default function ImageCaruseka() {
                                         clipPath: "circle(50% at 50% 50%)",
                                         filter: "blur(1px)",
                                         left: `calc(50% + ${positions[positionIndex]})`, // מחיל את המיקום בהתאם לרשימה
+                                        // left: `calc(50% + ${calculatePositions()[positionIndex]})`, // מחיל את המיקום בהתאם לרשימה
                                     }
                                     }
                                 >
@@ -161,7 +170,7 @@ export default function ImageCaruseka() {
                 className="absolute left-0 top-1/2 transform h-[459px] rounded-xl hover:bg-[#1a222f] mx-1 -mt-[10px] -translate-y-1/2 bg-[#111927] text-white p-2 group"
                 onClick={prevSlide}
             >
-                <FaCaretLeft  className="text-gray-400 group-hover:text-white" />
+                <FaCaretLeft className="text-gray-400 group-hover:text-white" />
             </button>
             < button
                 className="absolute right-0 top-1/2 transform h-[459px] rounded-xl hover:bg-[#1a222f] mx-1 -mt-[10px] -translate-y-1/2 bg-[#111927] text-white p-2 group"

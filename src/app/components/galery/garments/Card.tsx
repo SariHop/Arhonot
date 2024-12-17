@@ -17,8 +17,8 @@ const Card = ({ garment, isForOutfit }: { garment: IGarment; isForOutfit: boolea
     const [temperature, setTemperature] = useState<number | null>(null); // מצב הטמפרטורה
     const { data: weatherData } = useWeatherQuery(); // שימוש ב-hook לקריאת נתוני מזג האוויר
 
-    const { addImageToCanvas } = useCanvasStore();
-    const handleClickcard = isForOutfit ? addImageToCanvas : undefined;
+    const { addImageToCanvasFromGallery } = useCanvasStore();
+    const handleClickcard = isForOutfit ? addImageToCanvasFromGallery : undefined;
 
     useEffect(() => {
         if (weatherData) {
