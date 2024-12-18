@@ -64,7 +64,7 @@ const OutfitForm: React.FC<OutfitFormProps> = ({ closeModal, outfitImgurl }) => 
     };
 
     saveImageToCloudinary();
-  }, [outfitImgurl]);
+  }, [outfitImgurl, closeModal]);
 
   const handleTagChange = (tag: string, checked: boolean) => {
     setSelectedTags((prevTags) =>
