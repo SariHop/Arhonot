@@ -1,5 +1,5 @@
 import { create } from "zustand";
-// import { persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import { fabric } from "fabric";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,7 +27,7 @@ type CanvasStore = {
 };
 
 const useCanvasStore = create<CanvasStore>()(
-  // persist(
+  persist(
     (set, get) => ({
       canvas: null,
       setCanvas: (canvas: fabric.Canvas) => set({ canvas }),
@@ -97,15 +97,15 @@ const useCanvasStore = create<CanvasStore>()(
         }
       },
     }),
-    // {
-    //   name: "canvas-store", 
-    //   partialize: (state) => ({
-    //     garments: state.garments,
-    //     editOutfit: state.editOutfit,
-    //     canvasJSON: state.canvas?.toJSON()
-    //   }),
-    // }
-  // )
+    {
+      name: "canvas-store", 
+      partialize: (state) => ({
+        garments: state.garments,
+        editOutfit: state.editOutfit,
+        // canvasJSON: state.canvas?.toJSON()
+      }),
+    }
+  )
 );
 
 export default useCanvasStore;
