@@ -118,7 +118,7 @@ const GarmentForm = () => {
       onSubmit={handleSubmit}
       className="max-w-4xl mx-auto p-7 bg-white rounded shadow-md space-y-4 "
     >
-      <h1 className="text-2xl font-semibold text-center">Create Garment</h1>
+      <h1 className="text-2xl font-semibold text-center">יצירת בגד</h1>
       <UploadImage setCloudinary={setImageUrl} />
       {imageUrl && (
         <Image
@@ -135,7 +135,7 @@ const GarmentForm = () => {
         onChange={handleChange}
         className="w-full p-2 border rounded"
       >
-        <option value="">Select Season</option>
+        <option value="">עונה</option>
         {validSeasons.map((season:string) => (
           <option key={season} value={season}>
             {season}
@@ -150,7 +150,7 @@ const GarmentForm = () => {
         onChange={handleChange}
         className="w-full p-2 border rounded"
       >
-        <option value="">Select Category</option>
+        <option value="">קטגוריה</option>
         {typeCategories.map((category:string) => (
           <option key={category} value={category}>
             {category}
@@ -162,20 +162,22 @@ const GarmentForm = () => {
       )}
       <textarea
         name="desc"
-        placeholder="Description (optional)"
+        placeholder="הוסף תאור (אופציונלי)"
         value={formData.desc}
         onChange={handleChange}
         className="w-full p-2 border rounded"
       ></textarea>
 
-      <div className="flex items-center space-x-4">
+      <div className="flex items-end space-x-4 ">
         {/* שדה הטווח */}
-        <div className="w-1/2 flex flex-col items-center">
-          <div className="flex justify-between w-full">
-            {/* <p>לאיזה מזג אוויר הלוק הזה מתאים?</p> */}
-            <span className="text-sm">חם</span>
-            <span className="text-sm">קר</span>
-          </div>
+        <div className="w-1/2 flex flex-col ml-2">
+          {/* <div className="flex justify-between w-full"> */}
+          <label  htmlFor="range">לאיזה מזג אוויר הבגד מתאים?</label>
+          <span className="text-sm">{rangeWheatherDeescription[formData.range - 1]}</span>
+
+            {/* <span className="text-sm">חם</span>
+            <span className="text-sm">קר</span> */}
+          {/* </div> */}
           <input
             type="range"
             name="range"
@@ -186,15 +188,15 @@ const GarmentForm = () => {
             onChange={handleChange}
             className="w-full mt-2"
           />
-           <p className="text-center mt-2"> {rangeWheatherDeescription[formData.range-1]}</p>
+           {/* <p className="text-center mt-2"> {rangeWheatherDeescription[formData.range-1]}</p> */}
         </div>
 
         {/* שדה המחיר */}
-        <div className="w-1/2">
+        <div className="w-1/2 mr-2">
           <input
             type="number"
             name="price"
-            placeholder="Price (optional)"
+            placeholder="מחיר (אופציונלי)"
             value={formData.price === 0 ? "" : formData.price}
             onChange={(e) => handleChange(e)}
             min="0"
@@ -210,14 +212,14 @@ const GarmentForm = () => {
       <input
         type="url"
         name="link"
-        placeholder="Link (optional)"
+        placeholder="לינק לרכישת הבגד (אופציונלי)"
         value={formData.link}
         onChange={handleChange}
         className="w-full p-2 border rounded"
       />
 
       <div className="space-y-2">
-        <h3 className="text-lg font-medium">Select Color</h3>
+        <h3 className="text-lg font-medium">צבע הבגד</h3>
         <ColorPicker
           onChangeComplete={
             (color) =>
@@ -229,7 +231,7 @@ const GarmentForm = () => {
       </div>
 
       <div className="space-y-2">
-        <h3 className="text-lg font-medium">Select Tags</h3>
+        <h3 className="text-lg font-medium">תגיות</h3>
         <div className="flex flex-wrap gap-4">
           {tags.map((tag:string) => (
             <label
@@ -256,7 +258,7 @@ const GarmentForm = () => {
         type="submit"
         className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
       >
-        Create Garment
+        צור בגד
       </button>
     </form>
   );
