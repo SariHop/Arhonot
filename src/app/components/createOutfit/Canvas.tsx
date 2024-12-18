@@ -65,7 +65,7 @@ const Canvas = () => {
   }, [canvas, canvasFromLocacl]);
 
   const saveto = () => {
-    localStorage.setItem("canvasJSON", JSON.stringify(canvas?.toJSON()))
+    localStorage.setItem("canvasJSON", JSON.stringify(canvas?.toJSON(["garmentId"])))
   }
 
   return (

@@ -66,7 +66,7 @@ const useCanvasStore = create<CanvasStore>()(
               scaleX: 0.5,
               scaleY: 0.5,
             });
-            img.set({ data: { garmentId } });
+            img.garmentId = garmentId
             canvas.add(img);
             canvas.setActiveObject(img);
           },

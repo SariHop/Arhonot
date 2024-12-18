@@ -8,15 +8,24 @@ const DeleteButton: React.FC = () => {
   const { canvas, deleteGarment, selectedObject, setSelectedObject } = useCanvasStore();
 
   const handleDelete = () => {
+    debugger;
     if (canvas && selectedObject) {
-      const data = selectedObject.get('data');
-      if (data) {
-        canvas.remove(selectedObject);
-        deleteGarment(data.garmentId)
-        setSelectedObject(null);
+      // בדוק תחילה אם האובייקט הוא תמונה
+      if (selectedObject.type === 'image') {
+        // עשה Type Assertion כדי ליידע את TypeScript שמדובר ב-fabric.Image
+        const imageObject = selectedObject as fabric.Image;
+  
+        // בדוק אם יש garmentId
+        const data = imageObject.garmentId;
+        if (data) {
+          canvas.remove(selectedObject);
+          deleteGarment(data); // השתמש ב-garmentId
+          setSelectedObject(null);
+        }
       }
     }
   };
+  
 
   return (
     <div>
