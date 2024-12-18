@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { fabric } from "fabric";
-// import ShowGallery from "@/app/components/createOutfit/ShowGallery";
+import ShowGallery from "@/app/components/createOutfit/ShowGallery";
 import ToolBox from "@/app/components/createOutfit/toolBox/ToolBox";
 import useCanvasStore from "@/app/store/canvasStore";
 
@@ -94,7 +94,7 @@ const Canvas = () => {
   return (
     <div className="flex flex-col justify-center mt-3">
       <div className="bg-white">
-        {/* <ShowGallery /> */}
+        <ShowGallery />
         <ToolBox />
       </div>
 
