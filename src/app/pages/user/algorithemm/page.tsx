@@ -30,7 +30,10 @@ const Page = () => {
   return (
     <div>
       {looks.map((look: IOutfit, index: number) => (
-        <p key={index}>{look.season + look.rangeWheather}</p>
+        < div key={index}>
+        <p >{look.season + look.rangeWheather}</p>
+        <img src={look.img}/>
+        </div>
       ))}
     </div>
   );

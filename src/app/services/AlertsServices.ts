@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 export async function fetchUserAlerts(userId: string | null) {
   try {
     const response = await axios.get(`/api/alertRoute/userAlerts/${userId}`);
-    console.log("User alerts:", response.data);
     return response.data.data;
   } catch (error: unknown) {
     console.error("Failed to fetch user alerts:", error);
