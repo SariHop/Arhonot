@@ -1,20 +1,41 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { fabric } from "fabric";
-
 import ShowGallery from "@/app/components/createOutfit/ShowGallery";
 import ToolBox from "@/app/components/createOutfit/toolBox/ToolBox";
 import useCanvasStore from "@/app/store/canvasStore";
+
+// אובייקט של הקנבס נשמר דרך זוסטנד בלוקלסטורג
+// משום מה בטעינה מחדש של העמוד הקריאה יוסאפקט ניטענת פעמיים, כנראה קשור לריאקט
+// בקריאה הראשונה הקנבס מעודכן ובקריאה השניה הוא מתרוקן
+// כרגע הקוד מבולגן ועושה שמיניות באויר כדי
+// להצליח לשמור את הקנבס המעודכן מהקריאה הראשונה, לטעון אותו לאלמנט קנבס בדום
+// ולעדכן את הלוקלסטורג מחדש
+
+// גישות אפשריות:
+// לא לשמור את הקנבס דרך הזוסטנד, לנסות עצאית להוסיף מאזין כלשהו שיטען את 
+// השינויים ויהיה לי עליו לכאורה יותר שחיטה מתי העידכונים שלו מתבצעים
+
+// להמשיך לדבג בזוסטנג איך למנוע את הקריאה השניה המוזרה, 
+// להיזהר מאדדד מהשגיאה של
+// "מלבן לא מוגד"
+// כי זה קרה לי שוב במעבר בין עמודים כאשר הפונקציה שטוענת מהלוקל נקראה ביוסאפק השני שטוען את הקנבס
+// ולא ביוסאפקט הראשון שטוען את הקנבס כמו שקורה עכשיו ועובד היטב
+
 
 const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const { setCanvas, canvas } = useCanvasStore();
   const [canvasFromLocacl, setCanvasFromLocacl] = useState(null);
 
-  const canvasJsonFromLS = () => {
-    const savedCanvasJSON = localStorage.getItem("canvasJSON");
-    if (savedCanvasJSON) {
-      return JSON.parse(savedCanvasJSON);
+  const getCanvasfromlocaStorage = () => {
+    const savedCanvas = localStorage.getItem("canvas-store");
+    if (savedCanvas) {
+      const savedCanvasObj = JSON.parse(savedCanvas);
+      const canvasJSON = savedCanvasObj.state.canvasJSON
+      if (canvasJSON && canvasJSON.objects.length > 0) {
+        return canvasJSON
+      }
     }
     return null;
   };
@@ -27,9 +48,9 @@ const Canvas = () => {
     };
 
     // Load canvas data from localStorage
-    const loadedCanvasJson = canvasJsonFromLS();
-    if (loadedCanvasJson) {
-      setCanvasFromLocacl(loadedCanvasJson);  // Only set `y` if we have data
+    const loadedCanvas = getCanvasfromlocaStorage();
+    if (loadedCanvas) {
+      setCanvasFromLocacl(loadedCanvas);
     }
 
     if (canvasRef.current) {
@@ -49,33 +70,32 @@ const Canvas = () => {
 
 
   useEffect(() => {
+    // בדיקה שהקנבס מאותחל כדי להימנע משגיאות
     if (canvas) {
-      const json = canvasJsonFromLS();
-      if (json) {
+      // בדיקה שיש מצב שמור בלוקל סטורג
+      if (canvasFromLocacl) {
+        // פונקציית טעינת האובייקט לקנבס בדום
         canvas.loadFromJSON(canvasFromLocacl, () => {
+          // בתוך הקולבק: הרצת הקנב ועדון הלוקל סטוג
           canvas.renderAll();
-          console.log("Canvas loaded");
+          const savedCanvas = localStorage.getItem("canvas-store");
+          if (savedCanvas) {
+            const savedCanvasObj = JSON.parse(savedCanvas);
+            savedCanvasObj.state.canvasJSON = canvasFromLocacl
+            localStorage.setItem("canvas-store", JSON.stringify(savedCanvasObj))
+            // צריך לתפוס שגיאות בעדכון הלוקל?
+          }
         },
-          // (o, object) => {
-          //   console.log(o, object);
-          // }
         );
       }
     };
   }, [canvas, canvasFromLocacl]);
-
-  const saveto = () => {
-    localStorage.setItem("canvasJSON", JSON.stringify(canvas?.toJSON(["garmentId"])))
-  }
 
   return (
     <div className="flex flex-col justify-center mt-3">
       <div className="bg-white">
         <ShowGallery />
         <ToolBox />
-
-        <button onClick={saveto}>שמירה בלוקל</button>
-
       </div>
 
       <div className="bg-checkered-pattern flex justify-center items-center gap-5 p-5 flex-col">
