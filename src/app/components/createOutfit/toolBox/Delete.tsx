@@ -3,6 +3,8 @@ import React from "react";
 import useCanvasStore from "@/app/store/canvasStore";
 import { IconButton } from '@mui/material';
 import { FaTrash } from 'react-icons/fa';
+import { fabric } from "fabric";
+
 
 const DeleteButton: React.FC = () => {
   const { canvas, deleteGarment, selectedObject, setSelectedObject } = useCanvasStore();
