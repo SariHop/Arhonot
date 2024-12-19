@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import Card from "./Card";
 import useGarments from '../../../store/garmentsStore';
 import { useWeatherQuery } from "@/app/hooks/weatherQueryHook"; // השימוש ב-hook לקריאת מזג האוויר
+import { numberOfItemsInPage } from "@/app/services/galleryService";
 
-const ITEMS_PER_PAGE = 4;
+let ITEMS_PER_PAGE = 24;
 
 const GarmentsGallery = ({ isForOutfit }: { isForOutfit: boolean }) => {
     const { sortedGarments } = useGarments();
@@ -13,7 +14,6 @@ const GarmentsGallery = ({ isForOutfit }: { isForOutfit: boolean }) => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
     const currentItems = sortedGarments.slice(startIndex, endIndex);
-
     const totalPages = Math.ceil(sortedGarments.length / ITEMS_PER_PAGE);
 
     const [temperature, setTemperature] = useState<number | null>(null); // מצב הטמפרטורה
@@ -23,7 +23,8 @@ const GarmentsGallery = ({ isForOutfit }: { isForOutfit: boolean }) => {
             const currentTemp = weatherData.list[0].main.temp; // שליפת הטמפרטורה
             setTemperature(currentTemp); // עדכון המעלות ב-state
         }
-    }, [weatherData]); // התעדכנות עם כל פעם שיש נתונים חדשים
+        ITEMS_PER_PAGE = numberOfItemsInPage();
+    }, [weatherData, window.innerWidth]); // התעדכנות עם כל פעם שיש נתונים חדשים
 
     useEffect(() => {
         setCurrentPage(1);
@@ -73,12 +74,13 @@ const GarmentsGallery = ({ isForOutfit }: { isForOutfit: boolean }) => {
         return colorA - colorB; // ממיין לפי ערך החזרה של הפונקציה
     });
 
+
     const goToPreviousPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
     const goToNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
     return (
         <>
             {!sortedGarments.length && <p>לא נמצאו בגדים עבור לקוח זה.</p>}
-            <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-7 gap-4 px-4">
+            <div className="grid  grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 2xl:grid-cols-9 gap-4 px-4">
                 {currentItems.map((garment) => (
                     <Card key={String(garment._id)} garment={garment} isForOutfit={isForOutfit} />
                 ))}

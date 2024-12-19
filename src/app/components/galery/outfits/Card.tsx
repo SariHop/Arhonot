@@ -20,16 +20,18 @@ const Card = ({ outfit, isSelectForDay }: { outfit: IOutfit, isSelectForDay: boo
     }
 
     return (
-        <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm" onClick={isSelectForDay ? () => { addOutfit(outfit); toggleDrawer(false); } : openModal}>
+        <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm p-1 h-[200px]" onClick={isSelectForDay ? () => { addOutfit(outfit); toggleDrawer(false); } : openModal}>
+            <div className="h-[160px] w-full p-1">
             <Image
                 src={outfit.img}
                 alt={outfit.desc}
-                width={0}
-                height={0}
+                width={200}
+                height={200}
                 sizes="(max-width: 640px) 33vw, 25vw"
-                className="w-full h-auto object-cover rounded-lg"
+                className="w-full h-full object-contain rounded-lg"
             />
-            <p>{outfit.desc}</p>
+            </div>
+            <p className="text-xs md:text-sm 2xl:text-base 3xl:text-lg line-clamp-1">{outfit.desc}</p>
             {isModalOpen && <Outfit outfit={outfit} closeModal={closeModal} />}
         </div>
     );
