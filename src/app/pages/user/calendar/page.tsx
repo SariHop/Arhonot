@@ -3,8 +3,8 @@ import { Calendar, CalendarProps, ConfigProvider } from "antd";
 import React, { useEffect, useState } from "react";
 import type { Dayjs } from "dayjs";
 import "@/app/globals.css";
-import "dayjs/locale/he"; 
-import heIL from "antd/locale/he_IL"; 
+import "dayjs/locale/he";
+import heIL from "antd/locale/he_IL";
 import Image from 'next/image'
 import useUser from "@/app/store/userStore";
 import { toast } from "react-toastify";
@@ -13,6 +13,7 @@ import IOutfit from "@/app/types/IOutfit";
 import OutfitsModal from "@/app/components/calendar/OutfitsModal";
 import { IDayWithLooks } from "@/app/types/IDay";
 import { userLooks } from "@/app/services/daysService";
+import { recommendedLooks } from "@/app/services/outfitAlgo"
 const customDayNames = ["יום א", "יום ב", "יום ג", "יום ד", "יום ה", "יום ו", "שבת"];
 
 
@@ -63,7 +64,7 @@ const Page: React.FC = () => {
     const endWeek = lastDayOfMonth.getDay();
 
     //חישוב של מספר השבועות האמצעיים- לא כולל השבוע הראשון והאחרון
-    const fillerDays = (7-startWeek) + (endWeek + 1);
+    const fillerDays = (7 - startWeek) + (endWeek + 1);
     const fullWeeks = Math.floor((Number(lastDayOfMonth.getDate()) - Number(firstDayOfMonth.getDate()) + 1 - fillerDays) / 7);
     const partialWeeks = 2;
     return fullWeeks + partialWeeks;
@@ -87,7 +88,7 @@ const Page: React.FC = () => {
     return hasDaysFromCurrentMonth;
   };
 
-  
+
   const fullCellRender = (current: Dayjs) => {
     const isInDisplayedMonth =
       current.month() === currentMonth && current.year() === currentYear;
@@ -97,12 +98,12 @@ const Page: React.FC = () => {
       const dateKey = current.format("YYYY-MM-DD");
       const dayLooks = dayData[dateKey] || []; // קבלת תמונות לוקים ליום זה
       return (
-        <div className="ant-picker-calendar-date w-full"  style={{ height: cellHeight }}>
+        <div className="ant-picker-calendar-date w-full" style={{ height: cellHeight }}>
           <div className="ant-picker-calendar-date-content flex flex-col xl:flex-row xl:items-start justify-between items-center overflow-hidden text-base text-center ">
             <p className="ant-picker-calendar-date-value text-right text-sm">{current.date()}</p>
             <div className=" flex flex-col h-[65%] md:flex-row justify-center align-middle items-center  overflow-hidden">
-              {dayLooks.looks && dayLooks.looks.map((look:IOutfit, index) => (
-                index<1 ?
+              {dayLooks.looks && dayLooks.looks.map((look: IOutfit, index) => (
+                index < 1 ?
                   (<Image
                     key={index}
                     src={look.img}
@@ -110,8 +111,8 @@ const Page: React.FC = () => {
                     className="w-7 h-7 rounded-full  object-cover m-1 inline-block"
                     width={25}
                     height={25}
-                  />):(index===1 && <p key={index} className="text-xs text-gray-500">+{dayLooks.looks.length - 1}</p>)
-                ))}
+                  />) : (index === 1 && <p key={index} className="text-xs text-gray-500">+{dayLooks.looks.length - 1}</p>)
+              ))}
             </div>
           </div>
         </div>
@@ -137,7 +138,7 @@ const Page: React.FC = () => {
   const onPanelChange = (value: Dayjs, mode: CalendarProps<Dayjs>["mode"]) => {
     setCurrentMonth(value.month());
     setCurrentYear(value.year());
-    setCalendarMode(mode); 
+    setCalendarMode(mode);
   };
 
 
@@ -152,25 +153,25 @@ const Page: React.FC = () => {
 
   const loadDayLooks = async () => {
     try {
-      const response = await userLooks(currentMonth,currentYear, user._id); // החלף ב-ID של המשתמש
-      const  days  = response; // נניח ש-days מחזיק את נתוני הימים
+      const response = await userLooks(currentMonth, currentYear, user._id); // החלף ב-ID של המשתמש
+      const days = response; // נניח ש-days מחזיק את נתוני הימים
       setDayData(days);
-    } 
+    }
     catch (error) {
       console.error("Failed to process user looks:", error);
-    if (axios.isAxiosError(error)) {
-      const serverError = error.response?.data?.error || "Unknown server error";
-      toast.error(`Server Error: ${serverError}`);
-    } else {
-      toast.error("An unexpected error occurred");
-    }
-    throw error;
+      if (axios.isAxiosError(error)) {
+        const serverError = error.response?.data?.error || "Unknown server error";
+        toast.error(`Server Error: ${serverError}`);
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+      throw error;
     }
   };
 
 
   return (
-    <ConfigProvider locale={heIL}> 
+    <ConfigProvider locale={heIL}>
       <div className=" w-full max-w-[800px] m-auto ">
         <Calendar
           onPanelChange={onPanelChange}
@@ -178,7 +179,7 @@ const Page: React.FC = () => {
           className="md:h-[75vh] h-[79vh] flex flex-col justify-center  "
           onSelect={onSelect}
         />
-        {selectedDay !== "" && <OutfitsModal isOpen={isModalVisible} setIsOpen={setIsModalVisible} dateDetails={dayData[selectedDay]} date={selectedDay}/>}
+        {selectedDay !== "" && <OutfitsModal isOpen={isModalVisible} setIsOpen={setIsModalVisible} dateDetails={dayData[selectedDay]} date={selectedDay} />}
       </div>
     </ConfigProvider>
   );

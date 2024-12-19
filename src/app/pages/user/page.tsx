@@ -1,4 +1,3 @@
-//user home page
 "use client";
 import React, { useEffect } from 'react'
 import WeeklyCalendar from '@/app/components/swiper/WeeklyCalendar'
@@ -7,29 +6,36 @@ import useUser from "@/app/store/userStore";
 import axios from 'axios';
 import LooksList from '@/app/components/swiper/OutlooksGread';
 import useDay from '@/app/store/currentDayStore';
+import { recommendedLooks } from "@/app/services/outfitAlgo"
+import { useWeatherQuery } from '@/app/hooks/weatherQueryHook';
 
 const Page = () => {
-  const { selectedDate, setSelectedDate, setOutfits, setUserId, userId } = useDay();
-
-  const { _id } = useUser();
+  const { data: weatherData } = useWeatherQuery();
+  const user = useUser();
+  const { selectedDate, setSelectedDate, setOutfits, setUserId, userId, addToAllLooks } = useDay();
   useEffect(() => {
     setSelectedDate(new Date());
   }, [setSelectedDate]);
   useEffect(() => {
     const fetchDayData = async () => {
-      setUserId(_id); // החלף ב-ID של המשתמש
+      setUserId(user._id);
       console.log("user id from page: ", userId);
       if (userId && selectedDate) {
         try {
           const response = await getDay(userId, selectedDate);
           console.log("Data received:", response);
-          if (response.data.success) {
+          if (await response.data.success) {
             console.log(response.data.data);
             setOutfits(response.data.data.looks);
           }
-          else if (response.data) {
+          else if (await response.data) {
             console.log(response.data);
             setOutfits([]);
+          }
+          if (weatherData) {
+            const looks = await recommendedLooks(weatherData.list, selectedDate, userId, user.sensitive);
+            console.log("looks from algorithem: ", looks);
+            addToAllLooks(looks);
           }
         } catch (error: unknown) {
           if (axios.isAxiosError(error)) {
@@ -40,12 +46,17 @@ const Page = () => {
             console.error("Unknown error occurred.");
           }
           setOutfits([]);
+          if (weatherData) {
+            const looks = await recommendedLooks(weatherData.list, selectedDate, userId, user.sensitive);
+            console.log("looks from algorithem: ", looks);
+            addToAllLooks(looks);
+          }
         }
       }
     };
 
     fetchDayData(); // קריאה לפונקציה הפנימית
-  }, [_id, selectedDate]); // תלות ריקה מבטיחה שהאפקט רץ רק פעם אחת כשהקומפוננטה נטענת
+  }, [user._id, selectedDate]); // תלות ריקה מבטיחה שהאפקט רץ רק פעם אחת כשהקומפוננטה נטענת
   return (
     <div className='flex gap-10 flex-col p-2'>
       <WeeklyCalendar />
