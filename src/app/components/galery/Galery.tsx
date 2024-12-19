@@ -9,7 +9,8 @@ import useGarments from '../../store/garmentsStore';
 import useUser from "@/app/store/userStore";
 import useOutfits from "@/app/store/outfitsStore";
 
-const Gallery = ({ isForOutfit }: { isForOutfit: boolean }) => {
+const Gallery = ({ viewMode }: { viewMode: ("view" | "createOtfit" | "selectForDay") }) => {
+    console.log(viewMode)
     const { setGarments } = useGarments();
     const { setOutfits } = useOutfits();
     const { _id } = useUser((state) => state);
@@ -45,19 +46,26 @@ const Gallery = ({ isForOutfit }: { isForOutfit: boolean }) => {
         fetchOutfitsFromServices();
     }, [_id]); // הוסף _id כתלות
     if (loading) return <p>Loading...</p>;
-    if (isForOutfit) {
+    if (viewMode === "createOtfit") {
         return (
             <>
-                <GaleryHeader activeTab={activeTab} setActiveTab={setActiveTab} isForOutfit={isForOutfit} />
-                <GarmentsGallery isForOutfit={isForOutfit} />
+                <GaleryHeader activeTab={activeTab} setActiveTab={setActiveTab} isForOutfit={true} />
+                <GarmentsGallery isForOutfit={true} />
+            </>
+        )
+    }
+    else if (viewMode === "selectForDay") {
+        return (
+            <>
+                < GaleryHeader activeTab={"outfits"} setActiveTab={setActiveTab} isForOutfit={true} />
+                <OutfitsGallary isSelectForDay={true} />
             </>
         )
     }
     return (
         <div className="mt-10">
-            < GaleryHeader activeTab={activeTab} setActiveTab={setActiveTab} isForOutfit={isForOutfit} />
-            {activeTab === "garments" ? <GarmentsGallery isForOutfit={isForOutfit} /> : <OutfitsGallary />
-            }
+            < GaleryHeader activeTab={activeTab} setActiveTab={setActiveTab} isForOutfit={false} />
+            {activeTab === "garments" ? <GarmentsGallery isForOutfit={false} /> : <OutfitsGallary isSelectForDay={false} />}
         </div>
     );
 };

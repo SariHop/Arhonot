@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect } from "react";
-import ButtonCreateOutfit from "@/app/components/createOutfit/toolBox/create/CreateOutfit";
-import DeleteButton from "./x/Delete";
+import ButtonCreateOutfit from "@/app/components/createOutfit/toolBox/CreateOutfit";
+import DeleteButton from "./Delete";
 import useCanvasStore from "@/app/store/canvasStore";
-import ClearButton from "./x/Clear";
+import ClearButton from "./Clear";
 
 const ToolBox = () => {
 
@@ -34,7 +34,7 @@ const ToolBox = () => {
       canvas.off("selection:updated", handleSelectionUpdated);
       canvas.off("selection:cleared", handleSelectionCleared);
     };
-  }, [canvas]);
+  }, [canvas, setSelectedObject]);
 
 
   return (

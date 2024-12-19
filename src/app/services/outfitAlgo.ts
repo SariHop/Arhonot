@@ -5,6 +5,8 @@ import { fetchUserOutfits, getMaxTemperatureForDate } from "./weatherService"
 export const recommendedLooks = async (list: WeatherData[], date: Date, userId: string, sensitive: string) => {
   try {
     const dailyWeather = getMaxTemperatureForDate(list, date) || 15;
+    console.log("daily weather", dailyWeather);
+    
     const outfits = await fetchUserOutfits(userId);
 
     if (!outfits || outfits.length === 0) {
@@ -18,18 +20,19 @@ export const recommendedLooks = async (list: WeatherData[], date: Date, userId: 
     const rateOutfits: { rate: number; outfit: IOutfit }[] = [];
 
     outfits.forEach((outfit: IOutfit & { appearanceCount: number }) => {
-        const { appearanceCount, ...rest } = outfit;
-      const { favorite, season, rangeWheather } = rest;
-      let suitableForWeather = 0;
 
-      if (dailyWeather >= hotLevel && rangeWheather >= 5) {
-        suitableForWeather = season === "קיץ" ? 1 : 0;
-      } else if (dailyWeather >= warmLevel && rangeWheather >= 4 && rangeWheather <= 6) {
-        suitableForWeather = season === "אביב" || season === "סתיו" ? 1 : 0;
-      } else if (dailyWeather >= coolLevel && rangeWheather >= 2 && rangeWheather <= 5) {
-        suitableForWeather = season === "אביב" || season === "סתיו" ? 1 : 0;
-      } else if (dailyWeather < coolLevel && rangeWheather <= 2) {
-        suitableForWeather = season === "חורף" ? 1 : 0;
+        const { appearanceCount, ...rest } = outfit;
+        const { favorite, season, rangeWheather } = rest;
+        let suitableForWeather = 0;
+
+      if (dailyWeather >= hotLevel && rangeWheather <= 3) {
+        suitableForWeather = season === "קיץ" || season === "כללי"   ? 1 : 0;
+      } else if (dailyWeather >= warmLevel && rangeWheather >= 2 && rangeWheather <= 4) {
+        suitableForWeather = season === "אביב" || season === "סתיו" || season === "כללי"? 1 : 0;
+      } else if (dailyWeather >= coolLevel && rangeWheather > 4 && rangeWheather <= 5) {
+        suitableForWeather = season === "אביב" || season === "סתיו" || season === "כללי"? 1 : 0;
+      } else if (dailyWeather < coolLevel && rangeWheather >= 5) {
+        suitableForWeather = season === "חורף" || season === "כללי"? 1 : 0;
       } else {
         return []; // לא מתאים למזג האוויר הנוכחי
       }

@@ -2,13 +2,11 @@
 import { useState, useEffect } from "react";
 import Card from "./Card";
 import useOutfit from '../../../store/outfitsStore';
-
 const ITEMS_PER_PAGE = 4;
 
-const OutfitsGallary = () => {
+const OutfitsGallary = ({ isSelectForDay }: { isSelectForDay: boolean }) => {
   const { sortedOutfits } = useOutfit();
-  const [currentPage, setCurrentPage] = useState(1); // מעקב אחר העמוד הנוכחי
-
+  const [currentPage, setCurrentPage] = useState(1);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentItems = sortedOutfits.slice(startIndex, endIndex);
@@ -26,7 +24,7 @@ const OutfitsGallary = () => {
       {!sortedOutfits.length && <p>לא נמצאו לוקים עבור לקוח זה.</p>}
       <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-7 gap-4 px-4">
         {currentItems.map((outfit) => (
-          <Card key={String(outfit._id)} outfit={outfit} />
+          <Card key={String(outfit._id)} outfit={outfit} isSelectForDay={isSelectForDay} />
         ))}
       </div>
       {sortedOutfits.length > ITEMS_PER_PAGE && (

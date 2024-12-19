@@ -30,7 +30,7 @@ const NavBar = () => {
   const onClick: MenuProps["onClick"] = ({ key }) => {
     console.log(user._id);
     
-    router.push(`/pages/user/${key === "1" ? "garment_form" : "create_outfit"}`);
+    router.push(`/pages/user/${key === "1" ? "garment_form" : "outfit_canvas"}`);
     message.info(`Click on item ${key}`);
   };
 
@@ -104,7 +104,7 @@ const NavBar = () => {
       <Tooltip title="צור לבוש">
         <div
           className="hidden text-3xl hover:text-blue-600 md:flex"
-          onClick={() => router.push("/pages/user/create_outfit")}
+          onClick={() => router.push("/pages/user/outfit_canvas")}
         >
           <SkinOutlined />
           <Image

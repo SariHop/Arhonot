@@ -3,17 +3,22 @@ import React from "react";
 import useCanvasStore from "@/app/store/canvasStore";
 import { IconButton } from '@mui/material';
 import { FaTrash } from 'react-icons/fa';
+import { fabric } from "fabric";
 
 const DeleteButton: React.FC = () => {
   const { canvas, deleteGarment, selectedObject, setSelectedObject } = useCanvasStore();
 
   const handleDelete = () => {
     if (canvas && selectedObject) {
-      const data = selectedObject.get('data');
-      if (data) {
-        canvas.remove(selectedObject);
-        deleteGarment(data.garmentId)
-        setSelectedObject(null);
+      debugger
+      if (selectedObject instanceof fabric.Image) {
+        const imageObject = selectedObject;
+        const garmentId = imageObject.garmentId;
+        if (garmentId) {
+          canvas.remove(imageObject);
+          deleteGarment(garmentId);
+          setSelectedObject(null);
+        }
       }
     }
   };
