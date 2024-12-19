@@ -74,7 +74,7 @@ export const updateRequestReadable = async (requestId: string) => {
 
 export const updateConnections = async (
   senderId: string,
-  receiverId: string
+  receiverId: Types.ObjectId | null
 ) => {
   try {
     const response = await axios.put(`/api/connectionRequestRoute`, null, {
