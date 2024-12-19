@@ -89,7 +89,7 @@ export default function SwipeableEdgeDrawer() {
         </Tooltip>
 
         <div style={{ padding: 2, paddingTop: 0, overflow: 'auto' }} className='bg-white'>
-          <Gallery isForOutfit={true} />
+          <Gallery viewMode={"createOtfit"} />
         </div>
 
       </SwipeableDrawer>
