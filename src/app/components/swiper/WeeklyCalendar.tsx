@@ -49,7 +49,7 @@ const WeeklyCalendar: React.FC = () => {  // יצירת משתנה מצב לתא
   const fetchData = async () => {
     try {
       console.log("user id from WeeklyCalendar: ", _id, selectedDate, selectedLooks)
-      if (selectedDate) {
+      if (selectedDate&&_id) {
         const response = setLooksForDay(_id, selectedDate, selectedLooks);
         console.log(response);
       }

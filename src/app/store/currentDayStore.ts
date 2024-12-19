@@ -3,14 +3,15 @@ import { create } from "zustand";
 import IOutfit from "../types/IOutfit";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Types } from "mongoose";
 
 type DayStore = {
     selectedDate: Date | null;
     allLooks: IOutfit[];
     selectedLooks: IOutfit[];
     openGalery: boolean;
-    userId: string;
-    setUserId: (userId: string) => void;
+    userId: Types.ObjectId|null;
+    setUserId: (userId: Types.ObjectId|null) => void;
     toggleDrawer: (newOpen: boolean) => void;
     selectLook: (outfit: IOutfit) => void;
     setSelectedDate: (date: Date) => void;
@@ -26,8 +27,8 @@ const useDay = create<DayStore>((set) => ({
     allLooks: [],
     selectedLooks: [],
     openGalery: false,
-    userId: "",
-    setUserId: (userId: string) => {
+    userId: null,
+    setUserId: (userId: Types.ObjectId|null) => {
         set({
             userId: userId,
         });
