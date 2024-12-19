@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 import { Types } from "mongoose";
 
 type OriginUserStore = {
-  _id: string;
+  _id: Types.ObjectId | null;
   userName: string;
   email: string;
   children: Types.ObjectId[];
@@ -16,18 +16,18 @@ type OriginUserStore = {
 const useOriginUser = create(
   persist<OriginUserStore>(
     (set) => ({
-  _id: "",
+  _id: null,
   userName: "",
   email: "",
   children: [],
 
   // פונקציה לאיתחול יוזר חדש
   setOriginUser: (user) => {
-    console.log("Setting origin user in store: ", user); // הוספתי פה הדפסה לבדוק
+    console.log("Setting origin user in store: ", user); 
 
     set(() => {
       const newState = {
-        _id: user._id ?? "",
+        _id: user._id && Types.ObjectId.isValid(user._id) ? new Types.ObjectId(user._id) : null,
         userName: user.userName || "",
         email: user.email || "",
         children: user.children ?? [],
@@ -42,12 +42,15 @@ const useOriginUser = create(
     set((state) => ({
       ...state,
       ...updatedFields,
+      _id: updatedFields._id && Types.ObjectId.isValid(updatedFields._id)
+      ? new Types.ObjectId(updatedFields._id)
+      : state._id,
     })),
 
   // פונקציה לאיפוס היוזר לערכים ריקים
   resetOriginUser: () =>
     set({
-      _id: "",
+      _id: null,
       userName: "",
       email: "",
       children: [],

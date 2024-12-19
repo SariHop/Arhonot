@@ -7,7 +7,7 @@ import useOriginUser from "@/app/store/originUserStore";
 
 export const apiUrl = "/api/userRoute";
 
-async function hashPassword(password: string): Promise<string> {
+export async function hashPassword(password: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(password);
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
@@ -263,7 +263,6 @@ export const createSubAccont = async (formData: IUserType) => {
     };
     console.log("data:", data);
 
-
     // שליחת הנתונים לשרת
     const response = await axios.post("/api/userExtraPermissions", data);
     if (response.status === 200 || response.status === 201) {
@@ -283,6 +282,18 @@ export const createSubAccont = async (formData: IUserType) => {
     } else {
       return { success: false, message: "שגיאה פנימית במערכת", status: 500 };
     }
+  }
+};
+//פונקציה לחיפוש משתמש עפ"י מייל
+export const getUserByEmail = async (emailInput:string)=>{
+
+  try {
+    const response = await axios.get(`${apiUrl}/searchRoute/${emailInput}`
+    );
+    return response.data.data; 
+  } catch (error) {
+    console.error("שגיאה בחיפוש משתמש:", error);
+    return null;
   }
 };
 

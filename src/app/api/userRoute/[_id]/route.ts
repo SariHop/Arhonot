@@ -24,7 +24,7 @@ export async function GET(
     }
     return NextResponse.json({ success: true, data: user }, { status: 200 });
   } catch (error: unknown) {
-    console.error("Error add user:", error);
+    console.error("Error get user:", error);
     if (error instanceof Error) {
       return NextResponse.json(
         { message: "Error get user", error: error.message },

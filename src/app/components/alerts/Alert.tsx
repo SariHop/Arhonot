@@ -87,7 +87,7 @@ const Alert: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => {
     <div className="rtl-tabs h-full flex flex-col">
       <Tabs
         onChange={handleTabChange}
-        defaultActiveKey="waiting"
+        defaultActiveKey="pending"
         className="h-full flex flex-col"
         items={[
           {

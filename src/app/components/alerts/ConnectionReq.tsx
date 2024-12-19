@@ -51,7 +51,7 @@ const ConnectionReq: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => 
     let childrenContent = null;
 
     switch (status) {
-      case "waiting":
+      case "pending":
         labelContent = `${connectionReq.sendersName} wants to connect to you`;
         childrenContent = (
           <div>
@@ -231,17 +231,17 @@ const ConnectionReq: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => 
   return (
     <div className="rtl-tabs h-full flex flex-col">
       <Tabs
-        defaultActiveKey="waiting"
+        defaultActiveKey="pending"
         className="h-full flex flex-col"
         items={[
             //בקשות שטרם נענו
           {
-            key: "waiting",
+            key: "pending",
             label: "ממתינות",
             children: (
               <div className="tab-content">
                 <Collapse
-                  items={renderRequests("waiting").map((request) => ({
+                  items={renderRequests("pending").map((request) => ({
                     ...request,
                     readen: "true",
                   }))}
