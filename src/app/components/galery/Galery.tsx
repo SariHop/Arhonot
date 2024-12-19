@@ -71,7 +71,7 @@ const Gallery = ({ isForOutfit }: { isForOutfit: boolean }) => {
       {activeTab === "garments" ? (
         <GarmentsGallery isForOutfit={isForOutfit} />
       ) : (
-        <OutfitsGallary />
+        <OutfitsGallary isSelectForDay={false} />
       )}
     </div>
   );
