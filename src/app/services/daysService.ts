@@ -1,10 +1,11 @@
 import axios from "axios";
 import { IDayWithLooks } from "../types/IDay";
 import IOutfit from "../types/IOutfit";
+import { Types } from "mongoose";
 
 
 
-export const userLooks = async (month: number, year: number, userId: string) => {
+export const userLooks = async (month: number, year: number, userId: Types.ObjectId|null) => {
   try {
     const response = await axios.post(`/api/dayRoute/daysOutfits/`, { userId: userId, month, year });
     const days: IDayWithLooks[] = response.data;
@@ -46,7 +47,7 @@ export const getChildrenLooks = async (userId: string, date: string) => {
   }
 };
 
-export const getDay = async (userId: string, date: Date) => {
+export const getDay = async (userId: Types.ObjectId|null, date: Date) => {
   try {
     const response = await axios.post(`/api/dayRoute/${userId}`, {
       date,
@@ -81,7 +82,7 @@ export const getDay = async (userId: string, date: Date) => {
   }
 };
 
-export const setLooksForDay = async (userId: string, date: Date, looks: IOutfit[]) => {
+export const setLooksForDay = async (userId: Types.ObjectId, date: Date, looks: IOutfit[]) => {
   try {
     // ביצוע בקשה PUT לשרת
     const response = await axios.put('/api/dayRoute', {

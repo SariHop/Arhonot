@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 import { Types } from "mongoose";
 
 type UserStore = {
-  _id: string;
+  _id: Types.ObjectId | null;
   userName: string;
   email: string;
   age: number;
@@ -21,7 +21,7 @@ type UserStore = {
 const useUser = create(
   persist<UserStore>(
     (set) => ({
-  _id: "",
+  _id: null,
   userName: "",
   email: "",
   age: 0,
@@ -32,13 +32,12 @@ const useUser = create(
   children: [],
 
   // פונקציה לאיתחול יוזר חדש
-  // setUser: (user) => set(() => ({ ...user })),
   setUser: (user) => {
-    console.log("Setting user in store: ", user); // הוספתי פה הדפסה לבדוק
+    console.log("Setting user in store: ", user); 
 
     set(() => {
       const newState = {
-        _id: user._id ?? "",
+        _id: user._id && Types.ObjectId.isValid(user._id) ? new Types.ObjectId(user._id) : null,
         userName: user.userName || "",
         email: user.email || "",
         age: user.age ?? 0,
@@ -62,6 +61,9 @@ const useUser = create(
     set((state) => ({
       ...state,
       ...updatedFields,
+      _id: updatedFields._id && Types.ObjectId.isValid(updatedFields._id)
+      ? new Types.ObjectId(updatedFields._id)
+      : state._id,
       dateOfBirth: updatedFields.dateOfBirth
         ? new Date(updatedFields.dateOfBirth)
         : state.dateOfBirth,
@@ -70,7 +72,7 @@ const useUser = create(
   // פונקציה לאיפוס היוזר לערכים ריקים
   resetUser: () =>
     set({
-      _id: "",
+      _id: null,
       userName: "",
       email: "",
       age: 0,

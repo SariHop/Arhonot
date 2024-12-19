@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { fetchUsersConnectionReq } from '../services/ConnectionsServices';
 import { fetchUserAlerts } from '../services/AlertsServices';
+import { Types } from 'mongoose';
 
 type AlertsCounterStore = {
   alertsCounter: number;
@@ -16,7 +17,7 @@ export const useAlertsCounter = create<AlertsCounterStore>((set) => ({
   decrease: () => set((state) => ({ alertsCounter: state.alertsCounter - 1 })),
 }));
 
-export const initialize = async (userId: string) => {
+export const initialize = async (userId: Types.ObjectId | null) => {
   try {
     const requests = await fetchUsersConnectionReq(userId);
     const alerts = await fetchUserAlerts(userId);

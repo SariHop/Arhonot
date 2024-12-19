@@ -124,7 +124,7 @@ const SignUp = () => {
         }}
         className="bg-white p-8 shadow-md rounded-md w-full max-w-md"
       >
-        <h2 className="text-2xl font-semibold mb-4 text-gray-800">{title}</h2>
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">{title}</h2>
         <div className="grid grid-cols-2 gap-4 mb-4">
           {/* UserName */}
           <div className="mb-4">
@@ -242,7 +242,7 @@ const SignUp = () => {
               name="gender"
               value={formData.gender}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500  h-10"
             >
               <option value="זכר">זכר</option>
               <option value="נקבה">נקבה</option>
@@ -254,7 +254,7 @@ const SignUp = () => {
           {/* Date of Birth */}
           <div className="mb-4">
             <label
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 "
               htmlFor="dateOfBirth"
             >
               תאריך לידה
@@ -280,6 +280,7 @@ const SignUp = () => {
                     .split("T")[0];
                 }
               }}
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500  h-10"
             />
             {errors.dateOfBirth && (
               <p className="text-red-500 text-sm">{errors.dateOfBirth}</p>

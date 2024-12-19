@@ -1,13 +1,14 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import { IOutfitType } from "@/app/types/IOutfit";
+import { Types } from "mongoose";
 
 export const apiUrl = "/api/";
 
 
-export const fetchOutfits = async (userId: string) => {
+export const fetchOutfits = async (userId: Types.ObjectId) => {
     try {
-        const response = await axios.get(`${apiUrl}outfitRoute/gallery/${userId}`);
+        const response = await axios.get(`${apiUrl}outfitRoute/gallery/${userId.toString()}`);
         console.log("response:");
         console.log(response.data);
         return response.data

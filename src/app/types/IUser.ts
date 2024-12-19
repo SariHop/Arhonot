@@ -100,7 +100,7 @@ export const updateUserSchemaZod = z.object(userSchemaZod._def.schema.shape).omi
 });
 
 // טיפוס ליצירת משתמש (ללא _id ועם שדות נדרשים בלבד)
-export type CreateUserType = Omit<IUser, "_id"/* | "children" */>;
+// export type CreateUserType = Omit<IUser, "_id"/* | "children" */>;
 
 // טיפוס לעדכון יוזר בסטור (כולל ה-ID, כל השדות אופציונליים)
 export type UpdateUserTypeForStore = Partial<IUser> & { _id: string };

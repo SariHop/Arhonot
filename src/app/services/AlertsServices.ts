@@ -1,8 +1,9 @@
 import axios from "axios";
+import { Types } from "mongoose";
 import { toast } from "react-toastify";
 
 
-export async function fetchUserAlerts(userId: string | null) {
+export async function fetchUserAlerts(userId: Types.ObjectId | null) {
   try {
     const response = await axios.get(`/api/alertRoute/userAlerts/${userId}`);
     return response.data.data;

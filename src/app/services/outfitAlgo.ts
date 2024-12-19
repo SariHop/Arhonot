@@ -1,8 +1,9 @@
+import { Types } from "mongoose";
 import IOutfit from "../types/IOutfit";
 import { WeatherData } from "../types/IWeather"
 import { fetchUserOutfits, getMaxTemperatureForDate } from "./weatherService"
 
-export const recommendedLooks = async (list: WeatherData[], date: Date, userId: string, sensitive: string) => {
+export const recommendedLooks = async (list: WeatherData[], date: Date, userId: Types.ObjectId|null, sensitive: string) => {
   try {
     const dailyWeather = getMaxTemperatureForDate(list, date) || 15;
     console.log("daily weather", dailyWeather);

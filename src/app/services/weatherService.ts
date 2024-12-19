@@ -2,6 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { apiUrl } from "@/app/services/garmentService";
 import { Position, WeatherData } from "@/app/types/IWeather";
+import { Types } from "mongoose";
 
 export const fetchWeatherData = async () => {
   try {
@@ -52,7 +53,7 @@ export const getMaxTemperatureForDate = (list: WeatherData[], targetDate: Date) 
 
 
 
-export const fetchUserOutfits = async (userId: string) => {
+export const fetchUserOutfits = async (userId: Types.ObjectId|null) => {
   try {
     const response = await axios.get(`${apiUrl}outfitRoute/userOutfits/${userId}`);
     return response.data.data;
