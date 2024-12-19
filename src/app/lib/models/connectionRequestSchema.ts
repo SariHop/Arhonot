@@ -4,7 +4,7 @@ import mongoose, { Model, Schema, Types } from "mongoose";
 const ConnectionRequestSchema: Schema<IConnectionRequest> = new Schema({
     userIdSender: { type: Types.ObjectId, required: true, ref: 'User' }, 
     userIdReciver: { type: Types.ObjectId, required: true, ref: 'User' }, 
-    status: { type: String, required: true , enum: ['accepted', 'rejected', 'waiting']}, 
+    status: { type: String, required: true , enum: ['accepted', 'rejected', 'pending']}, 
     readen: { type: Boolean, required: true }, 
     date: { type: Date, required: true, validate: [function(value: Date) {
         return value <= new Date(); 
