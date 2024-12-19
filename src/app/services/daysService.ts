@@ -5,7 +5,7 @@ import { Types } from "mongoose";
 
 
 
-export const userLooks = async (month: number, year: number, userId: string) => {
+export const userLooks = async (month: number, year: number, userId: Types.ObjectId|null) => {
   try {
     const response = await axios.post(`/api/dayRoute/daysOutfits/`, { userId: userId, month, year });
     const days: IDayWithLooks[] = response.data;

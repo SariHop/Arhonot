@@ -36,7 +36,7 @@ export type IAlertTypeWithId = z.infer<typeof alertSchemaZod> & {
 };
 
 export type AlertProps = {
-    userId: Types.ObjectId;
+    userId: Types.ObjectId | null;
     decreaseAlertCounter: () => void;
 }
 

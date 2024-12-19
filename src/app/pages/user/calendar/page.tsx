@@ -13,7 +13,6 @@ import IOutfit from "@/app/types/IOutfit";
 import OutfitsModal from "@/app/components/calendar/OutfitsModal";
 import { IDayWithLooks } from "@/app/types/IDay";
 import { userLooks } from "@/app/services/daysService";
-import { recommendedLooks } from "@/app/services/outfitAlgo"
 const customDayNames = ["יום א", "יום ב", "יום ג", "יום ד", "יום ה", "יום ו", "שבת"];
 
 

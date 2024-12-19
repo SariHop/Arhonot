@@ -4,6 +4,7 @@ import useUser from "@/app/store/userStore";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useOriginUser from "@/app/store/originUserStore";
+import { Types } from "mongoose";
 
 export const apiUrl = "/api/userRoute";
 
@@ -204,7 +205,7 @@ export const logout = async (): Promise<void> => {
   }
 };
 //פונקציה לעדכון פרטי משתמש
-export const updateUser = async (_id: string, body: object) => {
+export const updateUser = async (_id: Types.ObjectId|null, body: object) => {
   const { setUser } = useUser.getState();
   const { setOriginUser } = useOriginUser.getState();
 
