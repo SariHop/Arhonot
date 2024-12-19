@@ -4,6 +4,7 @@ import { fabric } from "fabric";
 import ShowGallery from "@/app/components/createOutfit/ShowGallery";
 import ToolBox from "@/app/components/createOutfit/toolBox/ToolBox";
 import useCanvasStore from "@/app/store/canvasStore";
+import { useRouter } from "next/navigation";
 
 // אובייקט של הקנבס נשמר דרך זוסטנד בלוקלסטורג
 // משום מה בטעינה מחדש של העמוד הקריאה יוסאפקט ניטענת פעמיים, כנראה קשור לריאקט
@@ -27,6 +28,8 @@ const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const { setCanvas, canvas } = useCanvasStore();
   const [canvasFromLocacl, setCanvasFromLocacl] = useState(null);
+
+  const router = useRouter()
 
   const getCanvasfromlocaStorage = () => {
     const savedCanvas = localStorage.getItem("canvas-store");
@@ -93,12 +96,13 @@ const Canvas = () => {
 
   return (
     <div className="flex flex-col justify-center mt-3">
+      <button onClick={()=>{router.push(`/pages/user`)}}>חזרה לדף הבית</button>
       <div className="bg-white">
         <ShowGallery />
         <ToolBox />
       </div>
 
-      <div className="bg-checkered-pattern flex justify-center items-center gap-5 p-5 flex-col">
+      <div className="bg-checkered-pattern flex justify-center items-center gap-5 p-20 flex-col">
         <canvas key="canvas" id="canvas" ref={canvasRef} className="shadow-lg max-w-full h-0 w-0" />
       </div>
     </div>
