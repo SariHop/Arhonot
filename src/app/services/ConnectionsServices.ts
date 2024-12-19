@@ -4,8 +4,9 @@ import "react-toastify/dist/ReactToastify.css";
 import {CreateConnectionRequest} from "../types/IConnectionRequest";
 import useOriginUser from "@/app/store/originUserStore";
 import { hashPassword } from "@/app/services/userServices";
+import { Types } from "mongoose";
 
-export const fetchUsersConnectionReq = async (userId: string | null) => {
+export const fetchUsersConnectionReq = async (userId: Types.ObjectId | null) => {
   try {
     const response = await axios.get(
       `/api/connectionRequestRoute/userConnectionRequests/${userId}`
