@@ -4,13 +4,12 @@ import { styled } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-// import Image from 'next/image'
+import Image from 'next/image'
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Gallery from '../galery/Galery';
 import { Tooltip } from '@mui/material';
 
-const drawerBleeding = 25;
-// 85
+const drawerBleeding = 85
 
 const Puller = styled('div')(() => ({
   width: 30,
@@ -76,13 +75,13 @@ export default function SwipeableEdgeDrawer() {
           >
             <Puller />
             <div className="m-4 flex justify-center items-center">
-              {/* <Image
+              <Image
                 src="/gallery.png"
                 alt="Logo"
                 width={100}
                 height={120}
                 className="p-3"
-              /> */}
+              />
             </div>
 
           </div>

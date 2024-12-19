@@ -1,6 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import { IGarmentType } from "@/app/types/IGarment";
+import { Types } from "mongoose";
 
 export const apiUrl = "/api/";
 
@@ -19,9 +20,9 @@ export async function createGarment(formData: IGarmentType) {
   }
 }
 
-export const fetchGarments = async (userId: string) => {
+export const fetchGarments = async (userId: Types.ObjectId) => {
   try {
-    const response = await axios.get(`/api/garmentRoute/galery/${userId}`);
+    const response = await axios.get(`/api/garmentRoute/galery/${userId.toString()}`);
     console.log(response.data);
     return response.data
   } catch (error) {

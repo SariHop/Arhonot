@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import connect from "@/app/lib/db/mongoDB";
 import Garment from "@/app/lib/models/garmentSchema";
+import { Types } from "mongoose";
+
 export async function GET(
     request: NextRequest,
-    { params }: { params: { userId: string } }
+    { params }: { params: { userId: string} }
 ) {
     try {
         console.log("Request method:", request.method); //NextRequestשימוש סמלי ב
@@ -17,7 +19,9 @@ export async function GET(
                 { status: 400 }
             );
         }
-        const garments = await Garment.find({ userId: userId });
+        const objectId = new Types.ObjectId(userId);
+
+        const garments = await Garment.find({ userId: objectId });
         if (!garments) {
             return NextResponse.json({ error: "garments not found" }, { status: 404 });
         }

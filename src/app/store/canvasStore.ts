@@ -7,7 +7,7 @@ import IOutfit from "../types/IOutfit";
 
 type CanvasStore = {
   canvas: fabric.Canvas | null;
-  setCanvas: (canvas: fabric.Canvas) => void;
+  setCanvas: (canvas: fabric.Canvas | null) => void;
   garments: string[];
   addGarment: (garmentId: string) => void;
   deleteGarment: (garmentId: string) => void;
@@ -15,6 +15,8 @@ type CanvasStore = {
   selectedObject: fabric.Object | null;
   setSelectedObject: (obj: fabric.Object | null) => void;
   editOutfit: IOutfit | null;
+  canvasUrl: string
+  setCanvasurl: (url:string) => void
   setEditOutfit: (outfit: IOutfit | null) => void;
   loadImage: (garmentURL: string, garmentId: string) => Promise<void>;
   addImageToCanvasFromGallery: (garmentURL: string, garmentId: string | unknown) => Promise<void>;
@@ -25,7 +27,7 @@ const useCanvasStore = create<CanvasStore>()(
     (set, get) => ({
       // קנבס
       canvas: null,
-      setCanvas: (canvas: fabric.Canvas) => set({ canvas }),
+      setCanvas: (canvas: fabric.Canvas | null) => set({ canvas }),
       // מערך בגדים נבחרים
       garments: [],
       addGarment: (garmentId: string) => {
@@ -47,6 +49,9 @@ const useCanvasStore = create<CanvasStore>()(
       // אאוטפיט קיים פתוח לעריכה
       editOutfit: null,
       setEditOutfit: (outfit: IOutfit | null) => set({ editOutfit: outfit }),
+      // ייצוא של הקנבס לתמונה
+      canvasUrl: "",
+      setCanvasurl: async (url: string) => set({ canvasUrl: url }),
       // הוספת בגד לקנבס
       loadImage: async (garmentURL: string, garmentId: string) => {
         const canvas = get().canvas;
@@ -60,8 +65,8 @@ const useCanvasStore = create<CanvasStore>()(
               top: 50,
               scaleX: 0.5,
               scaleY: 0.5,
+              garmentId: garmentId
             });
-            img.garmentId = garmentId
             canvas.add(img);
             canvas.setActiveObject(img);
           },
@@ -95,9 +100,10 @@ const useCanvasStore = create<CanvasStore>()(
     {
       name: "canvas-store",
       partialize: (state) => ({
+        canvasUrl:state.canvasUrl,
         garments: state.garments,
         editOutfit: state.editOutfit,
-        canvasJSON: state.canvas?.toJSON()
+        canvasJSON: state.canvas?.toJSON(["garmentId"])
       }),
     }
   )
