@@ -66,18 +66,20 @@ const Card = ({ garment, isForOutfit }: { garment: IGarment; isForOutfit: boolea
     };
 
     return (
-        <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm relative"
+        <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm relative p-1 h-[200px]"
             onClick={handleClickcard ? () => handleClickcard(garment.img, garment._id) : openModal}
         >
+            <div className="h-[160px] w-full p-1">
             <Image
                 src={garment.img}
                 alt={garment.desc}
-                width={0}
-                height={0}
+                width={200}
+                height={200}
                 sizes="(max-width: 640px) 33vw, 25vw"
-                className="w-full h-auto object-cover rounded-lg"
+                className="w-full h-full object-contain rounded-lg"
             />
-            <p>{garment.desc}</p>
+            </div>
+            <p className="text-xs md:text-sm 2xl:text-base 3xl:text-lg line-clamp-1">{garment.desc}</p>
 
             {temperature !== null && (
                 <div
