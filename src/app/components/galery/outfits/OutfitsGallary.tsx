@@ -2,8 +2,10 @@
 import { useState, useEffect } from "react";
 import Card from "./Card";
 import useOutfit from '../../../store/outfitsStore';
+import IOutfit from "@/app/types/IOutfit";
+import { numberOfItemsInPage } from "@/app/services/galleryService";
 
-const ITEMS_PER_PAGE = 4;
+let ITEMS_PER_PAGE = 4;
 
 const OutfitsGallary = () => {
   const { sortedOutfits } = useOutfit();
@@ -17,15 +19,16 @@ const OutfitsGallary = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [sortedOutfits]);
+    ITEMS_PER_PAGE = numberOfItemsInPage();
+  }, [sortedOutfits, window.innerWidth]);
 
   const goToPreviousPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const goToNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   return (
     <>
       {!sortedOutfits.length && <p>לא נמצאו לוקים עבור לקוח זה.</p>}
-      <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-5 lg:grid-cols-7 gap-4 px-4">
-        {currentItems.map((outfit) => (
+      <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 2xl:grid-cols-9 gap-4 px-4">
+        {currentItems.map((outfit:IOutfit) => (
           <Card key={String(outfit._id)} outfit={outfit} />
         ))}
       </div>
