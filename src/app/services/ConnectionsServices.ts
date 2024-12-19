@@ -7,7 +7,6 @@ export const fetchUsersConnectionReq = async (userId: string | null) => {
       const response = await axios.get(
         `/api/connectionRequestRoute/userConnectionRequests/${userId}`
       );
-      console.log("User connection requests:", response.data);
       return response.data.data;
     } catch (error: unknown) {
       console.error("Failed to fetch user connection requests:", error);

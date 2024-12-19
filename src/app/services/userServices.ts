@@ -1,10 +1,11 @@
 import { IUserType, ResetPasswordResponse } from "../types/IUser";
 import axios from "axios";
-export const apiUrl = "/api/userRoute";
 import useUser from "@/app/store/userStore";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import useOriginUser from '@/app/store/originUserStore'
+import useOriginUser from "@/app/store/originUserStore";
+
+export const apiUrl = "/api/userRoute";
 
 async function hashPassword(password: string): Promise<string> {
   const encoder = new TextEncoder();
@@ -32,8 +33,8 @@ function calculateAge(birthDate: Date): number {
 }
 
 export const signup = async (formData: IUserType) => {
-  const {setOriginUser} =useOriginUser.getState();
   const { setUser } = useUser.getState();
+  const { setOriginUser } = useOriginUser.getState();
   try {
     const encryptedPassword = await hashPassword(formData.password); // השתמש ב-await כדי לקבל את התוצאה המגובבת
     const { confirmPassword, ...rest } = formData; // מסננים את confirmPassword
@@ -50,13 +51,13 @@ export const signup = async (formData: IUserType) => {
       console.log("Response Data after signup:", response.data.data);
       setUser(response.data.data); // עדכון ה-store
       console.log("User state after signup:", useUser.getState());
-      setOriginUser(response.data.data) //עדכון הUserOriginStore
+      setOriginUser(response.data.data); //עדכון הUserOriginStore
       console.log("Origin user state after signup:", useOriginUser.getState());
-      
+
       return { success: true, data: response.data };
     } else {
       const message =
-        response.data?.message || "Unknown error occurred during signup.";
+        response.data?.message || "Unknown error occurred during signup";
       return { success: false, message, status: response.status };
     }
   } catch (error) {
@@ -73,6 +74,7 @@ export const signup = async (formData: IUserType) => {
 
 export const signin = async (email: string, password: string) => {
   const { setUser } = useUser.getState();
+  const { setOriginUser } = useOriginUser.getState();
   try {
     const encryptedPassword = await hashPassword(password);
     console.log(email, encryptedPassword);
@@ -86,6 +88,8 @@ export const signin = async (email: string, password: string) => {
       console.log("Login successful:", response.data);
       setUser(response.data.data); // עדכון ה-store
       console.log("User state after signin:", useUser.getState());
+      setOriginUser(response.data.data); //עדכון הUserOriginStore
+      console.log("Origin user state after signup:", useOriginUser.getState());
       return { success: true, data: response.data };
     } else {
       const message =
@@ -185,14 +189,16 @@ export const forgotPassword = async (email: string) => {
 //פונקציה להתנתקות מהאתר
 export const logout = async (): Promise<void> => {
   const { resetUser } = useUser.getState();
+  const { resetOriginUser } = useOriginUser.getState();
 
   try {
     //שליחת בקשה לשרת למחיקת הטוקן
     await axios.post("/api/logoutRoute", null, { withCredentials: true });
-    // איפוס המשתמש ב-Store
+    // איפוס המשתמשים ב-Store
     resetUser();
+    resetOriginUser();
 
-    console.log("User has been logged out successfully.");
+    console.log("User has been logged-out successfully.");
   } catch (error) {
     console.error("Error during logout:", error);
   }
@@ -200,13 +206,17 @@ export const logout = async (): Promise<void> => {
 //פונקציה לעדכון פרטי משתמש
 export const updateUser = async (_id: string, body: object) => {
   const { setUser } = useUser.getState();
+  const { setOriginUser } = useOriginUser.getState();
+
   try {
     const response = await axios.put(`${apiUrl}/${_id}`, body, {
       headers: { "Content-Type": "application/json" },
     });
     console.log("User updated successfully:", response.data);
     setUser(response.data.data); // עדכון ה-store
-      console.log("User state after signup:", useUser.getState());
+    console.log("User state after signup:", useUser.getState());
+    setOriginUser(response.data.data); //עדכון הUserOriginStore
+    console.log("Origin user state after signup:", useOriginUser.getState());
     return response.data;
   } catch (error: unknown) {
     console.error("Failed to update connection request:", error);
@@ -219,3 +229,60 @@ export const updateUser = async (_id: string, body: object) => {
     throw error;
   }
 };
+
+export const createSubAccont = async (formData: IUserType) => {
+  const { _id: creatorId,  email: creatorEmail, } =  useOriginUser.getState();
+  console.log(creatorId,'creatorId',creatorEmail,'creatorEmail' );
+  
+  try {
+    if (!creatorEmail||creatorEmail==="") {
+      return { success: false, message: "האימייל של המשתמש המקורי לא נמצא", status: 400 };
+    }
+    const enteredPassword = prompt("אנא הזן את סיסמתך לאימות:");
+    if (!enteredPassword) {
+      return { success: false, message: "האימות בוטל על ידי המשתמש", status: 401 };
+    }
+    const encryptedPassword = await hashPassword(enteredPassword);
+    const authResponse = await axios.post("/api/signIn", {
+      email: creatorEmail,
+      password: encryptedPassword,
+    });
+    if (authResponse.status !== 200 && authResponse.status !== 201) {
+      return { success: false, message: "אימות הסיסמה נכשל", status: authResponse.status };
+    }
+    const encryptedNewPassword = await hashPassword(formData.password);
+
+    // הכנת הנתונים ליצירת חשבון משני
+    const { confirmPassword, ...rest } = formData;
+    console.log("confirmPassword", confirmPassword);
+    const data = {
+      ...rest,
+      password: encryptedNewPassword,
+      age: calculateAge(formData.dateOfBirth),
+      creatorId,
+    };
+    console.log("data:", data);
+
+
+    // שליחת הנתונים לשרת
+    const response = await axios.post("/api/userExtraPermissions", data);
+    if (response.status === 200 || response.status === 201) {
+      return { success: true, data: response.data };
+    } else {
+      const message =
+        response.data?.message || "שגיאה לא ידועה ביצירת חשבון המשני.";
+      return { success: false, message, status: response.status };
+    }
+  } catch (error) {
+    console.error("Error during create sub account:", error);
+
+    if (axios.isAxiosError(error)) {
+      const message = error.response?.data?.message || "שגיאה לא צפויה";
+      const status = error.response?.status || 500;
+      return { success: false, message, status };
+    } else {
+      return { success: false, message: "שגיאה פנימית במערכת", status: 500 };
+    }
+  }
+};
+

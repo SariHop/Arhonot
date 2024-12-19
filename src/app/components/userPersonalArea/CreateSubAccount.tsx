@@ -1,9 +1,13 @@
-import React from 'react'
+"use client";
+import React from "react";
+import SignUp from "@/app/components/SignUp";
 
 const CreateSubAccount = () => {
   return (
-    <div>CreateSubAccount</div>
-  )
-}
+    <div>
+        <SignUp />
+    </div>
+  );
+};
 
-export default CreateSubAccount
+export default CreateSubAccount;

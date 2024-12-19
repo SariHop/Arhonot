@@ -6,6 +6,7 @@ import { Types } from "mongoose";
 type OriginUserStore = {
   _id: string;
   userName: string;
+  email: string;
   children: Types.ObjectId[];
   setOriginUser: (user: Partial<UpdateUserTypeForStore>) => void;
   updateOriginUser: (updatedFields: Partial<IUserTypeWithId>) => void;
@@ -17,6 +18,7 @@ const useOriginUser = create(
     (set) => ({
   _id: "",
   userName: "",
+  email: "",
   children: [],
 
   // פונקציה לאיתחול יוזר חדש
@@ -27,6 +29,7 @@ const useOriginUser = create(
       const newState = {
         _id: user._id ?? "",
         userName: user.userName || "",
+        email: user.email || "",
         children: user.children ?? [],
       };
       console.log("Updated origin user:", newState);
@@ -46,6 +49,7 @@ const useOriginUser = create(
     set({
       _id: "",
       userName: "",
+      email: "",
       children: [],
     }),
   }),
