@@ -71,7 +71,7 @@ const OutfitForm: React.FC = () => {
         e.preventDefault();
 
         const outfitFinal: IOutfitType = {
-            userId: userId,
+            userId: String(userId),
             clothesId: garments,
             desc: description,
             season: season,
