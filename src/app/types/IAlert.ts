@@ -1,4 +1,4 @@
-import { Document, ObjectId } from "mongoose";
+import { Document, ObjectId, Types } from "mongoose";
 import {z} from 'zod'
 
 export default interface IAlert extends Document{
@@ -36,7 +36,7 @@ export type IAlertTypeWithId = z.infer<typeof alertSchemaZod> & {
 };
 
 export type AlertProps = {
-    userId: string;
+    userId: Types.ObjectId;
     decreaseAlertCounter: () => void;
 }
 
