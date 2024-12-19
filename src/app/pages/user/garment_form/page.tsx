@@ -8,7 +8,7 @@ import { ZodError } from "zod";
 import UploadImage from "@/app/components/imagesUploud/UploudButton";
 import Image from "next/image";
 import { ColorPicker } from "antd";
-import {validSeasons, typeCategories, tags, rangeWheatherDeescription} from "@/app/data/staticArrays"
+import { validSeasons, typeCategories, tags, rangeWheatherDeescription } from "@/app/data/staticArrays"
 
 const GarmentForm = () => {
   const { _id } = useUser((state) => state);
@@ -17,13 +17,14 @@ const GarmentForm = () => {
   const [formData, setFormData] = useState<IGarmentType>({
     desc: "",
     season: "",
-    range: 1,
+    range: 4,
     category: "",
     color: "",
     link: "",
     price: 0,
     tags: [],
   });
+
 
   // const { data: tags, isLoading: isLoadingTag, error: errorTag } = useTagQuery();
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -33,8 +34,8 @@ const GarmentForm = () => {
   const handleChange = (
     e:
       | React.ChangeEvent<
-          HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-        >
+        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+      >
       | { target: { name: string; value: string } } // סמן שינוי
   ) => {
     const { name, value } = e.target;
@@ -47,8 +48,8 @@ const GarmentForm = () => {
             ? 0
             : Number(value)
           : name === "range"
-          ? Number(value)
-          : value,
+            ? Number(value)
+            : value,
     }));
   };
 
@@ -136,7 +137,7 @@ const GarmentForm = () => {
         className="w-full p-2 border rounded"
       >
         <option value="">עונה</option>
-        {validSeasons.map((season:string) => (
+        {validSeasons.map((season: string) => (
           <option key={season} value={season}>
             {season}
           </option>
@@ -151,7 +152,7 @@ const GarmentForm = () => {
         className="w-full p-2 border rounded"
       >
         <option value="">קטגוריה</option>
-        {typeCategories.map((category:string) => (
+        {typeCategories.map((category: string) => (
           <option key={category} value={category}>
             {category}
           </option>
@@ -168,16 +169,17 @@ const GarmentForm = () => {
         className="w-full p-2 border rounded"
       ></textarea>
 
-      <div className="flex items-end space-x-4 ">
-        {/* שדה הטווח */}
-        <div className="w-1/2 flex flex-col ml-2">
-          {/* <div className="flex justify-between w-full"> */}
-          <label  htmlFor="range">לאיזה מזג אוויר הבגד מתאים?</label>
-          <span className="text-sm">{rangeWheatherDeescription[formData.range - 1]}</span>
 
-            {/* <span className="text-sm">חם</span>
+      <div className="flex flex-col space-y-2">
+        <label htmlFor="range">לאיזה מזג אוויר הלוק הזה מתאים?</label>
+        {/* שדה הטווח */}
+        {/* <div className="flex justify-between w-full"> */}
+        <span className="text-sm">{rangeWheatherDeescription[formData.range - 1]}</span>
+
+        {/* <span className="text-sm">חם</span>
             <span className="text-sm">קר</span> */}
-          {/* </div> */}
+        {/* </div> */}
+        <div className="flex items-center space-x-4">
           <input
             type="range"
             name="range"
@@ -187,27 +189,25 @@ const GarmentForm = () => {
             value={formData.range}
             onChange={handleChange}
             className="w-full mt-2"
-          />
-           {/* <p className="text-center mt-2"> {rangeWheatherDeescription[formData.range-1]}</p> */}
-        </div>
-
-        {/* שדה המחיר */}
-        <div className="w-1/2 mr-2">
-          <input
-            type="number"
-            name="price"
-            placeholder="מחיר (אופציונלי)"
-            value={formData.price === 0 ? "" : formData.price}
-            onChange={(e) => handleChange(e)}
-            min="0"
-            inputMode="numeric"
-            className="w-full p-2 border rounded"
-          />
-          {errors.price && (
-            <p className="text-red-500 text-sm">{errors.price}</p>
-          )}
-        </div>
+          /></div>
+        {/* <p className="text-center mt-2"> {rangeWheatherDeescription[formData.range-1]}</p> */}
       </div>
+
+      {/* שדה המחיר */}
+      <input
+        type="number"
+        name="price"
+        placeholder="מחיר (אופציונלי)"
+        value={formData.price === 0 ? "" : formData.price}
+        onChange={(e) => handleChange(e)}
+        min="0"
+        inputMode="numeric"
+        className="w-full p-2 border rounded"
+      />
+      {errors.price && (
+        <p className="text-red-500 text-sm">{errors.price}</p>
+      )}
+
 
       <input
         type="url"
@@ -225,7 +225,7 @@ const GarmentForm = () => {
             (color) =>
               handleChange({
                 target: { name: "color", value: color.toHexString() },
-              }) 
+              })
           }
         />
       </div>
@@ -233,14 +233,13 @@ const GarmentForm = () => {
       <div className="space-y-2">
         <h3 className="text-lg font-medium">תגיות</h3>
         <div className="flex flex-wrap gap-4">
-          {tags.map((tag:string) => (
+          {tags.map((tag: string) => (
             <label
               key={tag}
-              className={`flex items-center p-2 border rounded cursor-pointer ${
-                formData.tags.includes(tag)
-                  ? "bg-indigo-600 text-white"
-                  : "bg-gray-200"
-              }`}
+              className={`flex items-center p-2 border rounded cursor-pointer ${formData.tags.includes(tag)
+                ? "bg-indigo-600 text-white"
+                : "bg-gray-200"
+                }`}
             >
               <input
                 type="checkbox"

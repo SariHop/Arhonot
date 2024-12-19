@@ -4,8 +4,3 @@ export interface ModalImageProps {
     setCloudinary: (url: string) => void
     fileWithNoBG: string | null
 }
-
-export interface OutfitFormProps {
-    closeModal: () => void;
-    outfitImgurl: string;
-}
