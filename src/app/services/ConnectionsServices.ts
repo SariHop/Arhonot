@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {IConnectionRequest2} from "../types/IConnectionRequest";
+import {CreateConnectionRequest} from "../types/IConnectionRequest";
 import useOriginUser from "@/app/store/originUserStore";
 import { hashPassword } from "@/app/services/userServices";
 
@@ -93,7 +93,7 @@ export const updateConnections = async (
 };
 
 export const createNewConnectionRequest = async (
-  formData: IConnectionRequest2
+  formData: CreateConnectionRequest
 ) => {
   const { _id: creatorId, email: creatorEmail } = useOriginUser.getState();
   console.log(creatorId, "creatorId", creatorEmail, "creatorEmail");

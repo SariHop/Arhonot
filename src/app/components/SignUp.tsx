@@ -124,7 +124,7 @@ const SignUp = () => {
         }}
         className="bg-white p-8 shadow-md rounded-md w-full max-w-md"
       >
-        <h2 className="text-2xl font-semibold mb-4 text-gray-800">{title}</h2>
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">{title}</h2>
         <div className="grid grid-cols-2 gap-4 mb-4">
           {/* UserName */}
           <div className="mb-4">

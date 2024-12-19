@@ -263,7 +263,6 @@ export const createSubAccont = async (formData: IUserType) => {
     };
     console.log("data:", data);
 
-
     // שליחת הנתונים לשרת
     const response = await axios.post("/api/userExtraPermissions", data);
     if (response.status === 200 || response.status === 201) {
@@ -289,9 +288,9 @@ export const createSubAccont = async (formData: IUserType) => {
 export const getUserByEmail = async (emailInput:string)=>{
 
   try {
-    const response = await axios.get(`${apiUrl}/searchRoute/${emailInput} `
+    const response = await axios.get(`${apiUrl}/searchRoute/${emailInput}`
     );
-    return response.data; 
+    return response.data.data; 
   } catch (error) {
     console.error("שגיאה בחיפוש משתמש:", error);
     return null;
