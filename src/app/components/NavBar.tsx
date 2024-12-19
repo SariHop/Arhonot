@@ -25,7 +25,7 @@ const NavBar = () => {
   useEffect(() => {
     
     initialize(user._id);
-  }, []);
+  }, [user._id]);
 
   const onClick: MenuProps["onClick"] = ({ key }) => {
     console.log(user._id);
