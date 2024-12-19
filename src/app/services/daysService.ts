@@ -1,5 +1,6 @@
 import axios from "axios";
 import { IDayWithLooks } from "../types/IDay";
+import IOutfit from "../types/IOutfit";
 
 
 
@@ -50,12 +51,16 @@ export const getDay = async (userId: string, date: Date) => {
     const response = await axios.post(`/api/dayRoute/${userId}`, {
       date,
     });
-    console.log("response: ",response);
+    console.log("response: ", response);
     return response;
   } catch (error: unknown) {
     console.error("Failed to fetch day:", error);
     if (axios.isAxiosError(error)) {
       if (error.response) {
+        if (error.response.status === 404) {
+          console.warn("No record found for the provided user ID and date.");
+          throw new Error("No record found for the provided user ID and date.");
+        }
         console.error("Server returned an error:", error.response.data);
         throw new Error(
           `Error: ${error.response.data?.error || "Unknown server error"}. Status: ${error.response.status
@@ -76,3 +81,20 @@ export const getDay = async (userId: string, date: Date) => {
   }
 };
 
+export const setLooksForDay = async (userId: string, date: Date, looks: IOutfit[]) => {
+  try {
+    // ביצוע בקשה PUT לשרת
+    const response = await axios.put('/api/dayRoute', {
+      userId,
+      date,
+      looks,
+    });
+    return response.data;
+  } catch (error) {
+    // טיפול בשגיאות
+    console.error('Error setting looks for day:', error);
+    console.log(error)
+    // throw new Error('Failed to set looks for day');
+    return error;
+  }
+};

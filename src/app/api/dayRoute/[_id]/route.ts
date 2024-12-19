@@ -141,12 +141,8 @@ export async function POST(
     // קבלת נתוני הבקשה
     const { date } = await request.json();
     console.log("Request method:", request.method);
-    console.log("Params received:", params);
-    console.log("Date received:", date);
-
     // התחברות לבסיס הנתונים
     await connect();
-
     // ולידציה לפרמטרים
     const _id = params._id;
     if (!_id) {
@@ -159,7 +155,7 @@ export async function POST(
     if (!date) {
       return NextResponse.json(
         { error: "Missing date parameter in request body" },
-        { status: 400 }
+        { status: 401 }
       );
     }
 
@@ -169,12 +165,10 @@ export async function POST(
 
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999); // מגדיר את השעה לסוף היום
-
     const day = await Day.findOne({
       userId: _id,
       date: { $gte: startOfDay, $lte: endOfDay }
     }).populate("looks");
-    console.log(day);
     if (!day) {
       return NextResponse.json(
         { error: "No record found for the provided user ID and date" },

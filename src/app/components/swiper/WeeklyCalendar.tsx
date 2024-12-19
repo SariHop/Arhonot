@@ -1,33 +1,26 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import useDay from '@/app/store/currentDayStore';
 
-const WeeklyCalendar: React.FC<{
-  selectedDate: Date;
-  setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
-}> = ({ selectedDate, setSelectedDate }) => {  // יצירת משתנה מצב לתאריכים של השבוע
+const WeeklyCalendar: React.FC = () => {  // יצירת משתנה מצב לתאריכים של השבוע
   const [weekDates, setWeekDates] = useState<Date[]>([]);
-
+  const { selectedDate, setSelectedDate } = useDay();
   useEffect(() => {
     const today = new Date();
     const daysOfWeek: Date[] = [];
 
-    // מחישוב תאריך היום ועד שבעה ימים קדימה
     for (let i = 0; i < 7; i++) {
       const newDate = new Date(today);
       newDate.setDate(today.getDate() + i); // הוספת יום לכל תאריך
       daysOfWeek.push(newDate);
     }
-
     setWeekDates(daysOfWeek);
   }, []);
-  useEffect(() => {
-    console.log("selectedDate: ", selectedDate);
-  }, [selectedDate]);
 
   const normalizeDate = (date: Date) => {
     const newDate = new Date(date);
-    newDate.setHours(0, 0, 0, 0); // איפוס שעה, דקה, שנייה ומילישנייה
+    newDate.setHours(0, 0, 0, 0);
     return newDate;
   };
 
@@ -38,16 +31,13 @@ const WeeklyCalendar: React.FC<{
   const formatDate = (date: Date) => {
     const daysOfWeek = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
 
-    // מבצע שינוי בפורמט התאריך - יום.חודש
     const day = date.getDate();
-    const month = date.getMonth() + 1; // החודשים ב-JavaScript מתחילים מ-0 (ינואר = 0)
+    const month = date.getMonth() + 1;
 
-    // מחזיר את הפורמט החדש
     return `${daysOfWeek[date.getDay()]} ${day}.${month < 10 ? `0${month}` : month}`;
   };
 
   const handleDateClick = (date: Date) => {
-    // עדכון התאריך שנבחר
     setSelectedDate(date);
   };
 
@@ -67,6 +57,7 @@ const WeeklyCalendar: React.FC<{
         </div>
       ))}
     </div>
+
   );
 };
 

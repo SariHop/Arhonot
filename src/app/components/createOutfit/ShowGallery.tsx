@@ -52,7 +52,7 @@ export default function SwipeableEdgeDrawer() {
               הסתר גלריה
             </button>
           </div>
-          <Gallery isForOutfit={true} />
+          <Gallery viewMode={"createOtfit"} />
         </div>
       </SwipeableDrawer>
     </div>
