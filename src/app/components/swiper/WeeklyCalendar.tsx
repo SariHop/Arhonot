@@ -24,8 +24,11 @@ const WeeklyCalendar: React.FC = () => {  // יצירת משתנה מצב לתא
     return newDate;
   };
 
-  const isSameDate = (date1: Date, date2: Date) => {
-    return normalizeDate(date1).getTime() === normalizeDate(date2).getTime();
+  const isSameDate = (date1: Date | null, date2: Date) => {
+    if (date1) {
+      return normalizeDate(date1).getTime() === normalizeDate(date2).getTime();
+    }
+    return false;
   };
 
   const formatDate = (date: Date) => {
