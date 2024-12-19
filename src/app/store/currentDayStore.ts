@@ -3,56 +3,45 @@ import { create } from "zustand";
 import IOutfit from "../types/IOutfit";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { setLooksForDay } from "../services/daysService"
+import { Types } from "mongoose";
 
 type DayStore = {
     selectedDate: Date | null;
     allLooks: IOutfit[];
     selectedLooks: IOutfit[];
     openGalery: boolean;
-    userId: string;
-    setUserId: (userId: string) => void;
+    userId: Types.ObjectId|null;
+    setUserId: (userId: Types.ObjectId|null) => void;
     toggleDrawer: (newOpen: boolean) => void;
     selectLook: (outfit: IOutfit) => void;
     setSelectedDate: (date: Date) => void;
     addOutfit: (outfit: IOutfit) => void;
     deleteOutfit: (outfit: IOutfit) => void;
     setOutfits: (outfits: IOutfit[]) => void;
+    addToAllLooks: (outfits: IOutfit[]) => void;
     resetOutfits: () => void;
 }
 
-const useDay = create<DayStore>((set, get) => ({
+const useDay = create<DayStore>((set) => ({
     selectedDate: null,
     allLooks: [],
     selectedLooks: [],
     openGalery: false,
-    userId: "",
-    setUserId: (userId: string) => {
+    userId: null,
+    setUserId: (userId: Types.ObjectId|null) => {
         set({
             userId: userId,
         });
     },
+
     toggleDrawer: (newOpen: boolean) => set({ openGalery: newOpen }),
+
     setSelectedDate: (date: Date) => {
-        const fetchData = async () => {
-            try {
-                const { userId, selectedDate, selectedLooks } = get();
-                console.log("user id from store: ",userId)
-                if (selectedDate) {
-                    const response = setLooksForDay(userId, selectedDate, selectedLooks);
-                    console.log(response);
-                }
-                set({
-                    selectedDate: date,
-                    allLooks: [],
-                    selectedLooks: [],
-                });
-                // לאחר קבלת התשובה מהשרת, מבצע את עדכון ה-state
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-        fetchData();
+        set({
+            selectedDate: date,
+            allLooks: [],
+            selectedLooks: [],
+        });
     },
 
     addOutfit: (outfit: IOutfit): void => {
@@ -85,6 +74,23 @@ const useDay = create<DayStore>((set, get) => ({
             looks: state.selectedLooks.filter((l) => l._id !== outfit._id)
         }));
     },
+
+    addToAllLooks: (outfits: IOutfit[]) => {
+        console.log("outfits for store: ", outfits);
+        set((state) => {
+            // יצירת סט של מזהים קיימים ב-allLooks
+            const existingIds = new Set(state.allLooks.map((outfit) => outfit._id));
+
+            // סינון אאוטפיטים שאינם קיימים ב-allLooks
+            const newOutfits = outfits.filter((outfit) => !existingIds.has(outfit._id));
+
+            // החזרת מצב מעודכן
+            return {
+                allLooks: [...state.allLooks, ...newOutfits],
+            };
+        })
+    },
+
     resetOutfits: () => {
         set({
             allLooks: [],

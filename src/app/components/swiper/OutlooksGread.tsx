@@ -10,7 +10,7 @@ const LooksList: React.FC = () => {
             <div className="flex flex-wrap gap-4">
                 {allLooks.map((look) => (
                     <div
-                        key={look.id}
+                        key={look?._id||look.id}
                         className={`border border-gray-300 rounded-lg p-4 max-w-[200px] text-center cursor-pointer transition-all duration-300 ${selectedLooks.some((item) => item._id === look._id)
                             ? "bg-teal-100"
                             : "bg-transparent"
