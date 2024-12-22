@@ -2,8 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {CreateConnectionRequest} from "../types/IConnectionRequest";
-import useOriginUser from "@/app/store/originUserStore";
-import { hashPassword } from "@/app/services/userServices";
+import {getOriginUserDataWithAuthentication}from '@/app/services/userServices'
 import { Types } from "mongoose";
 
 export const fetchUsersConnectionReq = async (userId: Types.ObjectId | null) => {
@@ -96,37 +95,12 @@ export const updateConnections = async (
 export const createNewConnectionRequest = async (
   formData: CreateConnectionRequest
 ) => {
-  const { _id: creatorId, email: creatorEmail } = useOriginUser.getState();
-  console.log(creatorId, "creatorId", creatorEmail, "creatorEmail");
-
   try {
-    if (!creatorEmail || creatorEmail === "") {
-      return {
-        success: false,
-        message: "האימייל של המשתמש המקורי לא נמצא",
-        status: 400,
-      };
+    const originUserData = await getOriginUserDataWithAuthentication();
+    if (!originUserData.success) {
+      return originUserData;
     }
-    const enteredPassword = prompt("אנא הזן את סיסמתך לאימות:");
-    if (!enteredPassword) {
-      return {
-        success: false,
-        message: "האימות בוטל על ידי המשתמש",
-        status: 401,
-      };
-    }
-    const encryptedPassword = await hashPassword(enteredPassword);
-    const authResponse = await axios.post("/api/signIn", {
-      email: creatorEmail,
-      password: encryptedPassword,
-    });
-    if (authResponse.status !== 200 && authResponse.status !== 201) {
-      return {
-        success: false,
-        message: "אימות הסיסמה נכשל",
-        status: authResponse.status,
-      };
-    }
+
     const response = await axios.post("/api/connectionRequestRoute", formData);
     if (response.status === 200 || response.status === 201) {
       return { success: true, data: response.data };

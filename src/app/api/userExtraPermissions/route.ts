@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     await connect();
     const body = await request.json();
-    const { password, email, city, creatorId, ...otherFields } = body;
+    const { password, email, city, originUserId, ...otherFields } = body;
 
     // await validateCity(city);
 
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     const savedUser = await newUser.save();
 
     // חיפוש לשם עדכון משתמש מקורי
-    const creator = await User.findById(creatorId);
+    const creator = await User.findById(originUserId);
     if (!creator) {
       return NextResponse.json(
         { message: "Creator user not found" },

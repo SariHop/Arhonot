@@ -55,11 +55,11 @@ const ConnectExisting = () => {
       if (response?.success) {
         toast.success("בקשת החיבור נשלחה בהצלחה!");
       } else {
-        toast.error("שגיאה בשליחת בקשת החיבור");
+        toast.error("שגיאה 1 בשליחת בקשת החיבור");
       }
     } catch (error) {
       console.error("שגיאה בשליחת הבקשה:", error);
-      toast.error("שגיאה בשליחת בקשת החיבור");
+      toast.error("שגיאה 2 בשליחת בקשת החיבור");
     } finally {
       setIsLoading(false);
     }
@@ -83,7 +83,7 @@ const ConnectExisting = () => {
         <button
           onClick={handleEmailSearch}
           disabled={isLoading || !emailInput}
-          className="w-full p-4 flex items-center justify-center bg-blue-500 text-white font-semibold text-lg rounded-lg hover:bg-blue-600 disabled:bg-gray-400 transition duration-300"
+          className="w-full p-4 flex items-center justify-center bg-blue-500 text-white font-semibold text-lg rounded-lg hover:bg-blue-600 disabled:bg-gray-500 transition duration-300"
         >
           {isLoading ? (
             <span>מחפש...</span>

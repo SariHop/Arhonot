@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { userSchemaZod, IUserType } from "@/app/types/IUser";
 import { ZodError } from "zod";
-import { signup, createSubAccont } from "@/app/services/userServices";
+import { signup, createSubAccount } from "@/app/services/userServices";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
@@ -65,29 +65,33 @@ const SignUp = () => {
       const validationResult = await userSchemaZod.parseAsync(formData);
       console.log("הנתונים תקינים:", validationResult);
       setErrors({});
+  
       let result;
       if (isUserPage) {
-        result = await createSubAccont(formData);
+        result = await createSubAccount(formData);
       } else {
         result = await signup(formData);
       }
-
+  
       if (result.success) {
         console.log("Signup successful:", result.data);
-        router.push("/pages/user"); // כאן אנחנו מפנים לעמוד הבית
+        router.push("/pages/user"); // הפניה לעמוד הבית
       } else {
-        console.error("Signup failed:", result.message);
-        if (result.status == 404) {
-          toast.error("אימייל זה כבר קיים במערכת,\nנסה אולי התחברות");
-        } else if (result.status == 402) {
-          toast.error("העיר שנבחרה לא תקינה");
+        if ("status" in result && result.status !== undefined) {
+          if (result.status === 404) {
+            toast.error("אימייל זה כבר קיים במערכת,\nנסה אולי התחברות");
+          } else if (result.status === 402) {
+            toast.error("העיר שנבחרה לא תקינה");
+          } else {
+            toast.error(`Signup failed: \n${result.message}`);
+          }
         } else {
-          toast.error(`Signup failed: \n${result.message}`);
+          toast.error("שגיאה כללית בעת ההרשמה");
         }
+  
         setIsSubmitting(false);
       }
     } catch (err) {
-      // עדכון השגיאות במידה ו- Zod לא אישר את הנתונים
       const fieldErrors: Partial<Record<keyof IUserType, string>> = {};
       if (err instanceof ZodError) {
         err.errors.forEach((error) => {
@@ -96,11 +100,11 @@ const SignUp = () => {
           }
         });
         setErrors(fieldErrors);
-        console.log("lllll", err);
       }
       setIsSubmitting(false);
     }
   };
+  
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading cities {String(error)}</div>;
