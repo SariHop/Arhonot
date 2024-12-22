@@ -95,10 +95,17 @@ const OutfitForm: React.FC = () => {
 
         try {
             await outfitSchemaZod.parseAsync(outfitFinal);
-            await createOutfit(outfitFinal);
-            // לעבור לגלריית הלוקים!
+
+            if (editOutfit) {
+                await createOutfit(outfitFinal);
+                toast.success("לוק עודכן בהצלחה!");
+            } else {
+                await createOutfit(outfitFinal);
+                toast.success("לוק נוצר בהצלחה!");
+            }
             router.push("/pages/user");
-            toast.success("לוק נוצר בהצלחה!");
+
+            // לןק עודכן
             // לנקות את הקנבס?
             setCanvas(null)
             setGarments([])

@@ -20,7 +20,7 @@ const Outfit = ({ outfit, closeModal }: IOutfitProps) => {
         const garmentIds = outfit.clothesId.map((id) => id.toString());
         setGarments(garmentIds);
         setEditOutfit(outfit);
-        router.push("/pages/user/outfit_canvas");
+        router.push("/pages/user/outfit_form");
     };
 
     return (
