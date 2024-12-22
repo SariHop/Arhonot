@@ -15,7 +15,7 @@ import { createOutfit } from "@/app/services/outfitServices"
 
 const OutfitForm: React.FC = () => {
     const { _id: userId } = useUser((state) => state);
-    const { garments, editOutfit, setCanvas, setGarments, canvasUrl } = useCanvasStore();
+    const { garments, editOutfit, setCanvas, setGarments, canvasUrl, setSelectedObject } = useCanvasStore();
 
     // State for form fields
     const [season, setSeason] = useState("");
@@ -23,6 +23,7 @@ const OutfitForm: React.FC = () => {
     const [rangeWeather, setRangeWeather] = useState(4);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [rate, setRate] = useState(0);
+    const [canvasJson, setCanvasJson] = useState({})
     // img
     const [outfitFromCloudinary, setOutfitFromCloudinary] = useState("");
     const [isImageLoading, setIsImageLoading] = useState(true);
@@ -57,7 +58,17 @@ const OutfitForm: React.FC = () => {
             }
         };
 
+        const getCanvasfromlocaStorage = () => {
+            const savedCanvas = localStorage.getItem("canvas-store");
+            if (savedCanvas) {
+                const savedCanvasObj = JSON.parse(savedCanvas);
+                const canvasJSON = savedCanvasObj.state.canvasJSON
+                setCanvasJson(canvasJSON)
+            }
+        };
+
         saveImageToCloudinary();
+        getCanvasfromlocaStorage()
     }, [canvasUrl]);
 
 
@@ -79,17 +90,26 @@ const OutfitForm: React.FC = () => {
             img: outfitFromCloudinary,
             favorite: rate,
             rangeWheather: rangeWeather,
+            canvasJson: canvasJson
         };
 
         try {
             await outfitSchemaZod.parseAsync(outfitFinal);
-            await createOutfit(outfitFinal);
-            // לעבור לגלריית הלוקים!
+
+            if (editOutfit) {
+                await createOutfit(outfitFinal);
+                toast.success("לוק עודכן בהצלחה!");
+            } else {
+                await createOutfit(outfitFinal);
+                toast.success("לוק נוצר בהצלחה!");
+            }
             router.push("/pages/user");
-            toast.success("לוק נוצר בהצלחה!");
+
+            // לןק עודכן
             // לנקות את הקנבס?
             setCanvas(null)
             setGarments([])
+            setSelectedObject(null)
         } catch (err) {
             if (err instanceof ZodError) {
                 const errorMessages = err.errors.map((e) => e.message).join(", ");
@@ -107,7 +127,9 @@ const OutfitForm: React.FC = () => {
 
             <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-7 bg-white rounded shadow-md space-y-4 ">
                 <input type="button" value="חזרה לעמוד עריכה" onClick={() => { router.push("/pages/user/outfit_canvas") }} />
-                <h1 className="text-2xl font-semibold text-center">יצירת לוק</h1>
+                <h1 className="text-2xl font-semibold text-center">יצירת לבוש
+
+                </h1>
 
                 {/* Image Preview */}
                 <div className="relative flex flex-col items-center">
@@ -180,8 +202,8 @@ const OutfitForm: React.FC = () => {
                             <label
                                 key={tag}
                                 className={`flex items-center p-2 border rounded cursor-pointer ${selectedTags.includes(tag)
-                                        ? "bg-indigo-600 text-white"
-                                        : "bg-gray-200"
+                                    ? "bg-indigo-600 text-white"
+                                    : "bg-gray-200"
                                     }`}
                             >
                                 <input
