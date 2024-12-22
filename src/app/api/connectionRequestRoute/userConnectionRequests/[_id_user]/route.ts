@@ -1,10 +1,11 @@
 import connect from "@/app/lib/db/mongoDB";
 import ConnectionRequest from "@/app/lib/models/connectionRequestSchema";
+import { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { _id_user: string } }
+  { params }: { params: { _id_user: Types.ObjectId } }
 ) {
   try {
     console.log("Request method:", request.method); // לשם דיבאג
