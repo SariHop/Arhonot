@@ -5,6 +5,9 @@ import { toast } from "react-toastify";
 
 export async function fetchUserAlerts(userId: Types.ObjectId | null) {
   try {
+    if (!userId) {
+      throw new Error("userId is null or undefined.");
+    }
     const response = await axios.get(`/api/alertRoute/userAlerts/${userId}`);
     return response.data.data;
   } catch (error: unknown) {
