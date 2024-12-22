@@ -85,6 +85,7 @@ const Canvas = () => {
         width: len,
         height: len,
         backgroundColor: "white",
+        preserveObjectStacking: true,
       });
       setCanvas(initCanvas);
 
