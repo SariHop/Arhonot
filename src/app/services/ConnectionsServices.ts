@@ -7,6 +7,9 @@ import { Types } from "mongoose";
 
 export const fetchUsersConnectionReq = async (userId: Types.ObjectId | null) => {
   try {
+    if (!userId) {
+      throw new Error("userId is null or undefined.");
+    }
     const response = await axios.get(
       `/api/connectionRequestRoute/userConnectionRequests/${userId}`
     );

@@ -43,6 +43,29 @@ const Canvas = () => {
     return null;
   };
 
+  // const getCanvasfromlocaStorage = () => {
+  //   const savedCanvas = localStorage.getItem("canvas-store");
+  //   if (savedCanvas) {
+  //     const savedCanvasObj = JSON.parse(savedCanvas);
+
+  //     // בדיקה שיש לעריכה
+  //     if (savedCanvasObj.state.editOutfit) {
+  //        //עריכת לוק
+  //       const canvasJsonEdit = savedCanvasObj.state.editOutfit.canvasJSON
+  //       if (canvasJsonEdit && canvasJsonEdit.objects.length > 0) {
+  //         return canvasJsonEdit
+  //       }
+  //     } else {
+  //       // יצירת לוק
+  //       const canvasJSON = savedCanvasObj.state.canvasJSON
+  //       if (canvasJSON && canvasJSON.objects.length > 0) {
+  //         return canvasJSON
+  //       }
+  //     }
+  //   }
+  //   return null;
+  // };
+
   useEffect(() => {
     // Calculate width of the canvas based on the window size
     const calcWidth = () => {
@@ -96,13 +119,14 @@ const Canvas = () => {
 
   return (
     <div className="flex flex-col justify-center mt-3">
-      <button onClick={()=>{router.push(`/pages/user`)}}>חזרה לדף הבית</button>
+      <button onClick={() => { router.push(`/pages/user`) }}>חזרה לדף הבית</button>
       <div className="bg-white">
         <ShowGallery />
         <ToolBox />
       </div>
 
-      <div className="bg-checkered-pattern flex justify-center items-center gap-5 p-20 flex-col">
+      <div className="bg-checkered-pattern flex justify-center items-center gap-5 p-7
+       flex-col">
         <canvas key="canvas" id="canvas" ref={canvasRef} className="shadow-lg max-w-full h-0 w-0" />
       </div>
     </div>

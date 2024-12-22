@@ -34,6 +34,10 @@ export const OutfitSchema: Schema<IOutfit> = new Schema({
         type: Number, 
         required: true, 
         enum: [1, 2, 3, 4, 5, 6, 7] 
+    },
+    canvasJson:{
+        type: Object,
+        require:true
     }
 });
 
