@@ -1,14 +1,15 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {CreateConnectionRequestType} from "../types/IConnectionRequest";
-import {getOriginUserDataWithAuthentication}from '@/app/services/userServices'
+import { CreateConnectionRequestType } from "../types/IConnectionRequest";
+import { getOriginUserDataWithAuthentication } from "@/app/services/userServices";
 import { Types } from "mongoose";
-// import useOriginUser from "@/app/store/originUserStore";
+import useOriginUser from "@/app/store/originUserStore";
+import useUser from "../store/userStore";
 
-
-
-export const fetchUsersConnectionReq = async (userId: Types.ObjectId | null) => {
+export const fetchUsersConnectionReq = async (
+  userId: Types.ObjectId | null
+) => {
   try {
     if (!userId) {
       throw new Error("userId is null or undefined.");
@@ -42,7 +43,8 @@ export const updateRequestStatus = async (
       }
     );
     if (response.status !== 200) throw response;
-    return response.data;
+      return response.data;
+    
   } catch (error: unknown) {
     console.error("Failed to update connection request:", error);
     if (axios.isAxiosError(error)) {
@@ -82,9 +84,40 @@ export const updateConnections = async (
   receiverId: Types.ObjectId | null
 ) => {
   try {
+    const { _id: userId } = useUser.getState();
+    const { _id: originUserId } = useOriginUser.getState();
+    const originUserData = await getOriginUserDataWithAuthentication();
+    if (!originUserData.success) {
+      return originUserData;
+    }
+
     const response = await axios.put(`/api/connectionRequestRoute`, null, {
       params: { sender: senderId, receiver: receiverId },
     });
+    if (response.status !== 200) throw response;
+
+    const { sender, receiver } = response.data.data;
+
+    if (userId?.toString() === originUserId?.toString()) {
+      if (userId?.toString() === sender._id.toString()) {
+        useUser.getState().updateChildren(sender.children); // עדכון useUser
+        useOriginUser.getState().updateChildren(sender.children); // עדכון useOriginUser
+      } else if (userId?.toString() === receiver._id.toString()) {
+        useUser.getState().updateChildren(receiver.children); // עדכון useUser
+        useOriginUser.getState().updateChildren(receiver.children); // עדכון useOriginUser
+      } else {
+        // במידה והיוזרים שונים
+        if (userId?.toString() === sender._id.toString()) {
+          useUser.getState().updateChildren(sender.children); // עדכון useUser
+        } else if (userId?.toString() === receiver._id.toString()) {
+          useUser.getState().updateChildren(receiver.children); // עדכון useUser
+        }
+      }
+      console.log("User state after updateRequestStatus:", useUser.getState());
+      console.log("Origin user state after updateRequestStatus:", useOriginUser.getState()
+      );
+    }
+
     return response.data;
   } catch (error: unknown) {
     console.error("Failed to update connection request:", error);
@@ -106,7 +139,6 @@ export const createNewConnectionRequest = async (
     if (!originUserData.success) {
       return originUserData;
     }
-
     const response = await axios.post("/api/connectionRequestRoute", formData);
     if (response.status === 200 || response.status === 201) {
       return { success: true, data: response.data };
@@ -127,24 +159,30 @@ export const createNewConnectionRequest = async (
   }
 };
 
-// export const removeConnectionRequest= async (userIdSender, userIdToRemove)=>{
-//   const { setOriginUser } = useOriginUser.getState();
-//   try {
+export const removeConnectionRequest = async (
+  userIdSender: string,
+  userIdToRemove: string
+) => {
+  // const { setOriginUser } = useOriginUser.getState();
+  try {
+    const originUserData = await getOriginUserDataWithAuthentication();
+    if (!originUserData.success) {
+      return originUserData;
+    }
 
+    const response = await axios.put(
+      `/api/connectionRequestRoute/userConnectionRequests/${userIdSender}`,
+      { userIdToRemove }
+    );
 
-//     const response = await axios.put(
-//       `/api/connection/${userIdSender}`,  // כתובת ה-API בצד שרת
-//       { userIdToRemove }  // הגוף של הבקשה, כולל מזהה המשתמש שברצונך להסיר
-//     );
+    if (response.status == 200) {
+      return response.data;
 
-//     if (response.status >= 200 && response.status < 300) {
-//       console.log(response.data.message);  // בהצלחה, הצגת ההודעה
-//     } else {
-//       console.error("Unexpected status code:", response.status);
-//     }
-//   } catch (error:unknown) {
-//     console.error('',error);
-//   }
-// }
-
-
+      console.log(response.data.message);
+    } else {
+      console.error("Unexpected status code:", response.status);
+    }
+  } catch (error: unknown) {
+    console.error("", error);
+  }
+};

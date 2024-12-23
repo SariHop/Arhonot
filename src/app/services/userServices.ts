@@ -266,38 +266,36 @@ export const updateUser = async (_id: Types.ObjectId | null, body: object) => {
   try {
     const { _id: userId } = useUser.getState();
     const { _id: originUserId } = useOriginUser.getState();
-    console.log('userId:', userId);
-    console.log('originUserId:', originUserId);
-    console.log('Are the IDs equal?', userId === originUserId);
-        
-    if (userId?.toString() === originUserId?.toString()) {
+    console.log("userId:", userId);
+    console.log("originUserId:", originUserId);
+    console.log("Are the IDs equal?", userId === originUserId);
+    //אימות משתמש
+    const authResult = await getOriginUserDataWithAuthentication();
+    if (authResult.success) {
       const response = await axios.put(`${apiUrl}/${_id}`, body, {
         headers: { "Content-Type": "application/json" },
       });
-      console.log("User updated successfully:", response.data);
-      setUser(response.data.data); // עדכון ה-store
-      setOriginUser(response.data.data); // עדכון ה-UserOriginStore
-      console.log("User state after signup:", useUser.getState());
-      console.log("Origin user state after signup:", useOriginUser.getState());
-      return response.data;
-    } else {
-      // אם ה-id של המשתמש ב-useUser לא תואם ל-id של המשתמש המקורי, נקרא לפונקציית האימות
-      const authResult = await getOriginUserDataWithAuthentication();
-      if (authResult.success) {
-        const response = await axios.put(`${apiUrl}/${_id}`, body, {
-          headers: { "Content-Type": "application/json" },
-        });
-        console.log(
-          "User updated successfully after authentication:",
-          response.data
-        );
+      console.log(
+        "User updated successfully after authentication:",
+        response.data
+      );
+      if (userId?.toString() === originUserId?.toString()) {
         setUser(response.data.data); // עדכון ה-store
-        console.log("User state after signup:", useUser.getState());
-        return response.data;
-      } else {
-        // אם האימות נכשל, מחזירים את הודעת השגיאה
-        return { success: false, message: "האימות נכשל", status: 401 };
+        setOriginUser(response.data.data); // עדכון ה-UserOriginStore
+        console.log("User state after update:", useUser.getState());
+        console.log(
+          "Origin user state after update:",
+          useOriginUser.getState()
+        );
+      } else if (userId?.toString() !== originUserId?.toString()) {
+        // אם ה-id של המשתמש ב-useUser לא תואם ל-id של המשתמש המקורי, נקרא לפונקציית האימות
+        setUser(response.data.data); // עדכון ה-store
+        console.log("User state after update:", useUser.getState());
       }
+      return { success: true, message: "User updated successfully", data: response.data.data, status: 200 };
+    } else {
+      // אם האימות נכשל, מחזירים את הודעת השגיאה
+      return { success: false, message: "האימות נכשל", status: 401 };
     }
   } catch (error: unknown) {
     console.error("Failed to update connection request:", error);
@@ -314,6 +312,8 @@ export const updateUser = async (_id: Types.ObjectId | null, body: object) => {
 //יצירת חשבון בן חדש
 export const createSubAccount = async (formData: IUserType) => {
   try {
+    const { _id: userId2 } = useUser.getState();
+    const { _id: originUserId2 } = useOriginUser.getState();
     // השגת נתוני ה־creator ואימות הסיסמה
     const originUserData = await getOriginUserDataWithAuthentication();
 
@@ -321,8 +321,7 @@ export const createSubAccount = async (formData: IUserType) => {
       return originUserData;
     }
 
-    const { originUserId } = originUserData.data!; // TypeScript יודע ש־data קיים כאן
-
+    const { originUserId } = originUserData.data!;
     // הצפנת סיסמה חדשה
     const encryptedNewPassword = await hashPassword(formData.password);
 
@@ -335,17 +334,22 @@ export const createSubAccount = async (formData: IUserType) => {
       age: calculateAge(formData.dateOfBirth),
       originUserId,
     };
-    console.log("data:", data);    // שליחת הנתונים לשרת
+    console.log("data:", data); // שליחת הנתונים לשרת
     const response = await axios.post("/api/userExtraPermissions", data);
     if (response.status === 200 || response.status === 201) {
-      const userId = response.data.data._id
-      useUser.getState().updateChildren([...useUser.getState().children, userId]);// עדכון ה-UserStore
-      useOriginUser.getState().updateChildren([...useOriginUser.getState().children, userId]);// עדכון ה-UserOriginStore
+      const userId = response.data.data._id;
 
-      console.log("User state after createSubAccount:", useUser.getState());
-      console.log("Origin user state after createSubAccount:", useOriginUser.getState());
+      if(userId2?.toString() === originUserId2?.toString()){
+        useUser.getState().updateChildren([...useUser.getState().children, userId]); // עדכון ה-UserStore
+        useOriginUser.getState().updateChildren([...useOriginUser.getState().children, userId]); // עדכון ה-UserOriginStore
+  
+        console.log("User state after createSubAccount:", useUser.getState());
+        console.log("Origin user state after createSubAccount:",useOriginUser.getState());
+      } else{
+        useUser.getState().updateChildren([...useUser.getState().children, userId]); // עדכון ה-UserStore
+      }
+     
       return { success: true, data: response.data };
-    
     } else {
       const message =
         response.data?.message || "שגיאה לא ידועה ביצירת חשבון המשני.";
@@ -365,12 +369,10 @@ export const createSubAccount = async (formData: IUserType) => {
 };
 
 //פונקציה לחיפוש משתמש עפ"י מייל
-export const getUserByEmail = async (emailInput:string)=>{
-
+export const getUserByEmail = async (emailInput: string) => {
   try {
-    const response = await axios.get(`${apiUrl}/searchRoute/${emailInput}`
-    );
-    return response.data.data; 
+    const response = await axios.get(`${apiUrl}/searchRoute/${emailInput}`);
+    return response.data.data;
   } catch (error) {
     console.error("שגיאה בחיפוש משתמש:", error);
     return null;

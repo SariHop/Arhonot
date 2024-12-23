@@ -57,40 +57,46 @@ const ConnectExisting = () => {
       const response = await createNewConnectionRequest(connectionRequest);
       console.log("Response:", response); // להדפיס את התשובה מהשרת
 
-      if (
-        response &&
-        "status" in response &&
-        response.status >= 200 &&
-        response.status < 300
-      ) {
+      if ( response && "status" in response && response.status > 201 && response.status < 204) {
+        switch (response.status) {
+          case 202:
+            toast.info("בקשת החיבור כבר אושרה בעבר.");
+            break;
+          case 203: 
+            toast.info("בקשת החיבור כבר במצב ממתין לאישור.");
+            break;
+          default:
+        }
+      } else if (response && response.success) {
         if ("message" in response && typeof response.message === "string") {
-          switch (response.status) {
-            case 201:
-              toast.success("בקשת החיבור עודכנה לסטטוס ממתין לאישור.");
+          // טיפול במקרים ספציפיים לפי ההודעה
+          switch (response.message) {
+            case "Connection request status created":
+              toast.success("בקשת החיבור נשלחה בהצלחה");
               break;
-            case 202:
-              toast.info("בקשת החיבור כבר אושרה בעבר.");
-              break;
-            case 203: // בקשת החיבור כבר במצב 'pending'
-              toast.info("בקשת החיבור כבר במצב ממתין לאישור.");
-              break;
+            // case "Connection request status already acceted":
+            //   toast.info("בקשת החיבור כבר אושרה בעבר.");
+            //   break;
+            // // case "Connection request status already pending":
+            // //   toast.info("בקשת החיבור כבר במצב ממתין לאישור.");
+            // //   break;
             default:
               toast.success(`הצלחה: ${response.message}`);
           }
         } else {
-          // במקרה שאין הודעה, לוג הגיבוי במקרה של תשובה לא צפויה
+          // הודעת הצלחה כללית במקרה שאין הודעה מפורשת
           toast.success("בקשת החיבור נשלחה בהצלחה");
         }
       } else {
-        // הודעת שגיאה במקרה של failure שלא מתקבל response.success
-        if (response && "status" in response && response.status === 403) {
+        // טיפול במקרים של שגיאה
+        if ("status" in response && response.status === 403) {
           toast.error("הסיסמה שהקשת שגויה");
         } else {
-          toast.error("שגיאה בשליחת בקשת החיבור");
+          toast.error("שגיאה: הבקשה לא הצליחה.");
         }
       }
     } catch (error) {
-      console.error("שגיאה בשליחת הבקשה:", error);
+      console.error("שגיאה 2 בשליחת הבקשה:", error);
       toast.error("שגיאה 2 בשליחת בקשת החיבור");
     } finally {
       setIsLoading(false);

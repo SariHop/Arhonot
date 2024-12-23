@@ -73,7 +73,6 @@ export async function PUT(
     console.log("Parsed ObjectId for senderId:", senderId);
     console.log("Parsed ObjectId for removeId:", removeId);
 
-    // בדיקת תקינות ObjectId
     if (!isValidObjectId(senderId)) {
       console.error("Invalid senderId format:", senderId);
       return NextResponse.json(

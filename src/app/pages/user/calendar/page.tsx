@@ -107,7 +107,7 @@ const Page: React.FC = () => {
                     key={index}
                     src={look.img}
                     alt={`Look ${index + 1}`}
-                    className="w-7 h-7 rounded-full  object-cover m-1 inline-block"
+                    className="w-7 h-7 rounded-full  object-cover m-1 inline-block border-2"
                     width={25}
                     height={25}
                   />) : (index === 1 && <p key={index} className="text-xs text-gray-500">+{dayLooks.looks.length - 1}</p>)

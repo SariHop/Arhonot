@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
       await newconnectionRequest.validate();
       const savedconnectionRequest = await newconnectionRequest.save();
       return NextResponse.json(
-        { success: true, data: savedconnectionRequest },
+        { success: true, data: savedconnectionRequest, message: "Connection request status created", },
         { status: 200 }
       );
     }
@@ -143,11 +143,14 @@ export async function PUT(request: NextRequest) {
       receiver.children = [...(receiver.children || []), objSender];
 
     // שמירת השינויים ב-DB
-    await sender.save();
-    await receiver.save();
+    const senderAfterSave= await sender.save();
+    const receiverAfterSave= await receiver.save();
 
     return NextResponse.json(
-      { success: true, message: "Connections updated successfully" },
+      { success: true, message: "Connections updated successfully",data:{
+        sender: senderAfterSave,
+        receiver: receiverAfterSave,
+      },},
       { status: 200 }
     );
   } catch (error: unknown) {

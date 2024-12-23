@@ -62,7 +62,7 @@ const Settings = () => {
       setErrors({});
       const result = await updateUser(_id, { ...formData });
 
-      if (result.success) {
+      if (result && result.success) {
         toast.success("העדכון בוצע בהצלחה!");
         console.log("עדכון הצליח:", result.data);
         router.push("/pages/user/personal_area");
