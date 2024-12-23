@@ -10,6 +10,7 @@ type OriginUserStore = {
   children: Types.ObjectId[];
   setOriginUser: (user: Partial<UpdateUserTypeForStore>) => void;
   updateOriginUser: (updatedFields: Partial<IUserTypeWithId>) => void;
+  updateChildren: (children: Types.ObjectId[]) => void; // פונקציה חדשה לעדכון children
   resetOriginUser: () => void;
 };
 
@@ -46,6 +47,12 @@ const useOriginUser = create(
       ? new Types.ObjectId(updatedFields._id)
       : state._id,
     })),
+     // פונקציה לעדכון מערך ה-children בלבד
+     updateChildren: (children) =>
+      set((state) => ({
+        ...state,
+        children: children, 
+      })),
 
   // פונקציה לאיפוס היוזר לערכים ריקים
   resetOriginUser: () =>

@@ -6,7 +6,10 @@ import "react-toastify/dist/ReactToastify.css";
 import useOriginUser from "@/app/store/originUserStore";
 import { getUserByEmail } from "@/app/services/userServices";
 import { BsSendFill } from "react-icons/bs";
+import { useRouter } from "next/navigation";
+
 const ConnectExisting = () => {
+  const router = useRouter();
   const {
     _id: creatorId,
     email: creatorEmail,
@@ -123,6 +126,21 @@ const ConnectExisting = () => {
             </span>
           )}
         </button>
+
+        {/* הודעה למשתמש */}
+        <div className="text-center mt-6">
+          <p className="text-gray-600 text-lg">
+            שים לב, בקשות התחברות שנשלחו אליך ממשתמשים אחרים ממתינות לך
+            בכרטיסיית{" "}
+            <button
+              onClick={() => router.push("/pages/user/alerts")} // ניווט בעזרת useRouter
+              className="text-blue-500 hover:underline focus:outline-none"
+            >
+              התראות
+            </button>
+            .
+          </p>
+        </div>
       </div>
     </div>
   );

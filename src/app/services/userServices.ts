@@ -292,12 +292,7 @@ export const updateUser = async (_id: Types.ObjectId | null, body: object) => {
           response.data
         );
         setUser(response.data.data); // עדכון ה-store
-        setOriginUser(response.data.data); // עדכון ה-UserOriginStore
         console.log("User state after signup:", useUser.getState());
-        console.log(
-          "Origin user state after signup:",
-          useOriginUser.getState()
-        );
         return response.data;
       } else {
         // אם האימות נכשל, מחזירים את הודעת השגיאה
@@ -316,11 +311,8 @@ export const updateUser = async (_id: Types.ObjectId | null, body: object) => {
   }
 };
 
-
-
+//יצירת חשבון בן חדש
 export const createSubAccount = async (formData: IUserType) => {
-  const { setUser } = useUser.getState();
-  const { setOriginUser } = useOriginUser.getState();
   try {
     // השגת נתוני ה־creator ואימות הסיסמה
     const originUserData = await getOriginUserDataWithAuthentication();
@@ -346,8 +338,10 @@ export const createSubAccount = async (formData: IUserType) => {
     console.log("data:", data);    // שליחת הנתונים לשרת
     const response = await axios.post("/api/userExtraPermissions", data);
     if (response.status === 200 || response.status === 201) {
-      setUser(response.data.data); // עדכון ה-store
-      setOriginUser(response.data.data); // עדכון ה-UserOriginStore
+      const userId = response.data.data._id
+      useUser.getState().updateChildren([...useUser.getState().children, userId]);// עדכון ה-UserStore
+      useOriginUser.getState().updateChildren([...useOriginUser.getState().children, userId]);// עדכון ה-UserOriginStore
+
       console.log("User state after createSubAccount:", useUser.getState());
       console.log("Origin user state after createSubAccount:", useOriginUser.getState());
       return { success: true, data: response.data };

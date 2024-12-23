@@ -71,13 +71,15 @@ const SignUp = () => {
         result = await createSubAccount(formData);
       } else {
         result = await signup(formData);
-      }
-  
+      }  
       if (result.success) {
-        console.log("Signup successful:", result.data);
+        console.log("Signup successful:", result.data);        
         router.push("/pages/user"); // הפניה לעמוד הבית
       } else {
         if ("status" in result && result.status !== undefined) {
+          if( result.status === 403){
+            toast.error("הסיסמה שהקשת שגויה");
+          }
           if (result.status === 404) {
             toast.error("אימייל זה כבר קיים במערכת,\nנסה אולי התחברות");
           } else if (result.status === 402) {
