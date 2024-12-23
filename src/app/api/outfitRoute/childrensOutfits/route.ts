@@ -19,7 +19,6 @@ export async function POST(request: NextRequest) {
     }
 
     const childrenIds: string[] = user.children.map((child) => String(child._id));
-    console.log("id" , childrenIds)
     // הגדרת תחום התאריכים לאותו יום
     const startDate = new Date(date);
     // startDate.setDate(startDate.getDate() + 1)
@@ -36,10 +35,7 @@ export async function POST(request: NextRequest) {
       date: { $gte: startDate, $lte: endDate }, // סינון לפי תאריך
     })
       .populate("looks") // מביא את המידע על הלוקים
-      .lean(); // מחזיר אובייקטים פשוטים שניתן לערוך
-
-      console.log("days", days);
-      
+      .lean(); // מחזיר אובייקטים פשוטים שניתן לערוך      
     // הוספת שמות הילדים לאובייקטים של days
     const childrenMap = new Map(
       user.children.map((child) => [String(child._id), child.userName])

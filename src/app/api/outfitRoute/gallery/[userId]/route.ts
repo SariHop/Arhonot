@@ -19,7 +19,6 @@ export async function GET(
             );
         }
         const outfits = await Outfit.find({ userId: userId });
-        console.log("outfits: ",outfits)
         if (!outfits) {
             return NextResponse.json({ error: "outfits not found" }, { status: 404 });
         }

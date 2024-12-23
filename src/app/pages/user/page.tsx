@@ -8,11 +8,14 @@ import LooksList from '@/app/components/swiper/OutlooksGread';
 import useDay from '@/app/store/currentDayStore';
 import { recommendedLooks } from "@/app/services/outfitAlgo"
 import { useWeatherQuery } from '@/app/hooks/weatherQueryHook';
+import { setLooksForDay } from '@/app/services/daysService';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Page = () => {
   const { data: weatherData } = useWeatherQuery();
   const user = useUser();
-  const { selectedDate, setSelectedDate, setOutfits, setUserId, userId, addToAllLooks } = useDay();
+  const { selectedDate, setSelectedDate, setOutfits, setUserId, userId, addToAllLooks, selectedLooks } = useDay();
   useEffect(() => {
     setSelectedDate(new Date());
   }, [setSelectedDate]);
@@ -57,12 +60,46 @@ const Page = () => {
 
     fetchDayData(); // קריאה לפונקציה הפנימית
   }, [user._id, selectedDate]); // תלות ריקה מבטיחה שהאפקט רץ רק פעם אחת כשהקומפוננטה נטענת
+
+  const saveChanges = async () => {
+    try {
+      console.log("user id from WeeklyCalendar: ", user._id, selectedDate, selectedLooks);
+      if (selectedDate && user._id && weatherData && weatherData.list) {
+        const response = await setLooksForDay(weatherData.list, user._id, selectedDate, selectedLooks);
+
+        if (response.success) {
+          toast.success('Changes saved successfully!', {
+            position: 'top-right',
+            autoClose: 3000,
+          });
+        } else {
+          if (response && response.error) {
+            toast.error(`Failed to save changes: ${response.error || 'Unknown error'}`, {
+              position: 'top-right',
+              autoClose: 3000,
+            });
+          }
+        }
+      } else {
+        toast.warn('Missing required data to save changes.', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      toast.error('An unexpected error occurred.', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+    }
+  };
   return (
     <div className='flex gap-10 flex-col p-2'>
-      <WeeklyCalendar />
+      <WeeklyCalendar saveChanges={saveChanges}/>
       {/* <ImageCaruseka looks={looks} /> */}
       {/* <SwiperComponent /> */}
-      <LooksList />
+      <LooksList saveChanges={saveChanges}/>
     </div>
   )
 }
