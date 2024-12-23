@@ -4,7 +4,7 @@ import IOutfit from "../types/IOutfit";
 import { Types } from "mongoose";
 import { getMinTemperatureForDate, getMaxTemperatureForDate } from "./weatherService"
 import { WeatherData } from "../types/IWeather";
-
+import { AxiosError } from 'axios';
 
 export const userLooks = async (month: number, year: number, userId: Types.ObjectId | null) => {
   try {
@@ -83,24 +83,46 @@ export const getDay = async (userId: Types.ObjectId | null, date: Date) => {
   }
 };
 
-export const setLooksForDay = async (list: WeatherData[], userId: Types.ObjectId, date: Date, looks: IOutfit[]) => {
+type ServerResponse = {
+  success: boolean;
+  data?: IOutfit; // או טיפוס מתאים למה שהשרת מחזיר
+  error?: string;
+};
+
+export const setLooksForDay = async (
+  list: WeatherData[],
+  userId: Types.ObjectId,
+  date: Date,
+  looks: IOutfit[]
+): Promise<ServerResponse> => {
   try {
     const minTemp = getMinTemperatureForDate(list, date);
-    const maxTemp= getMaxTemperatureForDate(list, date);
-    const weather= `${minTemp}-${maxTemp}`;
-    // ביצוע בקשה PUT לשרת
+    const maxTemp = getMaxTemperatureForDate(list, date);
+    const weather = `${minTemp}-${maxTemp}`;
+
     const response = await axios.put('/api/dayRoute', {
       userId,
       date,
       looks,
       weather,
     });
-    return response.data;
+
+    // אם סטטוס התגובה מציין הצלחה
+    if (response.status === 200 || response.status === 201 || response.status === 202) {
+      return { success: true, data: response.data };
+    } else {
+      // אם הסטטוס לא מציין הצלחה, החזר שגיאה
+      return { success: false, error: `Error: ${response.status} - ${response.statusText}` };
+    }
   } catch (error) {
-    // טיפול בשגיאות
-    console.error('Error setting looks for day:', error);
-    console.log(error)
-    // throw new Error('Failed to set looks for day');
-    return error;
+    if (error instanceof AxiosError) {
+      // טיפול בשגיאות שנגרמו על ידי Axios
+      console.error('Axios error:', error.response?.data);
+      return { success: false, error: error.response?.data?.message || 'Unknown error' };
+    } else {
+      // טיפול בשגיאות כלליות שלא נגרמו על ידי Axios
+      console.error('Unexpected error:', error);
+      return { success: false, error: 'Unknown error' };
+    }
   }
 };

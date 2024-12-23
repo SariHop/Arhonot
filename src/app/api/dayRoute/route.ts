@@ -58,12 +58,10 @@ export async function PUT(request: NextRequest) {
   try {
     await connect();
     const { userId, date, looks, weather } = await request.json();
-    console.log("userId", userId)
     const startOfDay = new Date(date);
     startOfDay.setHours(0, 0, 0, 0);
     const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999); // מגדיר את השעה לסוף היום
-    console.log(startOfDay, endOfDay)
     const looksIds = looks.map((look: IOutfit) => look._id);
 
     const updatedDay = await Day.findOneAndUpdate(

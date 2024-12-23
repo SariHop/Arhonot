@@ -16,7 +16,6 @@ export async function GET(
     console.log("Request method:", request.method); //NextRequestשימוש סמלי ב
     await connect();
     const _id = params._id;
-    console.log("Params:", params);
 
     if (!_id) {
       return NextResponse.json(
@@ -54,7 +53,6 @@ export async function DELETE(
 
     await connect();
     const _id = params._id;
-    console.log("DELETE _id:", _id);
 
     if (!_id) {
       return NextResponse.json(
