@@ -16,6 +16,7 @@ type GarmentsStore = {
     setGarments: (garments: IGarment[]) => void;
     deleteGarment: (garment: IGarment) => void;
     resetGarments: () => void;
+    updateGarment:(garment:IGarment) => void;
 
     setGarmentSelectedColors: (colors: string[]) => void;
     setGarmentSelectedCategory: (category: string | undefined) => void;
@@ -61,6 +62,17 @@ const useGarments = create<GarmentsStore>((set) => ({
     deleteGarment: (garment: IGarment) => {
         set((state) => {
             const updatedGarments = state.garments.filter((g) => g._id !== garment._id);
+            return {
+                garments: updatedGarments,
+                sortedGarments: filterGarments(updatedGarments, state),
+            };
+        });
+    },
+    updateGarment: (garment: IGarment) => {
+        set((state) => {
+            const updatedGarments = state.garments.map((g) =>
+                g._id === garment._id ? garment : g
+            );
             return {
                 garments: updatedGarments,
                 sortedGarments: filterGarments(updatedGarments, state),

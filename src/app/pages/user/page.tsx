@@ -36,9 +36,16 @@ const Page = () => {
             setOutfits([]);
           }
           if (weatherData) {
-            const looks = await recommendedLooks(weatherData.list, selectedDate, userId, user.sensitive);
-            console.log("looks from algorithem: ", looks);
-            addToAllLooks(looks);
+            try {
+              const looks = await recommendedLooks(weatherData.list, selectedDate, userId, user.sensitive);
+              console.log("looks from algorithem: ", looks);
+              addToAllLooks(looks);
+            } catch (error) {
+              toast.error(`${error || 'Unknown error'}`, {
+                position: 'top-right',
+                autoClose: 3000,
+              });
+            }
           }
         } catch (error: unknown) {
           if (axios.isAxiosError(error)) {
@@ -96,10 +103,10 @@ const Page = () => {
   };
   return (
     <div className='flex gap-10 flex-col p-2'>
-      <WeeklyCalendar saveChanges={saveChanges}/>
+      <WeeklyCalendar saveChanges={saveChanges} />
       {/* <ImageCaruseka looks={looks} /> */}
       {/* <SwiperComponent /> */}
-      <LooksList saveChanges={saveChanges}/>
+      <LooksList saveChanges={saveChanges} />
     </div>
   )
 }

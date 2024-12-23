@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connect from "@/app/lib/db/mongoDB";
 import User from "@/app/lib/models/userSchema";
 import bcrypt from 'bcrypt';
+import Alert from "@/app/lib/models/alertSchema";
 
 
 export async function GET() {
@@ -70,8 +71,16 @@ export async function POST(request: NextRequest) {
       const savedUser = await newUser.save();
       console.log("Saved User:", savedUser);
       console.log("Saved User after save:", savedUser.toObject());
+      const formattedDesc = "אנחנו כאן כדי לעזור לך לבחור את הלוק המושלם לכל יום, בהתאמה למזג האוויר! בין אם השמש זורחת או שמיים מעוננים, אנחנו נספק לך את ההמלצות הכי טרנדיות ונוחות לפי תחזית מזג האוויר באזור שלך.\nהתחל לחקור ולהתלבש בהתאם למזג האוויר – כי כל יום הוא הזדמנות חדשה לבלות בו בסטייל!";
+      const welcomeAlert = new Alert({
+        userId: savedUser._id,
+        title: "ברוך הבא לארעונות! 🌤️👗",
+        desc: formattedDesc,
+        date: new Date(),
+        readen: false
+      });
 
-
+      welcomeAlert.save();
       return NextResponse.json(
         { success: true, data: savedUser.toObject() },
         { status: 201 }

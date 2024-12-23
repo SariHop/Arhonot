@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connect from "@/app/lib/db/mongoDB";
 import Garment from "@/app/lib/models/garmentSchema";
+import Outfit from "@/app/lib/models/outfitSchema";
 
 export async function GET(
   request: NextRequest,
@@ -44,7 +45,7 @@ export async function DELETE(
   { params }: { params: { _id: string } }
 ) {
   try {
-    console.log("Request method:", request.method); //NextRequestשימוש סמלי ב
+    console.log("Request method:", request.method);
 
     await connect();
     const _id = params._id;
@@ -56,13 +57,26 @@ export async function DELETE(
         { status: 400 }
       );
     }
+
+    // בדוק אם הבגד קיים
     const garment = await Garment.findById(_id);
     if (!garment) {
       return NextResponse.json({ error: "garment not found" }, { status: 404 });
     }
+
+    // מצא את כל הלוקים שכוללים את הבגד הזה במערך clothesId
+    const outfits = await Outfit.find({ clothesId: { $in: [_id] } });
+
+    // מחק את כל הלוקים שכוללים את הבגד הזה
+    for (const outfit of outfits) {
+      await Outfit.findByIdAndDelete(outfit._id);
+    }
+
+    // מחק את הבגד מהמסד נתונים
     await Garment.findByIdAndDelete(_id);
+
     return NextResponse.json(
-      { success: true, message: "garment deleted successfully" },
+      { success: true, message: "garment and related outfits deleted successfully" },
       { status: 200 }
     );
   } catch (error: unknown) {
@@ -81,6 +95,7 @@ export async function DELETE(
     }
   }
 }
+
 
 export async function PUT(
   request: NextRequest,
