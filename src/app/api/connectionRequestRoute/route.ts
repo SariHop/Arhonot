@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import connect from "@/app/lib/db/mongoDB";
-import { Types } from "mongoose";
 import User from "@/app/lib/models/userSchema";
 import ConnectionRequest from "@/app/lib/models/connectionRequestSchema";
+import { Types } from "mongoose";
 
 export async function GET() {
   try {
@@ -18,7 +18,10 @@ export async function GET() {
       );
     } else {
       return NextResponse.json(
-        { message: "Error fetching connectionRequests", error: "Unknown error occurred" },
+        {
+          message: "Error fetching connectionRequests",
+          error: "Unknown error occurred",
+        },
         { status: 501 }
       );
     }
@@ -29,15 +32,62 @@ export async function POST(request: NextRequest) {
   try {
     await connect();
     const body = await request.json();
-    const newconnectionRequest = new ConnectionRequest(body);
-    console.log(newconnectionRequest);
-    
-    await newconnectionRequest.validate();
-    const savedconnectionRequest = await newconnectionRequest.save();
-    return NextResponse.json(
-      { success: true, data: savedconnectionRequest },
-      { status: 201 }
-    );
+    const { userIdSender, userIdReciver } = body;
+    const senderId = new Types.ObjectId(userIdSender.trim());
+    const removeId = new Types.ObjectId(userIdReciver.trim());
+
+    const connectionRequest = await ConnectionRequest.findOne({
+      $or: [
+        { userIdSender: senderId, userIdReciver: removeId },
+        { userIdSender: removeId, userIdReciver: senderId },
+      ],
+    });
+
+    if (connectionRequest) {
+      if (connectionRequest?.status === "rejected") {
+        // אם בקשת חיבור קיימת, עדכן את הסטטוס ל-pending
+        connectionRequest.status = "pending";
+        const updatedConnectionRequest = await connectionRequest.save();
+        return NextResponse.json(
+          {
+            success: true,
+            message: "Connection request status updated to pending",
+            data: updatedConnectionRequest,
+          },
+          { status: 201 }
+        );
+      } else if (connectionRequest?.status === "accepted") {
+        return NextResponse.json(
+          {
+            success: true,
+            message: "Connection request status already acceted",
+            data: connectionRequest,
+          },
+          { status: 202 }
+        );
+      }
+      else{
+        return NextResponse.json(
+          {
+            success: true,
+            message: "Connection request status already pending",
+            data: connectionRequest,
+          },
+          { status: 203 }
+        );
+
+      }
+    } else {
+      const newconnectionRequest = new ConnectionRequest(body);
+      console.log(newconnectionRequest);
+
+      await newconnectionRequest.validate();
+      const savedconnectionRequest = await newconnectionRequest.save();
+      return NextResponse.json(
+        { success: true, data: savedconnectionRequest },
+        { status: 200 }
+      );
+    }
   } catch (error: unknown) {
     console.error("Error add connectionRequest:", error);
     if (error instanceof Error) {
@@ -47,7 +97,10 @@ export async function POST(request: NextRequest) {
       );
     } else {
       return NextResponse.json(
-        { message: "Error add connectionRequest", error: "Unknown error occurred" },
+        {
+          message: "Error add connectionRequest",
+          error: "Unknown error occurred",
+        },
         { status: 501 }
       );
     }
@@ -63,7 +116,6 @@ export async function PUT(request: NextRequest) {
     const senderId = url.searchParams.get("sender");
     const receiverId = url.searchParams.get("receiver");
 
-
     if (!senderId || !receiverId) {
       return NextResponse.json(
         { error: "Both sender and receiver IDs are required" },
@@ -73,7 +125,7 @@ export async function PUT(request: NextRequest) {
 
     // חיפוש הרשומות ב-DB
     const sender = await User.findById(senderId);
-    const receiver = await User.findById( receiverId);
+    const receiver = await User.findById(receiverId);
 
     if (!sender || !receiver) {
       return NextResponse.json(
@@ -85,9 +137,9 @@ export async function PUT(request: NextRequest) {
     // עדכון שדה ה-children
     const objReciver = new Types.ObjectId(receiverId);
     const objSender = new Types.ObjectId(senderId);
-    if(!sender.children.includes(objReciver)) 
+    if (!sender.children.includes(objReciver))
       sender.children = [...(sender.children || []), objReciver];
-    if(!receiver.children.includes(objSender))
+    if (!receiver.children.includes(objSender))
       receiver.children = [...(receiver.children || []), objSender];
 
     // שמירת השינויים ב-DB

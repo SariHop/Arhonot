@@ -126,7 +126,7 @@ export const getOriginUserDataWithAuthentication = async () => {
     }
 
     // בקשת סיסמה לאימות
-    const enteredPassword = prompt("אנא הזן את סיסמתך לאימות:");
+    const enteredPassword = prompt("אנא הזן סיסמה (שלך) לאימות:");
     if (!enteredPassword) {
       return {
         success: false,

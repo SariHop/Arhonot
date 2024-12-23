@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createNewConnectionRequest } from "@/app/services/ConnectionsServices";
-import { CreateConnectionRequest } from "@/app/types/IConnectionRequest";
+import { CreateConnectionRequestType } from "@/app/types/IConnectionRequest";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useOriginUser from "@/app/store/originUserStore";
@@ -41,7 +41,7 @@ const ConnectExisting = () => {
         return;
       }
 
-      const connectionRequest: CreateConnectionRequest = {
+      const connectionRequest: CreateConnectionRequestType = {
         userIdSender: creatorId,
         userIdReciver: user._id,
         status: "pending",
@@ -52,10 +52,39 @@ const ConnectExisting = () => {
 
       // יצירת בקשת חיבור
       const response = await createNewConnectionRequest(connectionRequest);
-      if (response?.success) {
-        toast.success("בקשת החיבור נשלחה בהצלחה!");
+      console.log("Response:", response); // להדפיס את התשובה מהשרת
+
+      if (
+        response &&
+        "status" in response &&
+        response.status >= 200 &&
+        response.status < 300
+      ) {
+        if ("message" in response && typeof response.message === "string") {
+          switch (response.status) {
+            case 201:
+              toast.success("בקשת החיבור עודכנה לסטטוס ממתין לאישור.");
+              break;
+            case 202:
+              toast.info("בקשת החיבור כבר אושרה בעבר.");
+              break;
+            case 203: // בקשת החיבור כבר במצב 'pending'
+              toast.info("בקשת החיבור כבר במצב ממתין לאישור.");
+              break;
+            default:
+              toast.success(`הצלחה: ${response.message}`);
+          }
+        } else {
+          // במקרה שאין הודעה, לוג הגיבוי במקרה של תשובה לא צפויה
+          toast.success("בקשת החיבור נשלחה בהצלחה");
+        }
       } else {
-        toast.error("שגיאה 1 בשליחת בקשת החיבור");
+        // הודעת שגיאה במקרה של failure שלא מתקבל response.success
+        if (response && "status" in response && response.status === 403) {
+          toast.error("הסיסמה שהקשת שגויה");
+        } else {
+          toast.error("שגיאה בשליחת בקשת החיבור");
+        }
       }
     } catch (error) {
       console.error("שגיאה בשליחת הבקשה:", error);

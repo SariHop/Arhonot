@@ -37,7 +37,7 @@ export type IConnectionRequestTypeWithId = z.infer<typeof ConnectionRequestSchem
     _id: string;
 };
 // טיפוס ליצירת בקשת חיבור
-export type CreateConnectionRequest = {
+export type CreateConnectionRequestType = {
     userIdSender:Types.ObjectId;
     userIdReciver:Types.ObjectId;
     status: string;
@@ -47,14 +47,3 @@ export type CreateConnectionRequest = {
 
   };
 
-//   const ConnectionRequestSchema = z.object({
-//     userIdSender: z.string(), 
-//     userIdReciver: z.string(), 
-//     status: z.string(),
-//     readen: z.boolean(),
-//     date: z.date(),
-//     sendersName: z.string(),
-//   });
-  
-//   // יצירת טיפוס TypeScript מהסכימה
-//   export type IConnectionRequest2 = z.infer<typeof ConnectionRequestSchema>;

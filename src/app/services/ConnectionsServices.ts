@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {CreateConnectionRequest} from "../types/IConnectionRequest";
+import {CreateConnectionRequestType} from "../types/IConnectionRequest";
 import {getOriginUserDataWithAuthentication}from '@/app/services/userServices'
 import { Types } from "mongoose";
 
@@ -96,7 +96,7 @@ export const updateConnections = async (
 };
 
 export const createNewConnectionRequest = async (
-  formData: CreateConnectionRequest
+  formData: CreateConnectionRequestType
 ) => {
   try {
     const originUserData = await getOriginUserDataWithAuthentication();
