@@ -4,8 +4,9 @@ import Image from "next/image";
 import ShowGalery from "./ShowGalery";
 import Outfit from "../user/Outfit";
 
-const LooksList: React.FC = () => {
+const LooksList: React.FC<{ saveChanges: () => void }> = ({ saveChanges }) => {
     const { allLooks, selectedLooks, selectLook } = useDay();
+
     return (
         <div className="flex flex-col gap-6">
             <div className="flex flex-wrap gap-4">
@@ -32,6 +33,12 @@ const LooksList: React.FC = () => {
                     </div>
                 ))}
             </div>
+            <button
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-all duration-300"
+                onClick={() => saveChanges()} // פונקציה לשמירת השינויים
+            >
+                שמור שינויים
+            </button>
         </div>
     );
 };

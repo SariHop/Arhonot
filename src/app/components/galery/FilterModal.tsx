@@ -89,7 +89,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose, activeTab 
             sx={{ padding: "10px" }}
         >
 
-            <DialogTitle> סינון בגדים</DialogTitle>
+            <DialogTitle>{activeTab === "garments"?" סינון בגדים":"סינון לוקים"}</DialogTitle>
             <DialogContent>
                 {/* צבע */}
                 <div className="space-y- px-3">

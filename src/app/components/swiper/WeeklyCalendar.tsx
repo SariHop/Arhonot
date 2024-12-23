@@ -2,18 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import useDay from '@/app/store/currentDayStore';
-import useUser from "@/app/store/userStore";
-import { setLooksForDay } from '@/app/services/daysService';
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { useWeatherQuery } from '@/app/hooks/weatherQueryHook';
 import { getAverageTemperatureForDate } from '@/app/services/weatherService';
 
-const WeeklyCalendar: React.FC = () => {  // יצירת משתנה מצב לתאריכים של השבוע
+const WeeklyCalendar: React.FC<{ saveChanges: () => void }> = ({ saveChanges }) => {
   const [weekDates, setWeekDates] = useState<Date[]>([]);
-  const { selectedDate, setSelectedDate, selectedLooks } = useDay();
+  const { selectedDate, setSelectedDate } = useDay();
   const [pendingDate, setPendingDate] = useState<Date | null>(null); // תאריך זמני
-  const { _id } = useUser();
   const { data: weatherData } = useWeatherQuery();
   useEffect(() => {
     const today = new Date();
@@ -49,18 +46,6 @@ const WeeklyCalendar: React.FC = () => {  // יצירת משתנה מצב לתא
     return `${daysOfWeek[date.getDay()]}, ${day}.${month < 10 ? `0${month}` : month}`;
   };
 
-  const fetchData = async () => {
-    try {
-      console.log("user id from WeeklyCalendar: ", _id, selectedDate, selectedLooks)
-      if (selectedDate && _id && weatherData && weatherData.list) {
-        const response = setLooksForDay(weatherData.list, _id, selectedDate, selectedLooks);
-        console.log(response);
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
   const confirmAndSave = (newDate: Date) => {
     setPendingDate(newDate); // שמירת התאריך הזמני
     const isSmallScreen = window.innerWidth <= 640;
@@ -70,7 +55,7 @@ const WeeklyCalendar: React.FC = () => {  // יצירת משתנה מצב לתא
         <div className="flex gap-4 mt-2">
           <button
             onClick={async () => {
-              await fetchData(); // קריאה לשרת לאחר האישור
+              await saveChanges(); // קריאה לשרת לאחר האישור
               setPendingDate(null); // איפוס התאריך הזמני
               toast.dismiss(); // סגירת הטוסט
               setSelectedDate(newDate);

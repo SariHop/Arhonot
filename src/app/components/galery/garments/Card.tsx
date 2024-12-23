@@ -31,8 +31,7 @@ const Card = ({ garment, isForOutfit }: { garment: IGarment; isForOutfit: boolea
         return <div>פרטי הבגד אינם זמינים</div>;
     }
 
-    const getCircleColor = (garmentRange: number, currentTemperature: number): string => {
-        // הגדרת טווחים לפי הנתונים שלך עם Record
+    const getCircleColor = (garmentRange: number, currentTemperature: number | null): string => {
         const temperatureRanges: Record<number, { min: number; max: number }> = {
             1: { min: 35, max: 90 },
             2: { min: 30, max: 35 },
@@ -43,26 +42,26 @@ const Card = ({ garment, isForOutfit }: { garment: IGarment; isForOutfit: boolea
             7: { min: -20, max: 5 },
         };
 
-        // מציאת הטווח של הבגד
         const garmentTempRange = temperatureRanges[garmentRange];
 
-        // אם הטווח לא קיים, מחזירים צבע אפור
         if (!garmentTempRange) {
-            return 'gray-500';
+            return 'bg-gray-500';
         }
 
         const { min, max } = garmentTempRange;
 
-        if (currentTemperature >= min && currentTemperature <= max) {
-            return 'green-500'; // ירוק
+        if (currentTemperature && currentTemperature >= min && currentTemperature <= max) {
+            return 'bg-green-500'; // ירוק
         }
 
-        if (currentTemperature >= temperatureRanges[garmentRange - 1]?.min && currentTemperature <= temperatureRanges[garmentRange - 1]?.max ||
-            currentTemperature >= temperatureRanges[garmentRange + 1]?.min && currentTemperature <= temperatureRanges[garmentRange + 1]?.max) {
-            return 'yellow-500'; // כתום
+        if (currentTemperature && (
+            (garmentRange > 1 && currentTemperature >= temperatureRanges[garmentRange - 1]?.min && currentTemperature <= temperatureRanges[garmentRange - 1]?.max) ||
+            (garmentRange < 7 && currentTemperature >= temperatureRanges[garmentRange + 1]?.min && currentTemperature <= temperatureRanges[garmentRange + 1]?.max)
+        )) {
+            return 'bg-yellow-500'; // כתום
         }
 
-        return 'red-500'; // אדום
+        return 'bg-red-500'; // אדום
     };
 
     return (
@@ -81,13 +80,9 @@ const Card = ({ garment, isForOutfit }: { garment: IGarment; isForOutfit: boolea
             </div>
             <p className="text-xs md:text-sm 2xl:text-base 3xl:text-lg line-clamp-1">{garment.desc}</p>
 
-            {temperature !== null && (
-                <div
-                    className={`absolute top-2 right-2 w-5 h-5 rounded-full bg-${getCircleColor(garment.range, temperature)}`}
-                ></div>
-            )}
-
-
+            <div
+                className={`absolute top-2 right-2 w-5 h-5 rounded-full ${getCircleColor(garment.range, temperature)}`}
+            />
             {isModalOpen && <Garment garment={garment} closeModal={closeModal} />}
         </div>
     );
