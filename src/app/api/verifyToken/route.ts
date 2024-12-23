@@ -14,26 +14,8 @@ function verifyToken(token: string): boolean {
 }
 
 export async function GET(req: NextRequest) {
-  console.log("first");
-  console.log("first");
-  console.log("first");
-  console.log("first");
-  console.log("first");
-  console.log("first");
-  console.log("first");
-  console.log("first");
-  console.log("first");
-  console.log("first");
-  console.log("first");
-  console.log("first");
-  console.log("first");
-  console.log("first");
-  console.log("first");
-  console.log("first");
-  console.log("first");
   // משתמשים ב-req.cookies.get ומוודאים שנכנסים לערך של הקוקי
   const token = req.cookies.get("auth_token")?.value;
-  console.log("token:", token);
   // אם יש token, בודקים אם הוא תקף
   if (token && verifyToken(token)) {
     return NextResponse.json({ message: "Protected data", token },{ status: 200 });
