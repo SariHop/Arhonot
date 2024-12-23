@@ -51,14 +51,45 @@ export const getMaxTemperatureForDate = (list: WeatherData[], targetDate: Date) 
   return maxTemp;
 };
 
+export const getMinTemperatureForDate = (list: WeatherData[], targetDate: Date) => {
+  const dailyForecasts = list.filter((entry) => {
+    const date = entry.dt_txt.split(" ")[0];
+    return date === targetDate.toISOString().split("T")[0];
+  });
+
+  // אם אין נתונים ליום המבוקש, נחזיר null
+  if (dailyForecasts.length === 0) {
+    return null;
+  }
+
+  const minTemp = dailyForecasts.reduce((min, entry) => {
+    return Math.min(min, entry.main.temp_min); // שימוש במפתח temp_min
+  }, Infinity); // ערך התחלתי חיובי אינסופי
+  return minTemp;
+};
 
 
-export const fetchUserOutfits = async (userId: Types.ObjectId|null) => {
+export const getAverageTemperatureForDate = (list: WeatherData[], targetDate: Date) => {
+  const minTemp = getMinTemperatureForDate(list, targetDate);
+  const maxTemp = getMaxTemperatureForDate(list, targetDate);
+
+  if (minTemp === null || maxTemp === null) {
+    return null; // אין נתונים ליום הזה
+  }
+
+  // להבטיח שהערכים הם מספרים
+  const minTempNum = parseFloat(minTemp.toString());
+  const maxTempNum = parseFloat(maxTemp.toString());
+
+  return Math.round((minTempNum + maxTempNum) / 2);
+};
+
+export const fetchUserOutfits = async (userId: Types.ObjectId | null) => {
   try {
     const response = await axios.get(`${apiUrl}outfitRoute/userOutfits/${userId}`);
     return response.data.data;
 
-  } 
+  }
   catch (error) {
     console.log("לא הצלחנו לגשת חנתוני הלוקים שלך");
     throw error;

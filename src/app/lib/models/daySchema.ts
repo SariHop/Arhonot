@@ -19,7 +19,7 @@ const daySchema: Schema<IDay> = new Schema({
     }, 
     looks: { type: [Types.ObjectId], required: true, ref: "Outfit"  }, 
     comments: { type: String , required:false}, // שדה אופציונלי
-    weather: { type: String, required: true, minlength: 10 }, 
+    weather: { type: String, required: true}, 
 });
 
 

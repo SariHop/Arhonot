@@ -10,13 +10,13 @@ let ITEMS_PER_PAGE = 24;
 const GarmentsGallery = ({ isForOutfit }: { isForOutfit: boolean }) => {
     const { sortedGarments } = useGarments();
     const [currentPage, setCurrentPage] = useState(1); // מעקב אחר העמוד הנוכחי
+    const [temperature, setTemperature] = useState<number | null>(null); // מצב הטמפרטורה
 
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
     const currentItems = sortedGarments.slice(startIndex, endIndex);
     const totalPages = Math.ceil(sortedGarments.length / ITEMS_PER_PAGE);
 
-    const [temperature, setTemperature] = useState<number | null>(null); // מצב הטמפרטורה
     const { data: weatherData } = useWeatherQuery(); // שימוש ב-hook לקריאת נתוני מזג האוויר
     useEffect(() => {
         if (weatherData) {

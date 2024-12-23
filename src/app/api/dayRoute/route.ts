@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     await connect();
-    const { userId, date, looks } = await request.json();
+    const { userId, date, looks, weather } = await request.json();
     console.log("userId", userId)
     const startOfDay = new Date(date);
     startOfDay.setHours(0, 0, 0, 0);
@@ -80,7 +80,7 @@ export async function PUT(request: NextRequest) {
           date: new Date(date), // תאריך נוכחי או מותאם
           looks: looksIds,
           dayDesc: "Sunday",
-          weather: "weatherwjeifjijei"
+          weather
         });
         await newDay.save();
         if (newDay) {
