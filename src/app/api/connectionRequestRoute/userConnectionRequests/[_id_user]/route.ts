@@ -6,7 +6,7 @@ import User from "@/app/lib/models/userSchema";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { _id_user: string } }
+  { params }: { params: { _id_user: Types.ObjectId } }
 ) {
   try {
     console.log("Request method:", request.method); // לשם דיבאג

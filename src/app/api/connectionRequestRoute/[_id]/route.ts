@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import connect from "@/app/lib/db/mongoDB";
 import ConnectionRequest from "@/app/lib/models/connectionRequestSchema";
+import { Types } from "mongoose";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { _id: string } }
+  { params }: { params: { _id: Types.ObjectId } }
 ) {
   try {
     console.log("Request method:", request.method); //NextRequestשימוש סמלי ב

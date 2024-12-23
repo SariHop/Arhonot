@@ -4,9 +4,9 @@ import ButtonCreateOutfit from "@/app/components/createOutfit/toolBox/CreateOutf
 import DeleteButton from "./Delete";
 import useCanvasStore from "@/app/store/canvasStore";
 import ClearButton from "./Clear";
+import Layers from "@/app/components/createOutfit/toolBox/Layers"
 
 const ToolBox = () => {
-
   const { canvas, setSelectedObject } = useCanvasStore();
 
   useEffect(() => {
@@ -37,9 +37,10 @@ const ToolBox = () => {
   }, [canvas, setSelectedObject]);
 
 
+
   return (
     <div
-      className="flex overflow-x-auto whitespace-nowrap p-3 gap-5 m-1 "
+      className="flex overflow-x-auto whitespace-nowrap p-3 gap-5 m-1"
       style={{ scrollbarWidth: "thin" }}
     >
       <ButtonCreateOutfit />
@@ -59,6 +60,15 @@ const ToolBox = () => {
         <ClearButton />
         <p className="text-sm">ניקוי</p>
       </div>
+
+      <div
+        className="flex flex-col items-center flex-shrink-0"
+        style={{ minWidth: "fit-content" }}
+      >
+        <Layers />
+        <p className="text-sm">ניהול שכבות</p>
+      </div>
+
     </div>
   );
 };

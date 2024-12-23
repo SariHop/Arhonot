@@ -70,14 +70,14 @@ const Card = ({ garment, isForOutfit }: { garment: IGarment; isForOutfit: boolea
             onClick={handleClickcard ? () => handleClickcard(garment.img, garment._id) : openModal}
         >
             <div className="h-[160px] w-full p-1">
-            <Image
-                src={garment.img}
-                alt={garment.desc}
-                width={200}
-                height={200}
-                sizes="(max-width: 640px) 33vw, 25vw"
-                className="w-full h-full object-contain rounded-lg"
-            />
+                <Image
+                    src={garment.img}
+                    alt={garment.desc}
+                    width={200}
+                    height={200}
+                    sizes="(max-width: 640px) 33vw, 25vw"
+                    className="w-full h-full object-contain rounded-lg"
+                />
             </div>
             <p className="text-xs md:text-sm 2xl:text-base 3xl:text-lg line-clamp-1">{garment.desc}</p>
 
