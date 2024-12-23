@@ -3,6 +3,7 @@ import IOutfit from "../types/IOutfit";
 import { WeatherData } from "../types/IWeather"
 import { fetchUserOutfits, getMaxTemperatureForDate } from "./weatherService"
 import axios from 'axios';
+import { initialize } from "@/app/store/alertsCounterStore";
 
 const sendNoOutfitsAlert = async (userId: Types.ObjectId | null) => {
   try {
@@ -13,7 +14,7 @@ const sendNoOutfitsAlert = async (userId: Types.ObjectId | null) => {
       date: new Date(),
       readen: false,
     });
-
+    initialize(userId);
     console.log('Alert created successfully:', response.data);
   } catch (error) {
     // בדוק אם השגיאה היא מסוג AxiosError
@@ -31,11 +32,11 @@ const sendLitlOutfitsAlert = async (userId: Types.ObjectId | null) => {
     const response = await axios.post('/api/alertRoute', {
       userId: userId, // הנח שהמשתנה userId קיים ומכיל את מזהה המשתמש
       title: "כמות קטנה של לוקים",
-      desc: "לא נמצאו מספיק לוקים המתאימים למזג האויר מומלץ לך להוסיף לוקים מותאמים כדי לאפשר לעצמך גיוון",
+      desc: "לא נמצאו מספיק לוקים המתאימים למזג האויר, מומלץ לך להוסיף לוקים מותאמים כדי לאפשר לעצמך גיוון",
       date: new Date(),
       readen: false,
     });
-
+    initialize(userId);
     console.log('Alert created successfully:', response.data);
   } catch (error) {
     // בדוק אם השגיאה היא מסוג AxiosError
@@ -91,12 +92,13 @@ export const recommendedLooks = async (list: WeatherData[], date: Date, userId: 
 
     // מיון לפי ציון ודירוג חמשת המובילים
     const topOutfits = rateOutfits.sort((a, b) => b.rate - a.rate).slice(0, 5).map(({ outfit }) => outfit); // מחזירים רק את האאוטפיטים
-    if(topOutfits.length<5){
+    if (topOutfits.length < 5) {
       sendLitlOutfitsAlert(userId);
     }
     return topOutfits;
   } catch (error) {
     console.error("Error in recommendedLooks function:", error);
+    sendNoOutfitsAlert(userId);
     throw new Error("Failed to get recommended looks");
   }
 };
