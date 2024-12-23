@@ -1,18 +1,17 @@
 import connect from "@/app/lib/db/mongoDB";
 import Alert from "@/app/lib/models/alertSchema";
+import { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { _id_user: string } }
+  { params }: { params: { _id_user: Types.ObjectId } }
 ) {
   try {
     // console.log("Request method:", request.method); // לשם דיבאג
     await connect();
 
     const _idUser = params._id_user;
-    // console.log("Params:", params);
-
     if (!_idUser) {
       return NextResponse.json(
         { error: "Missing user's _id parameter" },

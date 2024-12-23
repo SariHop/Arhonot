@@ -20,12 +20,15 @@ const NavBar = () => {
   );
   // const setAlertsCounter = useAlertsCounter((state) => state.setAlertsCounter);
   const router = useRouter();
-  const user = useUser((state) => state);
+  const user = useUser();
 
   useEffect(() => {
-    
+    if (!user._id) {
+      console.log("Waiting for user ID to load...");
+      return;
+    }
     initialize(user._id);
-  }, []);
+  }, [user._id]);
 
   const onClick: MenuProps["onClick"] = ({ key }) => {
     console.log(user._id);

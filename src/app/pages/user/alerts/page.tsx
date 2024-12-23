@@ -12,13 +12,12 @@ const Page = () => {
 
   return (
     <div className="pb-6">
-
       {/* התראות על מלאי */}
       <div className="p-6 pt-2 h-[30vh]">
         <p className="font-sans text-base pb-2 font-thin">
           התראות
         </p>
-        <Alert userId={user._id} decreaseAlertCounter={decreaseAlertCounter}/>
+        {user._id && <Alert userId={user._id} decreaseAlertCounter={decreaseAlertCounter}/>}
       </div>
 
       <Divider className="mb-0" />
@@ -28,7 +27,7 @@ const Page = () => {
         <p className="font-sans text-base font-thin">
           בקשות התחברות
         </p>
-        <ConnectionReq userId={user._id} decreaseAlertCounter={decreaseAlertCounter}/>
+        {user._id && <ConnectionReq userId={user._id} decreaseAlertCounter={decreaseAlertCounter}/>}
       </div>
     </div>
   );

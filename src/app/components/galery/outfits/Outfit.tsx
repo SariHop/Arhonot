@@ -16,12 +16,12 @@ const Outfit = ({ outfit, closeModal }: IOutfitProps) => {
     const { setEditOutfit, setGarments } = useCanvasStore();
 
     const handleEdit = (outfit: IOutfit) => {
+        // אם המערך בלוקל מלא לשאול לומר לו שיש שינויים שלא ישמרו
         const garmentIds = outfit.clothesId.map((id) => id.toString());
         setGarments(garmentIds);
         setEditOutfit(outfit);
-        router.push("/pages/user/create_outfit");
-      };
-      
+        router.push("/pages/user/outfit_form");
+    };
 
     return (
         <div

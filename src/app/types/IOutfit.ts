@@ -12,6 +12,7 @@ export default interface IOutfit extends Document {
   img: string;
   favorite: number;
   rangeWheather: number;
+  canvasJson:object
 }
 
 // סכמת Zod
@@ -33,6 +34,7 @@ export const outfitSchemaZod = z.object({
     },
     { message: "ישנם תגיות שאינן תקפות" }
   ),
+  canvasJson: z.object({}).required(),
   img: z.string().url({ message: "כתובת URL של תמונה אינה תקפה" }),
   favorite: z.number().int().min(0, { message: "הדירוג חייב להיות לפחות 0" }).max(5, { message: "הדירוג חייב להיות עד 5" }), 
   rangeWheather: z.number().min(1, { message: "הטווח חייב להיות לפחות 1" }).max(7, { message: "הטווח חייב להיות עד 7" }), 
