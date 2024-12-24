@@ -36,15 +36,31 @@ export const updateRequestStatus = async (
   status: string
 ) => {
   try {
-    const response = await axios.put(
-      `/api/connectionRequestRoute/${requestId}`,
-      {
-        status: status,
+    const { _id: userId } = useUser.getState();
+    const { _id: originUserId } = useOriginUser.getState();
+
+    if (userId?.toString() === originUserId?.toString()) {
+      const originUserData = await getOriginUserDataWithAuthentication();
+      if (!originUserData.success) {
+        return originUserData;
       }
-    );
-    if (response.status !== 200) throw response;
+
+      const response = await axios.put(
+        `/api/connectionRequestRoute/${requestId}`,
+        {
+          status: status,
+        }
+      );
+      if (response.status !== 200) throw response;
       return response.data;
-    
+    } else {
+      // משתמש שאינו מורשה
+      return {
+        success: false,
+        message: "אין לך הרשאה לבצע פעולה זו.",
+        status: 403,
+      };
+    }
   } catch (error: unknown) {
     console.error("Failed to update connection request:", error);
     if (axios.isAxiosError(error)) {
@@ -86,39 +102,45 @@ export const updateConnections = async (
   try {
     const { _id: userId } = useUser.getState();
     const { _id: originUserId } = useOriginUser.getState();
-    const originUserData = await getOriginUserDataWithAuthentication();
-    if (!originUserData.success) {
-      return originUserData;
-    }
-
-    const response = await axios.put(`/api/connectionRequestRoute`, null, {
-      params: { sender: senderId, receiver: receiverId },
-    });
-    if (response.status !== 200) throw response;
-
-    const { sender, receiver } = response.data.data;
 
     if (userId?.toString() === originUserId?.toString()) {
+      // const originUserData = await getOriginUserDataWithAuthentication();
+      // if (!originUserData.success) {
+      //   return originUserData;
+      // }// אימות כפול, עדיף לחסוף כך שבמידה והפניה היא מלחצן אישור בקשת התחברות הפונה לפונקציית עדכון סטטוס + עדכון קשרי ילדים לא יבקש אימות כפול
+
+      const response = await axios.put(`/api/connectionRequestRoute`, null, {
+        params: { sender: senderId, receiver: receiverId },
+      });
+      if (response.status !== 200) throw response;
+
+      const { sender, receiver } = response.data.data;
+
       if (userId?.toString() === sender._id.toString()) {
         useUser.getState().updateChildren(sender.children); // עדכון useUser
         useOriginUser.getState().updateChildren(sender.children); // עדכון useOriginUser
       } else if (userId?.toString() === receiver._id.toString()) {
         useUser.getState().updateChildren(receiver.children); // עדכון useUser
         useOriginUser.getState().updateChildren(receiver.children); // עדכון useOriginUser
-      } else {
-        // במידה והיוזרים שונים
-        if (userId?.toString() === sender._id.toString()) {
-          useUser.getState().updateChildren(sender.children); // עדכון useUser
-        } else if (userId?.toString() === receiver._id.toString()) {
-          useUser.getState().updateChildren(receiver.children); // עדכון useUser
-        }
-      }
-      console.log("User state after updateRequestStatus:", useUser.getState());
-      console.log("Origin user state after updateRequestStatus:", useOriginUser.getState()
-      );
-    }
 
-    return response.data;
+        console.log(
+          "User state after updateRequestStatus:",
+          useUser.getState()
+        );
+        console.log(
+          "Origin user state after updateRequestStatus:",
+          useOriginUser.getState()
+        );
+      }
+      return response.data;
+    } else {
+      // משתמש שאינו מורשה
+      return {
+        success: false,
+        message: "אין לך הרשאה לבצע פעולה זו.",
+        status: 403,
+      };
+    }
   } catch (error: unknown) {
     console.error("Failed to update connection request:", error);
     if (axios.isAxiosError(error)) {
@@ -135,17 +157,32 @@ export const createNewConnectionRequest = async (
   formData: CreateConnectionRequestType
 ) => {
   try {
-    const originUserData = await getOriginUserDataWithAuthentication();
-    if (!originUserData.success) {
-      return originUserData;
-    }
-    const response = await axios.post("/api/connectionRequestRoute", formData);
-    if (response.status === 200 || response.status === 201) {
-      return { success: true, data: response.data };
+    const { _id: userId } = useUser.getState();
+    const { _id: originUserId } = useOriginUser.getState();
+
+    if (userId?.toString() === originUserId?.toString()) {
+      const originUserData = await getOriginUserDataWithAuthentication();
+      if (!originUserData.success) {
+        return originUserData;
+      }
+      const response = await axios.post(
+        "/api/connectionRequestRoute",
+        formData
+      );
+      if (response.status === 200 || response.status === 201) {
+        return { success: true, data: response.data };
+      } else {
+        const message =
+          response.data?.message || "שגיאה לא ידועה בשליחת בקשת התחברות .";
+        return { success: false, message, status: response.status };
+      }
     } else {
-      const message =
-        response.data?.message || "שגיאה לא ידועה בשליחת בקשת התחברות .";
-      return { success: false, message, status: response.status };
+      // משתמש שאינו מורשה
+      return {
+        success: false,
+        message: "אין לך הרשאה לבצע פעולה זו.",
+        status: 403,
+      };
     }
   } catch (error) {
     console.error("error during create new connection request", error);
@@ -163,26 +200,51 @@ export const removeConnectionRequest = async (
   userIdSender: string,
   userIdToRemove: string
 ) => {
-  // const { setOriginUser } = useOriginUser.getState();
   try {
-    const originUserData = await getOriginUserDataWithAuthentication();
-    if (!originUserData.success) {
-      return originUserData;
-    }
+    const { _id: userId } = useUser.getState();
+    const { _id: originUserId } = useOriginUser.getState();
 
-    const response = await axios.put(
-      `/api/connectionRequestRoute/userConnectionRequests/${userIdSender}`,
-      { userIdToRemove }
-    );
+    if (userId?.toString() === originUserId?.toString()) {
+      const originUserData = await getOriginUserDataWithAuthentication();
+      if (!originUserData.success) {
+        return originUserData;
+      }
+      console.log(userIdSender, "userIdSender", userIdToRemove, "userIdToRemove");
 
-    if (response.status == 200) {
-      return response.data;
-
-      console.log(response.data.message);
+      const response = await axios.put(`/api/connectionRequestRoute/userConnectionRequests/${userIdSender}`, { userIdToRemove }
+      );
+      if (response.status == 200) {
+        const sender2 = response.data.existSender;
+        const receiver2 = response.data.existRemove;
+        if (userId?.toString() === userIdSender.toString()) {
+          useUser.getState().updateChildren(sender2.children); // עדכון useUser
+          useOriginUser.getState().updateChildren(sender2.children); // עדכון useOriginUser
+        } else if (userId?.toString() === userIdToRemove.toString()) {
+          useUser.getState().updateChildren(receiver2.children); // עדכון useUser
+          useOriginUser.getState().updateChildren(receiver2.children); // עדכון useOriginUser
+          console.log("User state after updateRequestStatus:",useUser.getState());
+          console.log("Origin user state after updateRequestStatus:",useOriginUser.getState());
+        }
+        return response.data;
+      } else {
+        console.error("שגיאה לא צפויה, סטטוס:", response.status);
+      }
     } else {
-      console.error("Unexpected status code:", response.status);
+      // משתמש שאינו מורשה
+      return {
+        success: false,
+        message: "אין לך הרשאה לבצע פעולה זו.",
+        status: 403,
+      };
     }
-  } catch (error: unknown) {
-    console.error("", error);
+  } catch (error) {
+    console.error("שגיאה במהלך מחיקת ההתקשרות", error);
+    if (axios.isAxiosError(error)) {
+      const message = error.response?.data?.message || "שגיאה לא צפויה";
+      const status = error.response?.status || 500;
+      return { success: false, message, status };
+    } else {
+      return { success: false, message: "שגיאה פנימית במערכת", status: 500 };
+    }
   }
 };

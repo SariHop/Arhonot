@@ -146,8 +146,8 @@ const ConnectionReq: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => 
   const acceptRequest = async (requestId: string, sender: string) => {
     console.log("accepted");
     try {
-      await updateConnections(sender, userId);
       await updateRequestStatus(requestId, "accepted");
+      await updateConnections(sender, userId);
 
       setRequests((prevRequests) =>
         prevRequests.map((request) => {

@@ -269,17 +269,17 @@ export const updateUser = async (_id: Types.ObjectId | null, body: object) => {
     console.log("userId:", userId);
     console.log("originUserId:", originUserId);
     console.log("Are the IDs equal?", userId === originUserId);
-    //אימות משתמש
-    const authResult = await getOriginUserDataWithAuthentication();
-    if (authResult.success) {
-      const response = await axios.put(`${apiUrl}/${_id}`, body, {
-        headers: { "Content-Type": "application/json" },
-      });
-      console.log(
-        "User updated successfully after authentication:",
-        response.data
-      );
-      if (userId?.toString() === originUserId?.toString()) {
+    if (userId?.toString() === originUserId?.toString()) {
+      //אימות משתמש
+      const authResult = await getOriginUserDataWithAuthentication();
+      if (authResult.success) {
+        const response = await axios.put(`${apiUrl}/${_id}`, body, {
+          headers: { "Content-Type": "application/json" },
+        });
+        console.log(
+          "User updated successfully after authentication:",
+          response.data
+        );
         setUser(response.data.data); // עדכון ה-store
         setOriginUser(response.data.data); // עדכון ה-UserOriginStore
         console.log("User state after update:", useUser.getState());
@@ -287,15 +287,23 @@ export const updateUser = async (_id: Types.ObjectId | null, body: object) => {
           "Origin user state after update:",
           useOriginUser.getState()
         );
-      } else if (userId?.toString() !== originUserId?.toString()) {
-        // אם ה-id של המשתמש ב-useUser לא תואם ל-id של המשתמש המקורי, נקרא לפונקציית האימות
-        setUser(response.data.data); // עדכון ה-store
-        console.log("User state after update:", useUser.getState());
+        return {
+          success: true,
+          message: "User updated successfully",
+          data: response.data.data,
+          status: 200,
+        };
+      } else {
+        // אם האימות נכשל, מחזירים את הודעת השגיאה
+        return { success: false, message: "האימות נכשל", status: 401 };
       }
-      return { success: true, message: "User updated successfully", data: response.data.data, status: 200 };
     } else {
-      // אם האימות נכשל, מחזירים את הודעת השגיאה
-      return { success: false, message: "האימות נכשל", status: 401 };
+      // משתמש שאינו מורשה
+      return {
+        success: false,
+        message: "אין לך הרשאה לבצע פעולה זו.",
+        status: 403,
+      };
     }
   } catch (error: unknown) {
     console.error("Failed to update connection request:", error);
@@ -314,46 +322,56 @@ export const createSubAccount = async (formData: IUserType) => {
   try {
     const { _id: userId2 } = useUser.getState();
     const { _id: originUserId2 } = useOriginUser.getState();
-    // השגת נתוני ה־creator ואימות הסיסמה
-    const originUserData = await getOriginUserDataWithAuthentication();
 
-    if (!originUserData.success) {
-      return originUserData;
-    }
-
-    const { originUserId } = originUserData.data!;
-    // הצפנת סיסמה חדשה
-    const encryptedNewPassword = await hashPassword(formData.password);
-
-    // הכנת הנתונים ליצירת חשבון משני
-    const { confirmPassword, ...rest } = formData;
-    console.log("confirmPassword", confirmPassword);
-    const data = {
-      ...rest,
-      password: encryptedNewPassword,
-      age: calculateAge(formData.dateOfBirth),
-      originUserId,
-    };
-    console.log("data:", data); // שליחת הנתונים לשרת
-    const response = await axios.post("/api/userExtraPermissions", data);
-    if (response.status === 200 || response.status === 201) {
-      const userId = response.data.data._id;
-
-      if(userId2?.toString() === originUserId2?.toString()){
-        useUser.getState().updateChildren([...useUser.getState().children, userId]); // עדכון ה-UserStore
-        useOriginUser.getState().updateChildren([...useOriginUser.getState().children, userId]); // עדכון ה-UserOriginStore
-  
-        console.log("User state after createSubAccount:", useUser.getState());
-        console.log("Origin user state after createSubAccount:",useOriginUser.getState());
-      } else{
-        useUser.getState().updateChildren([...useUser.getState().children, userId]); // עדכון ה-UserStore
+    if (userId2?.toString() === originUserId2?.toString()) {
+      // השגת נתוני ה־creator ואימות הסיסמה
+      const originUserData = await getOriginUserDataWithAuthentication();
+      if (!originUserData.success) {
+        return originUserData;
       }
-     
-      return { success: true, data: response.data };
+
+      const { originUserId } = originUserData.data!;
+      // הצפנת סיסמה חדשה
+      const encryptedNewPassword = await hashPassword(formData.password);
+
+      // הכנת הנתונים ליצירת חשבון משני
+      const { confirmPassword, ...rest } = formData;
+      console.log("confirmPassword", confirmPassword);
+      const data = {
+        ...rest,
+        password: encryptedNewPassword,
+        age: calculateAge(formData.dateOfBirth),
+        originUserId,
+      };
+      console.log("data:", data); // שליחת הנתונים לשרת
+      const response = await axios.post("/api/userExtraPermissions", data);
+      if (response.status === 200 || response.status === 201) {
+        const userId = response.data.data._id;
+        useUser
+          .getState()
+          .updateChildren([...useUser.getState().children, userId]); // עדכון ה-UserStore
+        useOriginUser
+          .getState()
+          .updateChildren([...useOriginUser.getState().children, userId]); // עדכון ה-UserOriginStore
+
+        console.log("User state after createSubAccount:", useUser.getState());
+        console.log(
+          "Origin user state after createSubAccount:",
+          useOriginUser.getState()
+        );
+        return { success: true, data: response.data };
+      } else {
+        const message =
+          response.data?.message || "שגיאה לא ידועה ביצירת חשבון המשני.";
+        return { success: false, message, status: response.status };
+      }
     } else {
-      const message =
-        response.data?.message || "שגיאה לא ידועה ביצירת חשבון המשני.";
-      return { success: false, message, status: response.status };
+      // משתמש שאינו מורשה
+      return {
+        success: false,
+        message: "אין לך הרשאה לבצע פעולה זו.",
+        status: 403,
+      };
     }
   } catch (error) {
     console.error("Error during create sub account:", error);

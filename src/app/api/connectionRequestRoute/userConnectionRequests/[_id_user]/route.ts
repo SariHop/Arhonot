@@ -1,6 +1,6 @@
 import connect from "@/app/lib/db/mongoDB";
 import ConnectionRequest from "@/app/lib/models/connectionRequestSchema";
-import { isValidObjectId, Types, } from "mongoose";
+import { isValidObjectId, Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import User from "@/app/lib/models/userSchema";
 
@@ -53,23 +53,18 @@ export async function GET(
 //פונקציה לביטול התקשרות בין יוזרים
 export async function PUT(
   request: NextRequest,
-  {
-    params,
-  }: {
-    params: { _id_user: string };
-  }
+  {params,}: {params: { _id_user: string }}
 ) {
   try {
     const sender = params._id_user.trim();
     console.log("Cleaned params._id_user:", sender);
-
     const { userIdToRemove } = await request.json();
     console.log("Raw userIdToRemove from request body:", userIdToRemove);
 
     await connect();
     // המרת הערכים ל-ObjectId
     const senderId = new Types.ObjectId(sender);
-    const removeId =  new Types.ObjectId(userIdToRemove.trim());
+    const removeId = new Types.ObjectId(userIdToRemove.trim());
     console.log("Parsed ObjectId for senderId:", senderId);
     console.log("Parsed ObjectId for removeId:", removeId);
 
@@ -88,6 +83,24 @@ export async function PUT(
         { status: 400 }
       );
     }
+    // בדיקת קיום משתמשים בבסיס הנתונים
+    const [existSender, existRemove] = await Promise.all([
+      User.findById(senderId),
+      User.findById(removeId),
+    ]);
+    console.log("existSender:", existSender);
+    console.log("existRemove:", existRemove);
+
+    if (!existSender || !existRemove) {
+      console.error("One or both users not found:", {
+        existSender,
+        existRemove,
+      });
+      return NextResponse.json(
+        { error: "One or both users not found in the database." },
+        { status: 404 }
+      );
+    }
 
     // חיפוש בקשת חיבור קיימת
     const connectionRequest = await ConnectionRequest.findOne({
@@ -97,40 +110,27 @@ export async function PUT(
       ],
     });
     console.log("Connection request found:", connectionRequest);
-
-    if (connectionRequest) {
-      // מחיקת בקשת חיבור אם נמצאה
-      await connectionRequest.deleteOne();
-      console.log("Connection request deleted");
+    if (!connectionRequest) {
       return NextResponse.json(
-        { success: true, message: "Connection request deleted successfully" },
-        { status: 200 }
-      );
-    }
-
-    // בדיקת קיום משתמשים בבסיס הנתונים
-    const existSender = await User.findById(senderId);
-    const existRemove = await User.findById(removeId);
-    console.log("existSender:", existSender);
-    console.log("existRemove:", existRemove);
-
-    if (!existSender || !existRemove) {
-      console.error("One or both users not found:", { existSender, existRemove });
-      return NextResponse.json(
-        { error: "existSender/ existRemove/ both not found" },
+        { error: "connection erquest not found" },
         { status: 404 }
       );
     }
+    // מחיקת בקשת חיבור אם נמצאה
+    await connectionRequest.deleteOne();
+    console.log("Connection request deleted");
+    const [updateSender, updateRemove] = await Promise.all([
+      User.updateOne({ _id: senderId }, { $pull: { children: removeId } }),
+      User.updateOne({ _id: removeId }, { $pull: { children: senderId } }),
+    ]);
 
-    // עדכון רשימות children של המשתמשים
-    await User.updateOne({ _id: senderId }, { $pull: { children: removeId } });
-    console.log("Updated sender's children list:", senderId);
-
-    await User.updateOne({ _id: removeId }, { $pull: { children: senderId } });
-    console.log("Updated removeId's children list:", removeId);
+    console.log("Updated sender's children list:", updateSender);
+    console.log("Updated removeId's children list:", updateRemove);
 
     return NextResponse.json(
-      { success: true, message: "Connection and users updated successfully" },
+      { success: true, message: "Connection and users updated successfully" ,data:{
+        existSender, existRemove
+      }},
       { status: 200 }
     );
   } catch (error: unknown) {
@@ -151,4 +151,3 @@ export async function PUT(
     }
   }
 }
-
