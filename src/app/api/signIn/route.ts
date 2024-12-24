@@ -10,11 +10,10 @@ function generateToken(email: string): string {
         throw new Error('SECRET_KEY is not defined in .env file');
     }
     const token = jwt.sign(
-        { email },     // מידע שייכנס לטוקן
-        secretKey,      // המפתח הסודי מה-.env
-        { expiresIn: '1d' } // הגבלת תוקף ליום אחד
+        { email },
+        secretKey,
+        { expiresIn: '1d' }
     );
-
     return token;
 }
 

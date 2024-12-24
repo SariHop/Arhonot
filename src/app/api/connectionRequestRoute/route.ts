@@ -3,6 +3,7 @@ import connect from "@/app/lib/db/mongoDB";
 import { Types } from "mongoose";
 import User from "@/app/lib/models/userSchema";
 import ConnectionRequest from "@/app/lib/models/connectionRequestSchema";
+import Alert from "@/app/lib/models/alertSchema";
 
 export async function GET() {
   try {
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const newconnectionRequest = new ConnectionRequest(body);
     console.log(newconnectionRequest);
-    
+
     await newconnectionRequest.validate();
     const savedconnectionRequest = await newconnectionRequest.save();
     return NextResponse.json(
@@ -73,7 +74,7 @@ export async function PUT(request: NextRequest) {
 
     // חיפוש הרשומות ב-DB
     const sender = await User.findById(senderId);
-    const receiver = await User.findById( receiverId);
+    const receiver = await User.findById(receiverId);
 
     if (!sender || !receiver) {
       return NextResponse.json(
@@ -85,15 +86,23 @@ export async function PUT(request: NextRequest) {
     // עדכון שדה ה-children
     const objReciver = new Types.ObjectId(receiverId);
     const objSender = new Types.ObjectId(senderId);
-    if(!sender.children.includes(objReciver)) 
+    if (!sender.children.includes(objReciver))
       sender.children = [...(sender.children || []), objReciver];
-    if(!receiver.children.includes(objSender))
+    if (!receiver.children.includes(objSender))
       receiver.children = [...(receiver.children || []), objSender];
 
     // שמירת השינויים ב-DB
     await sender.save();
     await receiver.save();
-
+    const formattedDesc = `בקשת החיבור שלך ל${receiver.userName} התקבל והנך מקושר/ת כעת ל${receiver.userName}`;
+    const alert = new Alert({
+      userId: sender._id,
+      title: "בקשת התחברות נענתה בהצלחה",
+      desc: formattedDesc,
+      date: new Date(),
+      readen: false
+    });
+    alert.save();
     return NextResponse.json(
       { success: true, message: "Connections updated successfully" },
       { status: 200 }
