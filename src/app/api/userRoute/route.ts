@@ -3,7 +3,8 @@ import connect from "@/app/lib/db/mongoDB";
 import User from "@/app/lib/models/userSchema";
 import bcrypt from 'bcrypt';
 import Alert from "@/app/lib/models/alertSchema";
-
+import startCronJob from "@/app/lib/lib/corn"
+import { Types } from "mongoose";
 
 export async function GET() {
   try {
@@ -79,8 +80,8 @@ export async function POST(request: NextRequest) {
         date: new Date(),
         readen: false
       });
-
       welcomeAlert.save();
+      startCronJob(savedUser._id as Types.ObjectId);
       return NextResponse.json(
         { success: true, data: savedUser.toObject() },
         { status: 201 }
