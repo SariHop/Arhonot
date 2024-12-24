@@ -26,12 +26,23 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     await connect();
-    const body = await request.json();
-    const newalert = new Alert(body);
-    console.log(newalert);
-    
-    await newalert.validate();
-    const savedalert = await newalert.save();
+    const { userId, title, desc, date, readen } = await request.json();
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999); // מגדיר את השעה לסוף היום
+    const alert = await Alert.findOne({ userId, title, desc, date: { $gte: startOfDay, $lte: endOfDay } });
+    if (alert) {
+      return NextResponse.json(
+        { success: false, data: "alert is already exist." },
+        { status: 400 }
+      );
+    }
+    const newAlert = new Alert({ userId, title, desc, date, readen });
+    console.log(newAlert);
+
+    await newAlert.validate();
+    const savedalert = await newAlert.save();
     return NextResponse.json(
       { success: true, data: savedalert },
       { status: 201 }
