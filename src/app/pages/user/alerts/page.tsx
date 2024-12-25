@@ -12,6 +12,10 @@ const Page = () => {
   const user = useUser();
 
   useEffect(() => {
+    if (!user._id) {
+          console.log("Waiting for user ID to load...");
+          return;
+        }
     initialize(user._id);
   }, [user._id]);
   return (

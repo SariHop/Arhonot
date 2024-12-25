@@ -79,9 +79,7 @@ export const getChildrenLooks = async (userId: string, date: string) => {
 
 export const getDay = async (userId: Types.ObjectId | null, date: Date) => {
   try {
-    const response = await axios.post(`/api/dayRoute/${userId}`, {
-      date,
-    });
+    const response = await axios.post(`/api/dayRoute/${userId}`, {date});
     console.log("response: ", response);
     return response;
   } catch (error: unknown) {

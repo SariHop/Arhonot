@@ -5,15 +5,29 @@ import { Types } from "mongoose";
 
 export const apiUrl = "/api/";
 
-
 export const fetchOutfits = async (userId: Types.ObjectId) => {
     try {
         const response = await axios.get(`${apiUrl}outfitRoute/gallery/${userId.toString()}`);
-        //console.log("response:");
-        //console.log(response.data);
         return response.data
     } catch (error) {
         console.error("Failed to fetch outfits:", error);
+        if (axios.isAxiosError(error)) {
+          const serverError = error.response?.data?.error || "Unknown server error";
+          const status = error.response?.status || 501;
+    
+          if (status === 400) {
+            toast.error("שגיאה בקבלת נתונים בשרת, נסה שוב.");
+          } 
+          else if(status===500){
+            toast.error(`שגיאת שרת: ${serverError}`);
+          }
+          else{
+            toast.error("אירעה שגיאה לא צפויה בשרת");
+          }
+        } else {
+          toast.error(" אירעה שגיאה לא צפויה בעת טעינת הלוקים ");
+        }
+        throw error;
     }
 };
 
@@ -24,9 +38,19 @@ export async function updateOutfit(formData: IOutfitType, id:string) {
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const serverError = error.response?.data?.error || "Unknown server error";
-      toast.error(`Server Error: ${serverError}`);
+      const status = error.response?.status || 501;
+
+      if (status === 400) {
+        toast.error("שגיאה בקבלת נתונים בשרת, נסה שוב.");
+      } else if(status===404){
+        toast.error("הלוק לא נמצא במערכת")
+      } else if(status===500){
+        toast.error(`שגיאת שרת: ${serverError}`);
+      }else{
+        toast.error("אירעה שגיאה לא צפויה בשרת");
+      }
     } else {
-      toast.error("An unexpected error occurred");
+      toast.error(" אירעה שגיאה לא צפויה בעת עדכון הלוק");
     }
     throw error;
   }
@@ -39,29 +63,19 @@ export async function createOutfit(formData: IOutfitType) {
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const serverError = error.response?.data?.error || "Unknown server error";
-      toast.error(`Server Error: ${serverError}`);
+      const status = error.response?.status || 501;
+
+      if(status===500){
+        toast.error(`שגיאת שרת: ${serverError}`);
+      } else{
+        toast.error("אירעה שגיאה לא צפויה בשרת");
+      }
     } else {
-      toast.error("An unexpected error occurred");
+      toast.error("אירעה שגיאה לא צפויה בעת יצירת הלוק");
     }
     throw error;
   }
 }
-
-
-// export async function createOutfit(formData: IOutfitType) {
-//   try {
-//     const response = await axios.post(`${apiUrl}outfitRoute`, formData);
-//     return response.data.data;
-//   } catch (error: unknown) {
-//     if (axios.isAxiosError(error)) {
-//       const serverError = error.response?.data?.error || "Unknown server error";
-//       toast.error(`Server Error: ${serverError}`);
-//     } else {
-//       toast.error("An unexpected error occurred");
-//     }
-//     throw error;
-//   }
-// }
 
 export async function updateOutfitFavorite(outfitId: string, favorite: number) {
   try {
@@ -70,9 +84,19 @@ export async function updateOutfitFavorite(outfitId: string, favorite: number) {
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const serverError = error.response?.data?.error || "Unknown server error";
-      toast.error(`Server Error: ${serverError}`);
+      const status = error.response?.status || 501;
+
+      if (status === 400) {
+        toast.error("שגיאה בקבלת נתונים בשרת, נסה שוב.");
+      } else if(status===404){
+        toast.error("לוק זה לא נמצא במערכת")
+      } else if(status===500){
+        toast.error(`שגיאת שרת: ${serverError}`);
+      } else{
+        toast.error("אירעה שגיאה לא צפויה בשרת");
+      }
     } else {
-      toast.error("An unexpected error occurred");
+      toast.error(" אירעה שגיאה לא צפויה בעת עדכון הדירוג ללוק זה");
     }
     throw error;
   }

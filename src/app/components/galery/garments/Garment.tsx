@@ -8,7 +8,6 @@ import { FaBars, FaTrash, FaEdit } from "react-icons/fa";
 import { deleteGarment } from "@/app/services/garmentService";
 import CreateGarment from "../../createGarment/CreateGarment";
 import useGarments from "@/app/store/garmentsStore";
-import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
 const Garment = ({ garment, closeModal }: GarmentProps) => {
@@ -69,13 +68,7 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
       closeModal();
       toast.success("הבגד נמחק בהצלחה!");
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        const serverError =
-          error.response?.data?.error || "Unknown server error";
-        toast.error(`Server Error: ${serverError}`);
-      } else {
-        toast.error("An unexpected error occurred");
-      }
+      console.log("error accured while deleting garment: ", error)
     }
     setIsDeleting(false); // אחרי המחיקה, החזרת המצב הרגיל
   }

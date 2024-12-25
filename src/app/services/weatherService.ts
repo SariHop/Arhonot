@@ -34,6 +34,7 @@ export const fetchWeatherData = async () => {
 // פונקציה לחישוב הטמפרטורה המקסימלית ליום מסוים
 export const getMaxTemperatureForDate = (list: WeatherData[], targetDate: Date) => {
   // return 5;
+  try{
   const dailyForecasts = list.filter((entry) => {
     // חילוץ התאריך (ללא השעה) מהשדה dt_txt
     const date = entry.dt_txt.split(" ")[0];
@@ -49,9 +50,15 @@ export const getMaxTemperatureForDate = (list: WeatherData[], targetDate: Date) 
     return Math.max(max, entry.main.temp_max);
   }, -Infinity);
   return maxTemp;
+}catch(error){
+  console.log("error geting the max temperature: ", error);
+  toast.error("שגיאה בקבלת הטמפרטורה המקסימלית ליום המבוקש");
+  throw error;
+}
 };
 
 export const getMinTemperatureForDate = (list: WeatherData[], targetDate: Date) => {
+  try{
   const dailyForecasts = list.filter((entry) => {
     const date = entry.dt_txt.split(" ")[0];
     return date === targetDate.toISOString().split("T")[0];
@@ -66,10 +73,16 @@ export const getMinTemperatureForDate = (list: WeatherData[], targetDate: Date) 
     return Math.min(min, entry.main.temp_min); // שימוש במפתח temp_min
   }, Infinity); // ערך התחלתי חיובי אינסופי
   return minTemp;
+}catch(error){
+  console.log("error geting the min temperature: ", error);
+  toast.error("שגיאה בקבלת הטמפרטורה המינימלית ליום המבוקש");
+  throw error;
+}
 };
 
 
 export const getAverageTemperatureForDate = (list: WeatherData[], targetDate: Date) => {
+  try{
   const minTemp = getMinTemperatureForDate(list, targetDate);
   const maxTemp = getMaxTemperatureForDate(list, targetDate);
 
@@ -82,16 +95,19 @@ export const getAverageTemperatureForDate = (list: WeatherData[], targetDate: Da
   const maxTempNum = parseFloat(maxTemp.toString());
 
   return Math.round((minTempNum + maxTempNum) / 2);
+}catch(error){
+  console.log("error geting the average temperature: ", error);
+  toast.error("שגיאה בקבלת הטמפרטורה הממוצעת ליום המבוקש");
+}
 };
 
 export const fetchUserOutfits = async (userId: Types.ObjectId | null) => {
   try {
     const response = await axios.get(`${apiUrl}outfitRoute/userOutfits/${userId}`);
     return response.data.data;
-
   }
   catch (error) {
-    console.log("לא הצלחנו לגשת חנתוני הלוקים שלך");
+    console.log("לא הצלחנו לגשת לנתוני הלוקים שלך");
     throw error;
   }
 };

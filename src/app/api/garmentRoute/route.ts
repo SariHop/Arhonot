@@ -35,13 +35,13 @@ export async function POST(request: NextRequest) {
     const validTags = await fetchTags();
 
     if (!validSeasons.includes(body.season)) {
-      throw new Error("Invalid season value");
+      return NextResponse.json({ success: false, message:  "Invalid season value"},{ status: 400 });
     }
     if (!validCategories.includes(body.category)) {
-      throw new Error("Invalid category value");
+      return NextResponse.json({ success: false, message:  "Invalid category value"},{ status: 400 });
     }
     if (!body.tags.every((tag: string) => validTags.includes(tag))) {
-      throw new Error("Invalid tags value");
+      return NextResponse.json({ success: false, message:  "Invalid tag value"},{ status: 400 });
     }
     const newgarment = new Garment(body);
     
