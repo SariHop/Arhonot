@@ -78,14 +78,12 @@ export default function ResetPasswordPage() {
                 <p className="mt-4 text-green-500">
                     {message}
                 </p>
-
             )}
             {error && (
                 < p className="mt-4 text-red-500">
                     {error}
                 </p>
-            )
-            }
+            )}
         </div >
     );
 }

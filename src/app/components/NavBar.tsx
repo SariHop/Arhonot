@@ -10,7 +10,7 @@ import {
 import { Badge, Dropdown, MenuProps, message, Tooltip } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { initialize, useAlertsCounter } from "../store/alertsCounterStore";
+import useAlertsCounter, { initialize } from "../store/alertsCounterStore";
 import Image from "next/image";
 import useUser from "../store/userStore";
 
@@ -32,7 +32,7 @@ const NavBar = () => {
 
   const onClick: MenuProps["onClick"] = ({ key }) => {
     console.log(user._id);
-    
+
     router.push(`/pages/user/${key === "1" ? "garment_form" : "outfit_canvas"}`);
     message.info(`Click on item ${key}`);
   };
@@ -87,7 +87,7 @@ const NavBar = () => {
       {/* כפץתור הוספה מרכזי */}
       <Dropdown menu={{ items, onClick }} className="md:hidden">
         <a onClick={(e) => e.preventDefault()}>
-            <PlusOutlined className="text-2xl bg-blue-600 text-white p-2 rounded-full" />
+          <PlusOutlined className="text-2xl bg-blue-600 text-white p-2 rounded-full" />
 
         </a>
       </Dropdown>

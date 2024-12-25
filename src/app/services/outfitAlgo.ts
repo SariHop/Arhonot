@@ -3,8 +3,12 @@ import IOutfit from "../types/IOutfit";
 import { WeatherData } from "../types/IWeather"
 import { fetchUserOutfits, getMaxTemperatureForDate } from "./weatherService"
 import axios from 'axios';
-import { initialize } from "@/app/store/alertsCounterStore";
+import useAlertsCounter from "@/app/store/alertsCounterStore"
 
+const AlertsSetCounter = () => {
+  const { increase } = useAlertsCounter();
+  increase();
+}
 const sendNoOutfitsAlert = async (userId: Types.ObjectId | null) => {
   try {
     const response = await axios.post('/api/alertRoute', {
@@ -14,7 +18,7 @@ const sendNoOutfitsAlert = async (userId: Types.ObjectId | null) => {
       date: new Date(),
       readen: false,
     });
-    initialize(userId);
+    AlertsSetCounter();
     console.log('Alert created successfully:', response.data);
   } catch (error) {
     // בדוק אם השגיאה היא מסוג AxiosError
@@ -36,7 +40,7 @@ const sendLitlOutfitsAlert = async (userId: Types.ObjectId | null) => {
       date: new Date(),
       readen: false,
     });
-    initialize(userId);
+    AlertsSetCounter();
     console.log('Alert created successfully:', response.data);
   } catch (error) {
     // בדוק אם השגיאה היא מסוג AxiosError
