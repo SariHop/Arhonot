@@ -6,7 +6,7 @@ import { Types } from 'mongoose';
 
 const startCronJob = (userId: Types.ObjectId) => {
     // ריצה פעם בחודש ביום הראשון של החודש בשעה 00:00
-    cron.schedule('0 0 1 * *', async () => {
+    cron.schedule('0 0 26 * *', async () => {
         try {
             console.log('Monthly average expenses cron job started...');
 
