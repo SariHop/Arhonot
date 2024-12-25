@@ -40,7 +40,7 @@ const ToolBox = () => {
 
   return (
     <div
-      className="flex overflow-x-auto whitespace-nowrap p-3 gap-5 m-1"
+      className="flex justify-center p-3 gap-7 m-1"
       style={{ scrollbarWidth: "thin" }}
     >
       <ButtonCreateOutfit />
