@@ -2,15 +2,62 @@ import { Types } from "mongoose";
 import IOutfit from "../types/IOutfit";
 import { WeatherData } from "../types/IWeather"
 import { fetchUserOutfits, getMaxTemperatureForDate } from "./weatherService"
+import axios from 'axios';
+import { initialize } from "@/app/store/alertsCounterStore";
 
-export const recommendedLooks = async (list: WeatherData[], date: Date, userId: Types.ObjectId|null, sensitive: string) => {
+const sendNoOutfitsAlert = async (userId: Types.ObjectId | null) => {
+  try {
+    const response = await axios.post('/api/alertRoute', {
+      userId: userId, // הנח שהמשתנה userId קיים ומכיל את מזהה המשתמש
+      title: "נראה שלא יצרת עדיין לוקים",
+      desc: "נא ליצור לוקים על מנת שנוכל להתאים לך לבוש בהתאמה למזג האויר",
+      date: new Date(),
+      readen: false,
+    });
+    initialize(userId);
+    console.log('Alert created successfully:', response.data);
+  } catch (error) {
+    // בדוק אם השגיאה היא מסוג AxiosError
+    if (axios.isAxiosError(error)) {
+      console.error('Axios error creating alert:', error.response?.data || error.message);
+    } else {
+      // טיפל בשגיאות אחרות
+      console.error('Unknown error creating alert:', error);
+    }
+  }
+};
+
+const sendLitlOutfitsAlert = async (userId: Types.ObjectId | null) => {
+  try {
+    const response = await axios.post('/api/alertRoute', {
+      userId: userId, // הנח שהמשתנה userId קיים ומכיל את מזהה המשתמש
+      title: "כמות קטנה של לוקים",
+      desc: "לא נמצאו מספיק לוקים המתאימים למזג האויר, מומלץ לך להוסיף לוקים מותאמים כדי לאפשר לעצמך גיוון",
+      date: new Date(),
+      readen: false,
+    });
+    initialize(userId);
+    console.log('Alert created successfully:', response.data);
+  } catch (error) {
+    // בדוק אם השגיאה היא מסוג AxiosError
+    if (axios.isAxiosError(error)) {
+      console.error('Axios error creating alert:', error.response?.data || error.message);
+    } else {
+      // טיפל בשגיאות אחרות
+      console.error('Unknown error creating alert:', error);
+    }
+  }
+};
+
+
+export const recommendedLooks = async (list: WeatherData[], date: Date, userId: Types.ObjectId | null, sensitive: string) => {
   try {
     const dailyWeather = getMaxTemperatureForDate(list, date) || 15;
     console.log("daily weather", dailyWeather);
-    
     const outfits = await fetchUserOutfits(userId);
 
     if (!outfits || outfits.length === 0) {
+      sendNoOutfitsAlert(userId);
       throw new Error("No outfits found for the user");
     }
 
@@ -22,18 +69,18 @@ export const recommendedLooks = async (list: WeatherData[], date: Date, userId: 
 
     outfits.forEach((outfit: IOutfit & { appearanceCount: number }) => {
 
-        const { appearanceCount, ...rest } = outfit;
-        const { favorite, season, rangeWheather } = rest;
-        let suitableForWeather = 0;
+      const { appearanceCount, ...rest } = outfit;
+      const { favorite, season, rangeWheather } = rest;
+      let suitableForWeather = 0;
 
       if (dailyWeather >= hotLevel && rangeWheather <= 3) {
-        suitableForWeather = season === "קיץ" || season === "כללי"   ? 1 : 0;
+        suitableForWeather = season === "קיץ" || season === "כללי" ? 1 : 0;
       } else if (dailyWeather >= warmLevel && rangeWheather >= 2 && rangeWheather <= 4) {
-        suitableForWeather = season === "אביב" || season === "סתיו" || season === "כללי"? 1 : 0;
+        suitableForWeather = season === "אביב" || season === "סתיו" || season === "כללי" ? 1 : 0;
       } else if (dailyWeather >= coolLevel && rangeWheather > 4 && rangeWheather <= 5) {
-        suitableForWeather = season === "אביב" || season === "סתיו" || season === "כללי"? 1 : 0;
+        suitableForWeather = season === "אביב" || season === "סתיו" || season === "כללי" ? 1 : 0;
       } else if (dailyWeather < coolLevel && rangeWheather >= 5) {
-        suitableForWeather = season === "חורף" || season === "כללי"? 1 : 0;
+        suitableForWeather = season === "חורף" || season === "כללי" ? 1 : 0;
       } else {
         return []; // לא מתאים למזג האוויר הנוכחי
       }
@@ -42,13 +89,16 @@ export const recommendedLooks = async (list: WeatherData[], date: Date, userId: 
       rateOutfits.push({ rate, outfit: rest as IOutfit });
     });
     console.log(rateOutfits);
-    
+
     // מיון לפי ציון ודירוג חמשת המובילים
     const topOutfits = rateOutfits.sort((a, b) => b.rate - a.rate).slice(0, 5).map(({ outfit }) => outfit); // מחזירים רק את האאוטפיטים
-
+    if (topOutfits.length < 5) {
+      sendLitlOutfitsAlert(userId);
+    }
     return topOutfits;
   } catch (error) {
     console.error("Error in recommendedLooks function:", error);
+    sendNoOutfitsAlert(userId);
     throw new Error("Failed to get recommended looks");
   }
 };

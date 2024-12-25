@@ -4,6 +4,7 @@ import User from "@/app/lib/models/userSchema";
 // import { validateCity } from "@/app/api/userRoute/route";
 import bcrypt from "bcrypt";
 import { Types } from "mongoose";
+import Alert from "@/app/lib/models/alertSchema";
 
 export async function POST(request: NextRequest) {
   try {
@@ -41,7 +42,25 @@ export async function POST(request: NextRequest) {
     const newUser = new User(updatedBody);
     await newUser.validate();
     const savedUser = await newUser.save();
+    const formattedDesc = "אנחנו כאן כדי לעזור לך לבחור את הלוק המושלם לכל יום, בהתאמה למזג האוויר! בין אם השמש זורחת או שמיים מעוננים, אנחנו נספק לך את ההמלצות הכי טרנדיות ונוחות לפי תחזית מזג האוויר באזור שלך.\nהתחל לחקור ולהתלבש בהתאם למזג האוויר – כי כל יום הוא הזדמנות חדשה לבלות בו בסטייל!";
+    const welcomeAlert = new Alert({
+      userId: savedUser._id,
+      title: "ברוך הבא לארעונות! 🌤️👗",
+      desc: formattedDesc,
+      date: new Date(),
+      readen: false
+    });
+    welcomeAlert.save();
 
+    const desc = "חשבון מקושר נוסף בהצלחה";
+    const alert = new Alert({
+      userId: creatorId,
+      title: "חשבון מקושר נוסף בהצלחה",
+      desc,
+      date: new Date(),
+      readen: false
+    });
+    alert.save();
     // חיפוש לשם עדכון משתמש מקורי
     const creator = await User.findById(originUserId);
     if (!creator) {
