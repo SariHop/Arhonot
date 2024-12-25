@@ -30,7 +30,7 @@ export default function SwipeableEdgeDrawer() {
           height={200}
           className="w-full h-auto rounded-lg mb-4"
         />
-        <p className="text-sm text-gray-700">add a look to selected day</p>
+        <p className="text-sm text-gray-700">הוספת לוק חדש</p>
       </div>
 
       {/* ה-SwipeableDrawer */}

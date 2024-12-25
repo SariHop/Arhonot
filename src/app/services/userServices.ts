@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useOriginUser from "@/app/store/originUserStore";
 import { Types } from "mongoose";
+import useAlertsCounter from "@/app/store/alertsCounterStore"
 
 export const apiUrl = "/api/userRoute";
 
@@ -205,7 +206,7 @@ export const logout = async (): Promise<void> => {
   }
 };
 //פונקציה לעדכון פרטי משתמש
-export const updateUser = async (_id: Types.ObjectId|null, body: object) => {
+export const updateUser = async (_id: Types.ObjectId | null, body: object) => {
   const { setUser } = useUser.getState();
   const { setOriginUser } = useOriginUser.getState();
 
@@ -231,12 +232,16 @@ export const updateUser = async (_id: Types.ObjectId|null, body: object) => {
   }
 };
 
+const AlertsSetCounter = () => {
+  const { increase } = useAlertsCounter();
+  increase();
+}
 export const createSubAccont = async (formData: IUserType) => {
-  const { _id: creatorId,  email: creatorEmail, } =  useOriginUser.getState();
-  console.log(creatorId,'creatorId',creatorEmail,'creatorEmail' );
-  
+  const { _id: creatorId, email: creatorEmail, } = useOriginUser.getState();
+  console.log(creatorId, 'creatorId', creatorEmail, 'creatorEmail');
+
   try {
-    if (!creatorEmail||creatorEmail==="") {
+    if (!creatorEmail || creatorEmail === "") {
       return { success: false, message: "האימייל של המשתמש המקורי לא נמצא", status: 400 };
     }
     const enteredPassword = prompt("אנא הזן את סיסמתך לאימות:");
@@ -249,6 +254,7 @@ export const createSubAccont = async (formData: IUserType) => {
       password: encryptedPassword,
     });
     if (authResponse.status !== 200 && authResponse.status !== 201) {
+      AlertsSetCounter();
       return { success: false, message: "אימות הסיסמה נכשל", status: authResponse.status };
     }
     const encryptedNewPassword = await hashPassword(formData.password);
@@ -286,12 +292,12 @@ export const createSubAccont = async (formData: IUserType) => {
   }
 };
 //פונקציה לחיפוש משתמש עפ"י מייל
-export const getUserByEmail = async (emailInput:string)=>{
+export const getUserByEmail = async (emailInput: string) => {
 
   try {
     const response = await axios.get(`${apiUrl}/searchRoute/${emailInput}`
     );
-    return response.data.data; 
+    return response.data.data;
   } catch (error) {
     console.error("שגיאה בחיפוש משתמש:", error);
     return null;
