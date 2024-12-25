@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { fetchUsersConnectionReq } from '../services/ConnectionsServices';
 import { fetchUserAlerts } from '../services/AlertsServices';
 import { Types } from 'mongoose';
+import { toast } from 'react-toastify';
 
 type AlertsCounterStore = {
   alertsCounter: number;
@@ -33,6 +34,7 @@ export const initialize = async (userId: Types.ObjectId | null) => {
       "Error fetching alerts:",
       error || "Invalid response format"
     );
+    toast.error("שגיאה בטעינת הודעות משתמש");
     useAlertsCounter.getState().setAlertsCounter(0); // ברירת מחדל במקרה של שגיאה
   }
 };

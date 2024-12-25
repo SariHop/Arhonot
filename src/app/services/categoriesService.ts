@@ -1,5 +1,6 @@
 'use server'
 import axios from "axios";
+import { toast } from "react-toastify";
 
 
 
@@ -12,7 +13,8 @@ export const fetchSeasons = async () => {
         return response.data.seasons;
     } catch (error) {
         console.error("Error getting seasons:", error);
-        throw error;
+        toast.error("שגיאה בקבלת עונות");
+        return [];
     }
 };
 
@@ -23,7 +25,8 @@ export const fetchTypes =async () => {
         return response.data.types;
     } catch (error) {
         console.error("Error getting types:", error);
-        throw error;
+        toast.error("שגיאה בקבלת קטגוריות לבוש");
+        return [];
     }
 }
 
@@ -34,19 +37,19 @@ export const fetchTags =async () => {
         return response.data.tags;
     } catch (error) {
         console.error("Error getting tags:", error);
-        throw error;
+        toast.error("שגיאה בקבלת תגיות");
+        return [];
     }
 }
 
 
 export const fetchCities =async () => {
     try {
-        const response = await axios.get(`${apiUrl}/cities`);
-        console.log("okkkkkkkk");
-        
+        const response = await axios.get(`${apiUrl}/cities`);        
         return response.data.cities;
     } catch (error) {
         console.error("Error getting cities:", error);
-        throw error;
+        toast.error("שגיאה בקבלת ערי ישראל");
+        return [];
     }
 }

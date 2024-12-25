@@ -9,22 +9,23 @@ export async function POST(request: NextRequest) {
     await connect(); // חיבור לבסיס הנתונים
     const { userId, date }: { userId: string; date: Date } = await request.json();
     console.log(date);
+    if(!userId || !date)
+      return NextResponse.json({success: false ,message: "שגיאה בקבלת נתונים" }, { status: 400 });
+
     // מציאת הילדים של המשתמש
     const user = await User.findById(userId)
       .select("children")
       .populate<{ children: { _id: Types.ObjectId; userName: string }[] }>("children", "userName"); // הגדרת טיפוס מותאם
 
     if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+      return NextResponse.json({success:false,  message: "User not found" }, { status: 404 });
     }
 
     const childrenIds: string[] = user.children.map((child) => String(child._id));
     // הגדרת תחום התאריכים לאותו יום
     const startDate = new Date(date);
-    // startDate.setDate(startDate.getDate() + 1)
     startDate.setUTCHours(0, 0, 0, 0); // תחילת היום
     const endDate = new Date(date);
-    // endDate.setDate(endDate.getDate() + 1)
     endDate.setUTCHours(23, 59, 59, 999); // סוף היום
     console.log(startDate)
     console.log(endDate)
@@ -33,9 +34,8 @@ export async function POST(request: NextRequest) {
     const days = await Day.find({
       userId: { $in: childrenIds }, // מציאת ימים ששייכים לילדים
       date: { $gte: startDate, $lte: endDate }, // סינון לפי תאריך
-    })
-      .populate("looks") // מביא את המידע על הלוקים
-      .lean(); // מחזיר אובייקטים פשוטים שניתן לערוך      
+    }).populate("looks") .lean();
+
     // הוספת שמות הילדים לאובייקטים של days
     const childrenMap = new Map(
       user.children.map((child) => [String(child._id), child.userName])

@@ -5,12 +5,13 @@ import { Types } from "mongoose";
 import { getMinTemperatureForDate, getMaxTemperatureForDate } from "./weatherService"
 import { WeatherData } from "../types/IWeather";
 import { AxiosError } from 'axios';
+import { toast } from "react-toastify";
 
+//קבלת כל הלוקים ש המשתמש לחודש זה
 export const userLooks = async (month: number, year: number, userId: Types.ObjectId | null) => {
   try {
     const response = await axios.post(`/api/dayRoute/daysOutfits/`, { userId: userId, month, year });
     const days: IDayWithLooks[] = response.data;
-    console.log(response)
     const daysMap: Record<string, IDayWithLooks> = {};
 
     days.forEach((day: IDayWithLooks) => {
@@ -21,11 +22,25 @@ export const userLooks = async (month: number, year: number, userId: Types.Objec
     return daysMap;
   } catch (error: unknown) {
     console.error("Failed to process user looks:", error);
+    if (axios.isAxiosError(error)) {
+      const serverError = error.response?.data?.error || "Unknown server error";
+      const status = error.response?.status || 501;
+
+      if (status === 400) {
+        toast.error("שגיאה בקבלת נתונים בשרת, נסה שוב.");
+      } else if(status===500){
+        toast.error(`שגיאת שרת: ${serverError}`);
+      }
+    } else {
+      toast.error(" אירעה שגיאה לא צפויב בעת טעינת לוקים לחודש זה");
+    }
     throw error;
   }
 };
 
 
+
+//קבלת לוקים של הילדים ליום מסויים
 export const getChildrenLooks = async (userId: string, date: string) => {
   try {
     const response = await axios.post(`/api/outfitRoute/childrensOutfits/`, {
@@ -44,6 +59,20 @@ export const getChildrenLooks = async (userId: string, date: string) => {
     return result;
   } catch (error: unknown) {
     console.error("Failed to fetch childrens looks:", error);
+    if (axios.isAxiosError(error)) {
+      const serverError = error.response?.data?.error || "Unknown server error";
+      const status = error.response?.status || 501;
+
+      if (status === 400) {
+        toast.error("שגיאה בקבלת נתונים בשרת, נסה שוב.");
+      } else if(status===404){
+        toast.error("משתמש זה לא נמצא במערכת")
+      } else if(status===500){
+        toast.error(`שגיאת שרת: ${serverError}`);
+      }
+    } else {
+      toast.error(" אירעה שגיאה לא צפויה בעת טעינת לוקים לחברים ליום זה");
+    }
     throw error;
   }
 };
