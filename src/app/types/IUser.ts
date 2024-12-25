@@ -1,5 +1,4 @@
-
-import mongoose, { Document, Types } from "mongoose";
+import { Document, Types } from "mongoose";
 import { z } from 'zod'
 import { fetchCities } from '../services/categoriesService';
 export default interface IUser extends Document {
@@ -15,7 +14,7 @@ export default interface IUser extends Document {
 }
 
 export interface IToken extends Document {
-    userId: mongoose.Types.ObjectId; // מצביע על ה-ObjectId של משתמש
+    userId: Types.ObjectId; // מצביע על ה-ObjectId של משתמש
     token: string;
     createdAt: Date;
 }
@@ -98,6 +97,8 @@ export const updateUserSchemaZod = z.object(userSchemaZod._def.schema.shape).omi
     password: true,
     confirmPassword: true,
 });
+
+//לבדוק כפילויות של טיפוסים
 
 // טיפוס ליצירת משתמש (ללא _id ועם שדות נדרשים בלבד)
 // export type CreateUserType = Omit<IUser, "_id"/* | "children" */>;

@@ -4,7 +4,7 @@ import useUser from "@/app/store/userStore";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useOriginUser from "@/app/store/originUserStore";
-import { Types } from "mongoose";
+import { ObjectId, Types } from "mongoose";
 
 export const apiUrl = "/api/userRoute";
 
@@ -396,3 +396,17 @@ export const getUserByEmail = async (emailInput: string) => {
     return null;
   }
 };
+
+export const getUser= async(userId: Types.ObjectId)=>{
+  try{
+    const response=await axios.get(`${apiUrl}/${userId}`);
+    console.log('response.data',response.data);
+    console.log('response.data.data',response.data.data);
+
+    
+    return response.data;
+  }catch(error){
+    console.error('שגיאה בחיפוש משתמש: ',error);
+    return null;
+  }
+}

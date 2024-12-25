@@ -197,8 +197,8 @@ export const createNewConnectionRequest = async (
 };
 
 export const removeConnectionRequest = async (
-  userIdSender: string,
-  userIdToRemove: string
+  senderId: Types.ObjectId,
+  receiverId: string /*| null*/
 ) => {
   try {
     const { _id: userId } = useUser.getState();
@@ -209,22 +209,20 @@ export const removeConnectionRequest = async (
       if (!originUserData.success) {
         return originUserData;
       }
-      console.log(userIdSender, "userIdSender", userIdToRemove, "userIdToRemove");
+      console.log(senderId, "userIdSender", receiverId, "userIdToRemove");
 
-      const response = await axios.put(`/api/connectionRequestRoute/userConnectionRequests/${userIdSender}`, { userIdToRemove }
-      );
+      const response = await axios.put(`/api/connectionRequestRoute/userConnectionRequests`, null, {
+        params: { sender: senderId, receiver: receiverId },
+      });
       if (response.status == 200) {
-        const sender2 = response.data.existSender;
-        const receiver2 = response.data.existRemove;
-        if (userId?.toString() === userIdSender.toString()) {
-          useUser.getState().updateChildren(sender2.children); // עדכון useUser
-          useOriginUser.getState().updateChildren(sender2.children); // עדכון useOriginUser
-        } else if (userId?.toString() === userIdToRemove.toString()) {
-          useUser.getState().updateChildren(receiver2.children); // עדכון useUser
-          useOriginUser.getState().updateChildren(receiver2.children); // עדכון useOriginUser
-          console.log("User state after updateRequestStatus:",useUser.getState());
-          console.log("Origin user state after updateRequestStatus:",useOriginUser.getState());
+        const updatedSender = response.data?.data?.updatedSender;
+        if (!updatedSender) {
+          console.error("שגיאה: הנתונים שחזרו מהשרת אינם כוללים את updatedSender");
+          return { success: false, message: "נתונים חסרים מהשרת", status: 500 };
         }
+        useUser.getState().updateChildren(updatedSender.children);
+        useOriginUser.getState().updateChildren(updatedSender.children);
+      
         return response.data;
       } else {
         console.error("שגיאה לא צפויה, סטטוס:", response.status);

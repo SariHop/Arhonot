@@ -18,7 +18,7 @@ export async function GET(
         { status: 400 }
       );
     }
-    const user = await User.findById(_id);
+    const user = await User.findById(_id).populate("children");
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
