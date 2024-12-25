@@ -1,6 +1,6 @@
 "use client";
 import {Divider } from "antd";
-import { useAlertsCounter } from "@/app/store/alertsCounterStore";
+import useAlertsCounter from "@/app/store/alertsCounterStore";
 import useUser from "@/app/store/userStore";
 import ConnectionReq from "@/app/components/alerts/ConnectionReq";
 import Alert from "@/app/components/alerts/Alert";
