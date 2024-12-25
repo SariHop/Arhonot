@@ -236,7 +236,7 @@ const AlertsSetCounter = () => {
   const { increase } = useAlertsCounter();
   increase();
 }
-export const reateSubAccont = async (formData: IUserType) => {
+export const createSubAccont = async (formData: IUserType) => {
   const { _id: creatorId, email: creatorEmail, } = useOriginUser.getState();
   console.log(creatorId, 'creatorId', creatorEmail, 'creatorEmail');
 
