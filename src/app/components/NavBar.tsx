@@ -97,7 +97,7 @@ const NavBar = () => {
     <div className="bg-white left-0 w-full border-t-2 h-[10vh] flex justify-between lg:justify-around items-center shadow-md pr-6 pl-6">
       {/* פרטי משתמש */}
       <Tooltip title="פרטי משתמש">
-        <div>
+        <div className="flex items-center text-3xl hover:text-blue-600 gap-1">
           <UserOutlined
             className="text-3xl hover:text-blue-600"
             onClick={() => router.push("/pages/user/personal_area")}
@@ -112,7 +112,7 @@ const NavBar = () => {
 
       {/* גלריה */}
       <Tooltip title="גלריה">
-        <div>
+        <div className="flex items-center text-3xl hover:text-blue-600 gap-1">
           <ProductOutlined
             className="text-3xl hover:text-blue-600"
             onClick={() => router.push("/pages/user/gallery")}
@@ -137,24 +137,24 @@ const NavBar = () => {
       {isLargeScreen && (
         <Tooltip title="הוסף בגד">
           <div
-            className="flex items-center text-3xl hover:text-blue-600 gap-2"
+            className="flex items-center text-3xl hover:text-blue-600 gap-1"
             onClick={() => router.push("/pages/user/garment_form")}
           >
             <SkinOutlined />
             <PlusOutlined className="text-base" />
+            {isLargeScreen && (
+              <span className="text-base ml-2">
+                הוסף בגד
+              </span>
+            )}
           </div>
-          {isLargeScreen && (
-            <span className="text-base ml-2">
-              הוסף בגד
-            </span>
-          )}
         </Tooltip>
       )}
 
       {/* צור לבוש */}
       {isLargeScreen && (<Tooltip title="צור לבוש">
         <div
-          className="flex items-center text-3xl hover:text-blue-600 gap-2"
+          className="flex items-center text-3xl hover:text-blue-600 gap-1"
           onClick={() => router.push("/pages/user/outfit_canvas")}
         >
           <SkinOutlined />
@@ -167,18 +167,18 @@ const NavBar = () => {
             height={50}
           />
           <PlusOutlined className="text-base" />
+          {isLargeScreen && (
+            <span className="text-base ml-2">
+              צור לבוש
+            </span>
+          )}
         </div>
-        {isLargeScreen && (
-          <span className="text-base ml-2">
-            צור לבוש
-          </span>
-        )}
       </Tooltip>
       )}
 
       {/* לוח שנה   */}
       <Tooltip title="לוח">
-        <div>
+        <div className="flex items-center text-3xl hover:text-blue-600 gap-1">
           <CalendarOutlined
             className="text-3xl hover:text-blue-600"
             onClick={() => router.push("/pages/user/calendar")}
@@ -193,7 +193,7 @@ const NavBar = () => {
 
       {/* התראות */}
       <Tooltip title="התראות">
-        <div>
+        <div className="flex items-center text-3xl hover:text-blue-600 gap-1">
           <Badge
             size="default"
             color="gold"
