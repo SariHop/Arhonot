@@ -47,8 +47,8 @@ const Gallery = ({ viewMode }: { viewMode: ("view" | "createOtfit" | "selectForD
     };
     fetchGarmentsFromServices();
     fetchOutfitsFromServices();
-  }, [_id,setOutfits,setGarments]);
-  if (loading) return <p>Loading...</p>;
+  }, [_id, setOutfits, setGarments]);
+  if (loading) return <p>מחפש...</p>;
   if (viewMode === "createOtfit") {
     return (
       <>
@@ -70,7 +70,7 @@ const Gallery = ({ viewMode }: { viewMode: ("view" | "createOtfit" | "selectForD
     )
   }
   return (
-    <div className="mt-10">
+    <div>
       < GaleryHeader activeTab={activeTab} setActiveTab={setActiveTab} isForOutfit={false} />
       {activeTab === "garments" ? <GarmentsGallery isForOutfit={false} /> : <OutfitsGallary isSelectForDay={false} />}
     </div>

@@ -108,8 +108,8 @@ const SignUp = () => {
   };
   
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading cities {String(error)}</div>;
+  if (isLoading) return <div>מחפש...</div>;
+  if (error) return <div>שגיאה בטעינת ערים {String(error)}</div>;
 
   const cityOptions: DefaultOptionType[] = (cities || []).map(
     (city: string) => ({

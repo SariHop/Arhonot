@@ -33,23 +33,23 @@ const Layout = ({ children }: Readonly<{ children: React.ReactNode; }>) => {
 
   // token
   return (
-    <div className="min-h-[100dvh] grid grid-rows-[auto,1fr,auto] grid-cols-[minmax(0,1fr)]">
-
+    <div className="min-h-[100dvh] grid grid-rows-[auto,1fr,auto] lg:grid-rows-[auto,1fr] grid-cols-[minmax(0,1fr)]">
       {/* Header */}
-      <div className="sticky top-0 z-50 ">
+      <div className="sticky top-0 z-50">
         <HeaderArhonot />
       </div>
 
-      {/* Body */}
-      {children}
-
-      {/* Footer */}
-      <div className="sticky bottom-0">
+      {/* NavBar */}
+      <div className="sticky bottom-0 z-40 bg-white shadow-lg lg:fixed lg:top-[calc(100px)] lg:left-0 lg:right-0 lg:h-[50px]">
         <NavBar />
       </div>
 
+      {/* Body */}
+      <div className="row-start-2 lg:mt-[calc(80px)]">
+        {children}
+      </div>
     </div>
-  )
+  );
 }
 
 export default Layout

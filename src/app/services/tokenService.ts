@@ -9,8 +9,7 @@ export const checkTokenValidity = async (): Promise<boolean> => {
         if (response.status === 200) {
             return true;
         }
-        localStorage.removeItem('originUser');
-        localStorage.removeItem('user');
+        localStorage.clear();
         return false;
 
     } catch (error) {
