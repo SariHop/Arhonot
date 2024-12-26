@@ -4,7 +4,7 @@ import { fabric } from "fabric";
 import ShowGallery from "@/app/components/createOutfit/ShowGallery";
 import ToolBox from "@/app/components/createOutfit/toolBox/ToolBox";
 import useCanvasStore from "@/app/store/canvasStore";
-import { useRouter } from "next/navigation";
+import HomePageNavigathion from "./HomePageNavigathion";
 
 // אובייקט של הקנבס נשמר דרך זוסטנד בלוקלסטורג
 // משום מה בטעינה מחדש של העמוד הקריאה יוסאפקט ניטענת פעמיים, כנראה קשור לריאקט
@@ -26,10 +26,8 @@ import { useRouter } from "next/navigation";
 
 const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const { setCanvas, canvas } = useCanvasStore();
+  const { setCanvas, canvas, setSelectedObject } = useCanvasStore();
   const [canvasFromLocacl, setCanvasFromLocacl] = useState(null);
-
-  const router = useRouter()
 
   const getCanvasfromlocaStorage = () => {
     const savedCanvas = localStorage.getItem("canvas-store");
@@ -42,29 +40,6 @@ const Canvas = () => {
     }
     return null;
   };
-
-  // const getCanvasfromlocaStorage = () => {
-  //   const savedCanvas = localStorage.getItem("canvas-store");
-  //   if (savedCanvas) {
-  //     const savedCanvasObj = JSON.parse(savedCanvas);
-
-  //     // בדיקה שיש לעריכה
-  //     if (savedCanvasObj.state.editOutfit) {
-  //        //עריכת לוק
-  //       const canvasJsonEdit = savedCanvasObj.state.editOutfit.canvasJSON
-  //       if (canvasJsonEdit && canvasJsonEdit.objects.length > 0) {
-  //         return canvasJsonEdit
-  //       }
-  //     } else {
-  //       // יצירת לוק
-  //       const canvasJSON = savedCanvasObj.state.canvasJSON
-  //       if (canvasJSON && canvasJSON.objects.length > 0) {
-  //         return canvasJSON
-  //       }
-  //     }
-  //   }
-  //   return null;
-  // };
 
   useEffect(() => {
     // Calculate width of the canvas based on the window size
@@ -93,7 +68,7 @@ const Canvas = () => {
         initCanvas.dispose();
       };
     }
-  }, [setCanvas]);
+  }, [setCanvas, setSelectedObject]);
 
 
   useEffect(() => {
@@ -111,23 +86,25 @@ const Canvas = () => {
             savedCanvasObj.state.canvasJSON = canvasFromLocacl
             localStorage.setItem("canvas-store", JSON.stringify(savedCanvasObj))
             // צריך לתפוס שגיאות בעדכון הלוקל?
+            setSelectedObject(null)
           }
         },
         );
       }
     };
-  }, [canvas, canvasFromLocacl]);
+  }, [canvas, canvasFromLocacl, setSelectedObject]);
 
   return (
     <div className="flex flex-col justify-center mt-3">
-      <button onClick={() => { router.push(`/pages/user`) }}>חזרה לדף הבית</button>
+
+     <HomePageNavigathion/>
+
       <div className="bg-white">
         <ShowGallery />
         <ToolBox />
       </div>
 
-      <div className="bg-checkered-pattern flex justify-center items-center gap-5 p-7
-       flex-col">
+      <div className="bg-checkered-pattern flex justify-center items-center gap-5 p-7 flex-col">
         <canvas key="canvas" id="canvas" ref={canvasRef} className="shadow-lg max-w-full h-0 w-0" />
       </div>
     </div>

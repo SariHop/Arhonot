@@ -8,6 +8,8 @@ import IOutfit from "../types/IOutfit";
 type CanvasStore = {
   canvas: fabric.Canvas | null;
   setCanvas: (canvas: fabric.Canvas | null) => void;
+  OpenGallery: boolean,
+  toggleOpenGallery: (flag: boolean) => void,
   garments: string[];
   addGarment: (garmentId: string) => void;
   deleteGarment: (garmentId: string) => void;
@@ -16,7 +18,7 @@ type CanvasStore = {
   setSelectedObject: (obj: fabric.Object | null) => void;
   editOutfit: IOutfit | null;
   canvasUrl: string
-  setCanvasurl: (url:string) => void
+  setCanvasurl: (url: string) => void
   setEditOutfit: (outfit: IOutfit | null) => void;
   loadImage: (garmentURL: string, garmentId: string) => Promise<void>;
   addImageToCanvasFromGallery: (garmentURL: string, garmentId: string | unknown) => Promise<void>;
@@ -28,6 +30,9 @@ const useCanvasStore = create<CanvasStore>()(
       // קנבס
       canvas: null,
       setCanvas: (canvas: fabric.Canvas | null) => set({ canvas }),
+      // הצג גלריה
+      OpenGallery: false, // הצגת גלריה
+      toggleOpenGallery: (flag: boolean) => set({ OpenGallery:flag }),
       // מערך בגדים נבחרים
       garments: [],
       addGarment: (garmentId: string) => {
@@ -92,6 +97,7 @@ const useCanvasStore = create<CanvasStore>()(
         try {
           await get().loadImage(garmentURL, garmentId);
           get().addGarment(garmentId);
+          get().toggleOpenGallery(false)
         } catch (error) {
           console.error("Failed to load image:", error);
         }
@@ -100,7 +106,7 @@ const useCanvasStore = create<CanvasStore>()(
     {
       name: "canvas-store",
       partialize: (state) => ({
-        canvasUrl:state.canvasUrl,
+        canvasUrl: state.canvasUrl,
         garments: state.garments,
         editOutfit: state.editOutfit,
         canvasJSON: state.canvas?.toJSON(["garmentId"])

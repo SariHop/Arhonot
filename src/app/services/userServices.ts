@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useOriginUser from "@/app/store/originUserStore";
 import { Types } from "mongoose";
+import useAlertsCounter from "@/app/store/alertsCounterStore"
 
 export const apiUrl = "/api/userRoute";
 
@@ -313,23 +314,34 @@ export const updateUser = async (_id: Types.ObjectId | null, body: object) => {
     throw error;
   }
 };
-
-//יצירת חשבון בן חדש
-export const createSubAccount = async (formData: IUserType) => {
+const AlertsSetCounter = () => {
+  const { increase } = useAlertsCounter();
+  increase();
+}
+export const createSubAccont = async (formData: IUserType) => {
+  const { _id: creatorId,  email: creatorEmail, } =  useOriginUser.getState();
+  console.log(creatorId,'creatorId',creatorEmail,'creatorEmail' );
+  
   try {
-    const { _id: userId2 } = useUser.getState();
-    const { _id: originUserId2 } = useOriginUser.getState();
+    if (!creatorEmail||creatorEmail==="") {
+      return { success: false, message: "האימייל של המשתמש המקורי לא נמצא", status: 400 };
+    }
+    const enteredPassword = prompt("אנא הזן את סיסמתך לאימות:");
+    if (!enteredPassword) {
+      return { success: false, message: "האימות בוטל על ידי המשתמש", status: 401 };
+    }
+    const encryptedPassword = await hashPassword(enteredPassword);
+    const authResponse = await axios.post("/api/signIn", {
+      email: creatorEmail,
+      password: encryptedPassword,
+    });
+    if (authResponse.status !== 200 && authResponse.status !== 201) {
+      return { success: false, message: "אימות הסיסמה נכשל", status: authResponse.status };
+    }
 
-    if (userId2?.toString() === originUserId2?.toString()) {
-      // השגת נתוני ה־creator ואימות הסיסמה
-      const originUserData = await getOriginUserDataWithAuthentication();
-      if (!originUserData.success) {
-        return originUserData;
-      }
+    AlertsSetCounter();
 
-      const { originUserId } = originUserData.data!;
-      // הצפנת סיסמה חדשה
-      const encryptedNewPassword = await hashPassword(formData.password);
+    const encryptedNewPassword = await hashPassword(formData.password);
 
       // הכנת הנתונים ליצירת חשבון משני
       const { confirmPassword, ...rest } = formData;
@@ -385,6 +397,7 @@ export const createSubAccount = async (formData: IUserType) => {
 
 //פונקציה לחיפוש משתמש עפ"י מייל
 export const getUserByEmail = async (emailInput: string) => {
+
   try {
     const response = await axios.get(`${apiUrl}/searchRoute/${emailInput}`);
     return response.data.data;

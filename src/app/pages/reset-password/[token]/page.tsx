@@ -69,10 +69,10 @@ const ResetPasswordPage: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white shadow-md rounded px-8 py-6 max-w-md w-full">
-        <h2 className="text-xl font-bold mb-4">Reset Password</h2>
+        <h2 className="text-xl font-bold mb-4">שחזור סיסמא</h2>
         {success ? (
           <div className="text-green-500">
-            Your password has been reset successfully! You can now log in.
+            הסיסמא שונתה בהצלחה, את/ה יכול/ה להתחבר עכשיו עם הסיסמא החדשה
             <br />
             <button
               onClick={() => window.location.href = '/pages/signin'} // כאן אתה מפנה את המשתמש לדף ההתחברות

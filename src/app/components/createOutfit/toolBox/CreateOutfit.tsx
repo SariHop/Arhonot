@@ -23,7 +23,7 @@ const ButtonCreateOutfit = () => {
     }
 
     return (
-        <div>
+        <div className='my-auto '>
             <Button
                 variant="contained"
                 disabled={garments.length === 0}

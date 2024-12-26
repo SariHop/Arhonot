@@ -8,6 +8,7 @@ import Image from 'next/image'
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import Gallery from '../galery/Galery';
 import { Tooltip } from '@mui/material';
+import useCanvasStore from "@/app/store/canvasStore";
 
 const drawerBleeding = 85
 
@@ -22,11 +23,7 @@ const Puller = styled('div')(() => ({
 }));
 
 export default function SwipeableEdgeDrawer() {
-  const [open, setOpen] = React.useState(false);
-
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
-  };
+  const {toggleOpenGallery, OpenGallery  } = useCanvasStore();
 
   return (
     <div className='h-full'>
@@ -39,15 +36,15 @@ export default function SwipeableEdgeDrawer() {
         }}
       />
       <Box sx={{ textAlign: 'center' }}>
-        <Button onClick={toggleDrawer(true)}>
+        <Button size="large" variant="outlined" sx={{width: "100%", borderRadius:"0", padding:"3"}} onClick={()=>{toggleOpenGallery(true)}}>
           לחץ כאן כדי לפתוח את הגלריה ולהוסיף פריטים ללוק
         </Button>
       </Box>
       <SwipeableDrawer
         anchor="bottom"
-        open={open}
-        onClose={toggleDrawer(false)}
-        onOpen={toggleDrawer(true)}
+        open={OpenGallery}
+        onClose={()=>{toggleOpenGallery(false)}}
+        onOpen={()=>{toggleOpenGallery(true)}}
         swipeAreaWidth={drawerBleeding}
         disableSwipeToOpen={false}
         ModalProps={{
@@ -71,7 +68,7 @@ export default function SwipeableEdgeDrawer() {
 
             }}
             className='shadow-inner'
-            onClick={toggleDrawer(false)}
+            onClick={()=>{toggleOpenGallery(false)}}
           >
             <Puller />
             <div className="m-4 flex justify-center items-center">
@@ -87,7 +84,7 @@ export default function SwipeableEdgeDrawer() {
           </div>
         </Tooltip>
 
-        <div style={{ padding: 2, paddingTop: 0, overflow: 'auto' }} className='bg-white'>
+        <div style={{paddingBottom:'5%', overflow: 'auto' }} className='bg-white'>
           <Gallery viewMode={"createOtfit"} />
         </div>
 

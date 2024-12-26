@@ -10,7 +10,7 @@ type AlertsCounterStore = {
   decrease: () => void;
 };
 
-export const useAlertsCounter = create<AlertsCounterStore>((set) => ({
+const useAlertsCounter = create<AlertsCounterStore>((set) => ({
   alertsCounter: 0,
   setAlertsCounter: (count: number) => set({ alertsCounter: count }),
   increase: () => set((state) => ({ alertsCounter: state.alertsCounter + 1 })),
@@ -36,3 +36,4 @@ export const initialize = async (userId: Types.ObjectId | null) => {
     useAlertsCounter.getState().setAlertsCounter(0); // ברירת מחדל במקרה של שגיאה
   }
 };
+export default useAlertsCounter;
