@@ -266,9 +266,6 @@ export const updateUser = async (_id: Types.ObjectId | null, body: object) => {
   try {
     const { _id: userId } = useUser.getState();
     const { _id: originUserId } = useOriginUser.getState();
-    console.log("userId:", userId);
-    console.log("originUserId:", originUserId);
-    console.log("Are the IDs equal?", userId === originUserId);
     if (userId?.toString() === originUserId?.toString()) {
       //אימות משתמש
       const authResult = await getOriginUserDataWithAuthentication();
@@ -396,17 +393,35 @@ export const getUserByEmail = async (emailInput: string) => {
     return null;
   }
 };
+//פונקציה לחיפוש יוזר לפי ID
+export const getUser = async (userId: Types.ObjectId) => {
+  try {
+    const response = await axios.get(`${apiUrl}/${userId}`);
+    console.log("response.data", response.data);
+    console.log("response.data.data", response.data.data);
 
-export const getUser= async(userId: Types.ObjectId)=>{
-  try{
-    const response=await axios.get(`${apiUrl}/${userId}`);
-    console.log('response.data',response.data);
-    console.log('response.data.data',response.data.data);
-
-    
     return response.data;
-  }catch(error){
-    console.error('שגיאה בחיפוש משתמש: ',error);
+  } catch (error) {
+    console.error("שגיאה בחיפוש משתמש: ", error);
     return null;
   }
-}
+};
+//פונקציה למעבר בין חשבונות מקושרים
+export const SwitchAccounts = async (userId: Types.ObjectId) => {
+  const { setUser } = useUser.getState();
+  const { setOriginUser } = useOriginUser.getState();
+  try {
+    const { _id: userId2 } = useUser.getState();
+    const { _id: originUserId } = useOriginUser.getState();
+    if (userId2?.toString() === originUserId?.toString()) {
+      //אימות משתמש
+      const authResult = await getOriginUserDataWithAuthentication();
+      if (authResult.success) {
+        const response= await getUser(userId);
+        console.log('response',response);
+        
+      } else {
+      }
+    }
+  } catch (error) {}
+};

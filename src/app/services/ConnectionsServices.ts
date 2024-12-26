@@ -152,7 +152,7 @@ export const updateConnections = async (
     throw error;
   }
 };
-
+//פונקציה ליצירת בקשת התחברות חדשה
 export const createNewConnectionRequest = async (
   formData: CreateConnectionRequestType
 ) => {
@@ -195,7 +195,7 @@ export const createNewConnectionRequest = async (
     }
   }
 };
-
+//פונקציה לניתוק קשר בין 2 משתמשים
 export const removeConnectionRequest = async (
   senderId: Types.ObjectId,
   receiverId: string /*| null*/
