@@ -111,6 +111,60 @@ export const signin = async (email: string, password: string) => {
   }
 };
 
+//פונקציה לאימות משתמש מקורי לפעולות רגישות
+export const getOriginUserDataWithAuthentication = async () => {
+  try {
+    // שליפת נתוני המשתמש המקורי
+    const { _id: originUserId, email: originUserEmail } =
+      useOriginUser.getState();
+
+    if (!originUserEmail || originUserEmail === "") {
+      return {
+        success: false,
+        message: "האימייל של המשתמש המקורי לא נמצא",
+        status: 400,
+      };
+    }
+
+    // בקשת סיסמה לאימות
+    const enteredPassword = prompt("אנא הזן סיסמה (שלך) לאימות:");
+    if (!enteredPassword) {
+      return {
+        success: false,
+        message: "האימות בוטל על ידי המשתמש",
+        status: 401,
+      };
+    }
+
+    // הצפנת הסיסמה וביצוע האימות
+    const encryptedPassword = await hashPassword(enteredPassword);
+    const authResponse = await axios.post("/api/signIn", {
+      email: originUserEmail,
+      password: encryptedPassword,
+    });
+
+    if (authResponse.status === 200 || authResponse.status === 201) {
+      return { success: true, data: { originUserId, originUserEmail } };
+    } else {
+      const message = authResponse.data?.message || "אימות הסיסמה נכשל";
+      return { success: false, message, status: authResponse.status };
+    }
+  } catch (error) {
+    console.error(
+      "Error during creator data retrieval and authentication:",
+      error
+    );
+
+    if (axios.isAxiosError(error)) {
+      const message = error.response?.data?.message || "שגיאה לא צפויה באימות";
+      const status = error.response?.status || 500;
+      return { success: false, message, status };
+    } else {
+      return { success: false, message: "שגיאה פנימית במערכת", status: 500 };
+    }
+  }
+};
+
 export const resetPassword = async (
   token: string,
   password: string
@@ -211,15 +265,44 @@ export const updateUser = async (_id: Types.ObjectId | null, body: object) => {
   const { setOriginUser } = useOriginUser.getState();
 
   try {
-    const response = await axios.put(`${apiUrl}/${_id}`, body, {
-      headers: { "Content-Type": "application/json" },
-    });
-    console.log("User updated successfully:", response.data);
-    setUser(response.data.data); // עדכון ה-store
-    console.log("User state after signup:", useUser.getState());
-    setOriginUser(response.data.data); //עדכון הUserOriginStore
-    console.log("Origin user state after signup:", useOriginUser.getState());
-    return response.data;
+    const { _id: userId } = useUser.getState();
+    const { _id: originUserId } = useOriginUser.getState();
+    if (userId?.toString() === originUserId?.toString()) {
+      //אימות משתמש
+      const authResult = await getOriginUserDataWithAuthentication();
+      if (authResult.success) {
+        const response = await axios.put(`${apiUrl}/${_id}`, body, {
+          headers: { "Content-Type": "application/json" },
+        });
+        console.log(
+          "User updated successfully after authentication:",
+          response.data
+        );
+        setUser(response.data.data); // עדכון ה-store
+        setOriginUser(response.data.data); // עדכון ה-UserOriginStore
+        console.log("User state after update:", useUser.getState());
+        console.log(
+          "Origin user state after update:",
+          useOriginUser.getState()
+        );
+        return {
+          success: true,
+          message: "User updated successfully",
+          data: response.data.data,
+          status: 200,
+        };
+      } else {
+        // אם האימות נכשל, מחזירים את הודעת השגיאה
+        return { success: false, message: "האימות נכשל", status: 401 };
+      }
+    } else {
+      // משתמש שאינו מורשה
+      return {
+        success: false,
+        message: "אין לך הרשאה לבצע פעולה זו.",
+        status: 403,
+      };
+    }
   } catch (error: unknown) {
     console.error("Failed to update connection request:", error);
     if (axios.isAxiosError(error)) {
@@ -231,53 +314,59 @@ export const updateUser = async (_id: Types.ObjectId | null, body: object) => {
     throw error;
   }
 };
-
 const AlertsSetCounter = () => {
   const { increase } = useAlertsCounter();
   increase();
 }
-export const createSubAccont = async (formData: IUserType) => {
-  const { _id: creatorId, email: creatorEmail, } = useOriginUser.getState();
-  console.log(creatorId, 'creatorId', creatorEmail, 'creatorEmail');
-
+//יצירת חשבון בן חדש
+export const createSubAccount = async (formData: IUserType) => {
   try {
-    if (!creatorEmail || creatorEmail === "") {
-      return { success: false, message: "האימייל של המשתמש המקורי לא נמצא", status: 400 };
-    }
-    const enteredPassword = prompt("אנא הזן את סיסמתך לאימות:");
-    if (!enteredPassword) {
-      return { success: false, message: "האימות בוטל על ידי המשתמש", status: 401 };
-    }
-    const encryptedPassword = await hashPassword(enteredPassword);
-    const authResponse = await axios.post("/api/signIn", {
-      email: creatorEmail,
-      password: encryptedPassword,
-    });
-    if (authResponse.status !== 200 && authResponse.status !== 201) {
-      AlertsSetCounter();
-      return { success: false, message: "אימות הסיסמה נכשל", status: authResponse.status };
-    }
-    const encryptedNewPassword = await hashPassword(formData.password);
+    const { _id: userId2 } = useUser.getState();
+    const { _id: originUserId2 } = useOriginUser.getState();
 
-    // הכנת הנתונים ליצירת חשבון משני
-    const { confirmPassword, ...rest } = formData;
-    console.log("confirmPassword", confirmPassword);
-    const data = {
-      ...rest,
-      password: encryptedNewPassword,
-      age: calculateAge(formData.dateOfBirth),
-      creatorId,
-    };
-    console.log("data:", data);
+    if (userId2?.toString() === originUserId2?.toString()) {
+      // השגת נתוני ה־creator ואימות הסיסמה
+      const originUserData = await getOriginUserDataWithAuthentication();
+      if (!originUserData.success) {
+        return originUserData;
+      }
 
-    // שליחת הנתונים לשרת
-    const response = await axios.post("/api/userExtraPermissions", data);
-    if (response.status === 200 || response.status === 201) {
-      return { success: true, data: response.data };
+      const { originUserId } = originUserData.data!;
+      // הצפנת סיסמה חדשה
+      const encryptedNewPassword = await hashPassword(formData.password);
+
+      // הכנת הנתונים ליצירת חשבון משני
+      const { confirmPassword, ...rest } = formData;
+      console.log("confirmPassword", confirmPassword);
+      const data = {
+        ...rest,
+        password: encryptedNewPassword,
+        age: calculateAge(formData.dateOfBirth),
+        originUserId,
+      };
+      console.log("data:", data); // שליחת הנתונים לשרת
+      const response = await axios.post("/api/userExtraPermissions", data);
+      if (response.status === 200 || response.status === 201) {
+        AlertsSetCounter();
+        const userId = response.data.data._id;
+        useUser.getState().updateChildren([...useUser.getState().children, userId]); // עדכון ה-UserStore
+        useOriginUser.getState().updateChildren([...useOriginUser.getState().children, userId]); // עדכון ה-UserOriginStore
+
+        console.log("User state after createSubAccount:", useUser.getState());
+        console.log("Origin user state after createSubAccount:", useOriginUser.getState());
+        return { success: true, data: response.data };
+      } else {
+        const message =
+          response.data?.message || "שגיאה לא ידועה ביצירת חשבון המשני.";
+        return { success: false, message, status: response.status };
+      }
     } else {
-      const message =
-        response.data?.message || "שגיאה לא ידועה ביצירת חשבון המשני.";
-      return { success: false, message, status: response.status };
+      // משתמש שאינו מורשה
+      return {
+        success: false,
+        message: "אין לך הרשאה לבצע פעולה זו.",
+        status: 403,
+      };
     }
   } catch (error) {
     console.error("Error during create sub account:", error);
@@ -291,16 +380,47 @@ export const createSubAccont = async (formData: IUserType) => {
     }
   }
 };
+
 //פונקציה לחיפוש משתמש עפ"י מייל
 export const getUserByEmail = async (emailInput: string) => {
 
   try {
-    const response = await axios.get(`${apiUrl}/searchRoute/${emailInput}`
-    );
+    const response = await axios.get(`${apiUrl}/searchRoute/${emailInput}`);
     return response.data.data;
   } catch (error) {
     console.error("שגיאה בחיפוש משתמש:", error);
     return null;
   }
 };
+//פונקציה לחיפוש יוזר לפי ID
+export const getUser = async (userId: Types.ObjectId) => {
+  try {
+    const response = await axios.get(`${apiUrl}/${userId}`);
+    console.log("response.data", response.data);
+    console.log("response.data.data", response.data.data);
 
+    return response.data;
+  } catch (error) {
+    console.error("שגיאה בחיפוש משתמש: ", error);
+    return null;
+  }
+};
+//פונקציה למעבר בין חשבונות מקושרים
+// export const SwitchAccounts = async (userId: Types.ObjectId) => {
+//   const { setUser } = useUser.getState();
+//   const { setOriginUser } = useOriginUser.getState();
+//   try {
+//     const { _id: userId2 } = useUser.getState();
+//     const { _id: originUserId } = useOriginUser.getState();
+//     if (userId2?.toString() === originUserId?.toString()) {
+//       //אימות משתמש
+//       const authResult = await getOriginUserDataWithAuthentication();
+//       if (authResult.success) {
+//         const response= await getUser(userId);
+//         console.log('response',response);
+        
+//       } else {
+//       }
+//     }
+//   } catch (error) {}
+// };

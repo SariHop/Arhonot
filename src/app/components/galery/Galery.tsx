@@ -47,7 +47,7 @@ const Gallery = ({ viewMode }: { viewMode: ("view" | "createOtfit" | "selectForD
     };
     fetchGarmentsFromServices();
     fetchOutfitsFromServices();
-  }, [_id]); // הוסף _id כתלות
+  }, [_id,setOutfits,setGarments]);
   if (loading) return <p>Loading...</p>;
   if (viewMode === "createOtfit") {
     return (
