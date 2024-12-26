@@ -5,7 +5,7 @@ import useOutfit from '../../../store/outfitsStore';
 import IOutfit from "@/app/types/IOutfit";
 import { numberOfItemsInPage } from "@/app/services/galleryService";
 
-let ITEMS_PER_PAGE = 4;
+let ITEMS_PER_PAGE = 24;
 
 const OutfitsGallary = ({ isSelectForDay }: { isSelectForDay: boolean }) => {
   const { sortedOutfits } = useOutfit();

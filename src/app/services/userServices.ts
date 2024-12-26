@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useOriginUser from "@/app/store/originUserStore";
 import { Types } from "mongoose";
-import useAlertsCounter from "@/app/store/alertsCounterStore"
 
 export const apiUrl = "/api/userRoute";
 
@@ -314,10 +313,7 @@ export const updateUser = async (_id: Types.ObjectId | null, body: object) => {
     throw error;
   }
 };
-const AlertsSetCounter = () => {
-  const { increase } = useAlertsCounter();
-  increase();
-}
+
 //יצירת חשבון בן חדש
 export const createSubAccount = async (formData: IUserType) => {
   try {
@@ -347,14 +343,14 @@ export const createSubAccount = async (formData: IUserType) => {
       console.log("data:", data); // שליחת הנתונים לשרת
       const response = await axios.post("/api/userExtraPermissions", data);
       if (response.status === 200 || response.status === 201) {
-        AlertsSetCounter();
         const userId = response.data.data._id;
         useUser.getState().updateChildren([...useUser.getState().children, userId]); // עדכון ה-UserStore
         useOriginUser.getState().updateChildren([...useOriginUser.getState().children, userId]); // עדכון ה-UserOriginStore
 
         console.log("User state after createSubAccount:", useUser.getState());
         console.log("Origin user state after createSubAccount:", useOriginUser.getState());
-        return { success: true, data: response.data };
+        return { success: true, data: response.data,status: response.status};
+
       } else {
         const message =
           response.data?.message || "שגיאה לא ידועה ביצירת חשבון המשני.";

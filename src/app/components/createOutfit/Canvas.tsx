@@ -4,7 +4,7 @@ import { fabric } from "fabric";
 import ShowGallery from "@/app/components/createOutfit/ShowGallery";
 import ToolBox from "@/app/components/createOutfit/toolBox/ToolBox";
 import useCanvasStore from "@/app/store/canvasStore";
-import HomePageNavigathion from "./HomePageNavigathion";
+import ButtonNavigathion from "./ButtonNavigathion";
 
 // אובייקט של הקנבס נשמר דרך זוסטנד בלוקלסטורג
 // משום מה בטעינה מחדש של העמוד הקריאה יוסאפקט ניטענת פעמיים, כנראה קשור לריאקט
@@ -15,12 +15,13 @@ import HomePageNavigathion from "./HomePageNavigathion";
 
 // גישות אפשריות:
 // לא לשמור את הקנבס דרך הזוסטנד, לנסות עצאית להוסיף מאזין כלשהו שיטען את 
-// השינויים ויהיה לי עליו לכאורה יותר שחיטה מתי העידכונים שלו מתבצעים
+// השינויים ויהיה לי עליו לכאורה יותר שליטה מתי העידכונים שלו מתבצעים
 
 // להמשיך לדבג בזוסטנג איך למנוע את הקריאה השניה המוזרה, 
 // להיזהר מאדדד מהשגיאה של
 // "מלבן לא מוגד"
-// כי זה קרה לי שוב במעבר בין עמודים כאשר הפונקציה שטוענת מהלוקל נקראה ביוסאפק השני שטוען את הקנבס
+// כי זה קרה לי שוב במעבר בין עמודים
+// כאשר הפונקציה שטוענת מהלוקל נקראה ביוסאפק השני שטוען את הקנבס
 // ולא ביוסאפקט הראשון שטוען את הקנבס כמו שקורה עכשיו ועובד היטב
 
 
@@ -97,7 +98,7 @@ const Canvas = () => {
   return (
     <div className="flex flex-col justify-center mt-3">
 
-     <HomePageNavigathion/>
+     <ButtonNavigathion value="חזרה לדף הבית" path=""/>
 
       <div className="bg-white">
         <ShowGallery />

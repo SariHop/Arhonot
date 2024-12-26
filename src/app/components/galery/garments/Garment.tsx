@@ -8,7 +8,6 @@ import { FaBars, FaTrash, FaEdit } from "react-icons/fa";
 import { deleteGarment } from "@/app/services/garmentService";
 import CreateGarment from "../../createGarment/CreateGarment";
 import useGarments from "@/app/store/garmentsStore";
-import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
 const Garment = ({ garment, closeModal }: GarmentProps) => {
@@ -34,8 +33,8 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
         <div className="flex justify-end">
           <button
             onClick={() => {
-              handleDelete();
               toast.dismiss(); // סוגר את ההתראה לאחר אישור
+              handleDelete();
             }}
             className="text-red-500 pl-2"
           >
@@ -66,16 +65,11 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
     try {
       deleteGarment(String(garment._id));
       deleteFromStore(garment);
-      closeModal();
       toast.success("הבגד נמחק בהצלחה!");
+
+      closeModal();
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        const serverError =
-          error.response?.data?.error || "Unknown server error";
-        toast.error(`Server Error: ${serverError}`);
-      } else {
-        toast.error("An unexpected error occurred");
-      }
+      console.log("error accured while deleting garment: ", error)
     }
     setIsDeleting(false); // אחרי המחיקה, החזרת המצב הרגיל
   }
@@ -115,7 +109,7 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
             </button>
 
             <h2 className="text-2xl font-semibold text-center mb-4 text-gray-800">
-              {garment.desc}
+              {garment.desc || "הלוק שלך"}
             </h2>
             <div className="flex flex-col items-center">
               <div className="w-full border-b-2 border-t-2 h-[250px] p-4">
@@ -192,7 +186,7 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
           )}
         </div>
       </div>
-      <ToastContainer position="top-right" autoClose={false} hideProgressBar />
+      <ToastContainer position="top-center" autoClose={false} hideProgressBar />
     </>
   );
 };

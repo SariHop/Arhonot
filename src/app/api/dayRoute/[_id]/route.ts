@@ -167,12 +167,12 @@ export async function POST(
       userId: _id,
       date: { $gte: startOfDay, $lte: endOfDay }
     }).populate("looks");
-    if (!day) {
-      return NextResponse.json(
-        { error: "No record found for the provided user ID and date" },
-        { status: 404 }
-      );
-    }
+    // if (!day) {
+    //   return NextResponse.json(
+    //     { error: "No record found for the provided user ID and date" },
+    //     { status: 404 }
+    //   );
+    // }
     // החזרת תגובה מוצלחת
     return NextResponse.json(
       { success: true, data: day },

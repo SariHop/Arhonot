@@ -12,7 +12,7 @@ type OutfitsStore = {
 
     addOutfits: (outfit: IOutfit) => void;
     setOutfits: (outfits: IOutfit[]) => void;
-    deleteOutfits: (outfit: IOutfit) => void;
+    deleteOutfit: (outfit: IOutfit) => void;
     resetOutfits: () => void;
     setOutfitSelectedRate: (rate: number | undefined) => void
     setOutfitSelectedSeason: (season: string | undefined) => void;
@@ -44,10 +44,14 @@ const useOutfits = create<OutfitsStore>((set) => ({
         set({ outfits: outfits, sortedOutfits: outfits });
     },
 
-    deleteOutfits: (outfit: IOutfit) => {
-        set((state) => ({
-            outfits: state.outfits.filter((o) => o._id !== outfit._id)  // מסנן את הבגד לפי ה-ID
-        }));
+    deleteOutfit: (outfit: IOutfit) => {
+        set((state) => {
+            const updatedOutfits = state.outfits.filter((o) => o._id !== outfit._id);
+            return {
+                outfits: updatedOutfits,
+                sortedOutfits: filterOutfits(updatedOutfits, state),
+            };
+        });
     },
     resetOutfits: () => {
         set({
