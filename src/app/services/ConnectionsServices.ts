@@ -1,12 +1,15 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {CreateConnectionRequest} from "../types/IConnectionRequest";
-import useOriginUser from "@/app/store/originUserStore";
-import { hashPassword } from "@/app/services/userServices";
+import { CreateConnectionRequestType } from "../types/IConnectionRequest";
+import { getOriginUserDataWithAuthentication } from "@/app/services/userServices";
 import { Types } from "mongoose";
+import useOriginUser from "@/app/store/originUserStore";
+import useUser from "../store/userStore";
 
-export const fetchUsersConnectionReq = async (userId: Types.ObjectId | null) => {
+export const fetchUsersConnectionReq = async (
+  userId: Types.ObjectId | null
+) => {
   try {
     if (!userId) {
       throw new Error("userId is null or undefined.");
@@ -33,14 +36,31 @@ export const updateRequestStatus = async (
   status: string
 ) => {
   try {
-    const response = await axios.put(
-      `/api/connectionRequestRoute/${requestId}`,
-      {
-        status: status,
+    const { _id: userId } = useUser.getState();
+    const { _id: originUserId } = useOriginUser.getState();
+
+    if (userId?.toString() === originUserId?.toString()) {
+      const originUserData = await getOriginUserDataWithAuthentication();
+      if (!originUserData.success) {
+        return originUserData;
       }
-    );
-    if (response.status !== 200) throw response;
-    return response.data;
+
+      const response = await axios.put(
+        `/api/connectionRequestRoute/${requestId}`,
+        {
+          status: status,
+        }
+      );
+      if (response.status !== 200) throw response;
+      return response.data;
+    } else {
+      // משתמש שאינו מורשה
+      return {
+        success: false,
+        message: "אין לך הרשאה לבצע פעולה זו.",
+        status: 403,
+      };
+    }
   } catch (error: unknown) {
     console.error("Failed to update connection request:", error);
     if (axios.isAxiosError(error)) {
@@ -80,10 +100,47 @@ export const updateConnections = async (
   receiverId: Types.ObjectId | null
 ) => {
   try {
-    const response = await axios.put(`/api/connectionRequestRoute`, null, {
-      params: { sender: senderId, receiver: receiverId },
-    });
-    return response.data;
+    const { _id: userId } = useUser.getState();
+    const { _id: originUserId } = useOriginUser.getState();
+
+    if (userId?.toString() === originUserId?.toString()) {
+      // const originUserData = await getOriginUserDataWithAuthentication();
+      // if (!originUserData.success) {
+      //   return originUserData;
+      // }// אימות כפול, עדיף לחסוף כך שבמידה והפניה היא מלחצן אישור בקשת התחברות הפונה לפונקציית עדכון סטטוס + עדכון קשרי ילדים לא יבקש אימות כפול
+
+      const response = await axios.put(`/api/connectionRequestRoute`, null, {
+        params: { sender: senderId, receiver: receiverId },
+      });
+      if (response.status !== 200) throw response;
+
+      const { sender, receiver } = response.data.data;
+
+      if (userId?.toString() === sender._id.toString()) {
+        useUser.getState().updateChildren(sender.children); // עדכון useUser
+        useOriginUser.getState().updateChildren(sender.children); // עדכון useOriginUser
+      } else if (userId?.toString() === receiver._id.toString()) {
+        useUser.getState().updateChildren(receiver.children); // עדכון useUser
+        useOriginUser.getState().updateChildren(receiver.children); // עדכון useOriginUser
+
+        console.log(
+          "User state after updateRequestStatus:",
+          useUser.getState()
+        );
+        console.log(
+          "Origin user state after updateRequestStatus:",
+          useOriginUser.getState()
+        );
+      }
+      return response.data;
+    } else {
+      // משתמש שאינו מורשה
+      return {
+        success: false,
+        message: "אין לך הרשאה לבצע פעולה זו.",
+        status: 403,
+      };
+    }
   } catch (error: unknown) {
     console.error("Failed to update connection request:", error);
     if (axios.isAxiosError(error)) {
@@ -95,51 +152,91 @@ export const updateConnections = async (
     throw error;
   }
 };
-
+//פונקציה ליצירת בקשת התחברות חדשה
 export const createNewConnectionRequest = async (
-  formData: CreateConnectionRequest
+  formData: CreateConnectionRequestType
 ) => {
-  const { _id: creatorId, email: creatorEmail } = useOriginUser.getState();
-  console.log(creatorId, "creatorId", creatorEmail, "creatorEmail");
-
   try {
-    if (!creatorEmail || creatorEmail === "") {
-      return {
-        success: false,
-        message: "האימייל של המשתמש המקורי לא נמצא",
-        status: 400,
-      };
-    }
-    const enteredPassword = prompt("אנא הזן את סיסמתך לאימות:");
-    if (!enteredPassword) {
-      return {
-        success: false,
-        message: "האימות בוטל על ידי המשתמש",
-        status: 401,
-      };
-    }
-    const encryptedPassword = await hashPassword(enteredPassword);
-    const authResponse = await axios.post("/api/signIn", {
-      email: creatorEmail,
-      password: encryptedPassword,
-    });
-    if (authResponse.status !== 200 && authResponse.status !== 201) {
-      return {
-        success: false,
-        message: "אימות הסיסמה נכשל",
-        status: authResponse.status,
-      };
-    }
-    const response = await axios.post("/api/connectionRequestRoute", formData);
-    if (response.status === 200 || response.status === 201) {
-      return { success: true, data: response.data };
+    const { _id: userId } = useUser.getState();
+    const { _id: originUserId } = useOriginUser.getState();
+
+    if (userId?.toString() === originUserId?.toString()) {
+      const originUserData = await getOriginUserDataWithAuthentication();
+      if (!originUserData.success) {
+        return originUserData;
+      }
+      const response = await axios.post(
+        "/api/connectionRequestRoute",
+        formData
+      );
+      if (response.status === 200 || response.status === 201) {
+        return { success: true, data: response.data };
+      } else {
+        const message =
+          response.data?.message || "שגיאה לא ידועה בשליחת בקשת התחברות .";
+        return { success: false, message, status: response.status };
+      }
     } else {
-      const message =
-        response.data?.message || "שגיאה לא ידועה בשליחת בקשת התחברות .";
-      return { success: false, message, status: response.status };
+      // משתמש שאינו מורשה
+      return {
+        success: false,
+        message: "אין לך הרשאה לבצע פעולה זו.",
+        status: 403,
+      };
     }
   } catch (error) {
     console.error("error during create new connection request", error);
+    if (axios.isAxiosError(error)) {
+      const message = error.response?.data?.message || "שגיאה לא צפויה";
+      const status = error.response?.status || 500;
+      return { success: false, message, status };
+    } else {
+      return { success: false, message: "שגיאה פנימית במערכת", status: 500 };
+    }
+  }
+};
+//פונקציה לניתוק קשר בין 2 משתמשים
+export const removeConnectionRequest = async (
+  senderId: Types.ObjectId,
+  receiverId: string /*| null*/
+) => {
+  try {
+    const { _id: userId } = useUser.getState();
+    const { _id: originUserId } = useOriginUser.getState();
+
+    if (userId?.toString() === originUserId?.toString()) {
+      const originUserData = await getOriginUserDataWithAuthentication();
+      if (!originUserData.success) {
+        return originUserData;
+      }
+      console.log(senderId, "userIdSender", receiverId, "userIdToRemove");
+
+      const response = await axios.put(`/api/connectionRequestRoute/userConnectionRequests`, null, {
+        params: { sender: senderId, receiver: receiverId },
+      });
+      if (response.status == 200) {
+        const updatedSender = response.data?.data?.updatedSender;
+        if (!updatedSender) {
+          console.error("שגיאה: הנתונים שחזרו מהשרת אינם כוללים את updatedSender");
+          return { success: false, message: "נתונים חסרים מהשרת", status: 500 };
+        }
+        useUser.getState().updateChildren(updatedSender.children);
+        useOriginUser.getState().updateChildren(updatedSender.children);
+      
+        return response.data;
+      } else {
+        console.error("שגיאה לא צפויה, סטטוס:", response.status);
+      }
+    } else {
+      // משתמש שאינו מורשה
+      return {
+        success: false,
+        message: "אין לך הרשאה לבצע פעולה זו.",
+        status: 403,
+      };
+    }
+  } catch (error) {
+    console.error("שגיאה במהלך מחיקת ההתקשרות", error);
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message || "שגיאה לא צפויה";
       const status = error.response?.status || 500;

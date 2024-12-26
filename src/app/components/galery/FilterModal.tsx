@@ -143,7 +143,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose, activeTab 
                     {/* עונה */}
                     <div>
                         <h3 className="text-sm mb-3">בחר עונה</h3>
-                        <div className="flex gap-4">
+                        <div className="flex gap-4 flex-wrap">
                             {validSeasons.map((season) => (
                                 <Tag
                                     key={season}
@@ -181,7 +181,7 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose, activeTab 
                     {/* תגיות */}
                     <div>
                         <h3 className="text-sm mb-3">בחר תגיות</h3>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 flex-wrap">
                             {tags.map((tag) => (
                                 <Tag
                                     key={tag}

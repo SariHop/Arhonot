@@ -10,7 +10,6 @@ const DeleteButton: React.FC = () => {
 
   const handleDelete = () => {
     if (canvas && selectedObject) {
-      debugger
       if (selectedObject instanceof fabric.Image) {
         const imageObject = selectedObject;
         const garmentId = imageObject.garmentId;
