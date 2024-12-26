@@ -1,6 +1,6 @@
 "use client";
 import {Divider } from "antd";
-import useAlertsCounter from "@/app/store/alertsCounterStore";
+import useAlertsCounter, { initialize } from "@/app/store/alertsCounterStore";
 import useUser from "@/app/store/userStore";
 import ConnectionReq from "@/app/components/alerts/ConnectionReq";
 import Alert from "@/app/components/alerts/Alert";
@@ -11,6 +11,13 @@ const Page = () => {
   const decreaseAlertCounter = useAlertsCounter((state) => state.decrease);
   const user = useUser();
 
+  useEffect(() => {
+    if (!user._id) {
+          console.log("Waiting for user ID to load...");
+          return;
+        }
+    initialize(user._id);
+  }, [user._id]);
   return (
     <div className="pb-6">
       {/* התראות על מלאי */}
