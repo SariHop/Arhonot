@@ -98,6 +98,7 @@ export const getAverageTemperatureForDate = (list: WeatherData[], targetDate: Da
 }catch(error){
   console.log("error geting the average temperature: ", error);
   toast.error("שגיאה בקבלת הטמפרטורה הממוצעת ליום המבוקש");
+  return 0;
 }
 };
 
