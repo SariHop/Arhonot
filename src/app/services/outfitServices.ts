@@ -101,3 +101,28 @@ export async function updateOutfitFavorite(outfitId: string, favorite: number) {
     throw error;
   }
 }
+
+export const deleteOutfit = async (outfitId: string) => {
+  try {
+    const response = await axios.delete(`${apiUrl}outfitRoute/${outfitId}`);
+    return response.data.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      const serverError = error.response?.data?.error || "Unknown server error";
+      const status = error.response?.status || 501;
+
+      if (status === 400) {
+        toast.error("שגיאה בקבלת נתונים בשרת, נסה שוב.");
+      } else if(status===404){
+        toast.error("לוק זה לא נמצא במערכת")
+      } else if(status===500){
+        toast.error(`שגיאת שרת: ${serverError}`);
+      }else{
+        toast.error("אירעה שגיאה לא צפויה בשרת");
+      }
+    } else {
+      toast.error(" שגיאה לא צפויה בעת מחיקת לוק זה");
+    }
+    throw error;
+  }
+}

@@ -33,8 +33,8 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
         <div className="flex justify-end">
           <button
             onClick={() => {
-              handleDelete();
               toast.dismiss(); // סוגר את ההתראה לאחר אישור
+              handleDelete();
             }}
             className="text-red-500 pl-2"
           >
@@ -65,8 +65,9 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
     try {
       deleteGarment(String(garment._id));
       deleteFromStore(garment);
-      closeModal();
       toast.success("הבגד נמחק בהצלחה!");
+
+      closeModal();
     } catch (error: unknown) {
       console.log("error accured while deleting garment: ", error)
     }
@@ -108,7 +109,7 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
             </button>
 
             <h2 className="text-2xl font-semibold text-center mb-4 text-gray-800">
-              {garment.desc}
+              {garment.desc || "הלוק שלך"}
             </h2>
             <div className="flex flex-col items-center">
               <div className="w-full border-b-2 border-t-2 h-[250px] p-4">
@@ -185,7 +186,7 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
           )}
         </div>
       </div>
-      <ToastContainer position="top-right" autoClose={false} hideProgressBar />
+      <ToastContainer position="top-center" autoClose={false} hideProgressBar />
     </>
   );
 };
