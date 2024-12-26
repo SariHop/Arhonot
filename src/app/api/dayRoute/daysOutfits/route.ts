@@ -15,6 +15,9 @@ export async function POST(request: NextRequest) {
     await connect(); // חיבור לבסיס הנתונים
     const { userId, month, year }:{userId:string, month:number, year:number} = await request.json();
 
+    if(!userId || !month || !year)
+      return NextResponse.json({status:false, message: "שגיאה בקבלת נתונים"}, { status: 400 }); 
+
     const startDate = new Date(Date.UTC(year, month, 1));  // החודש 0-based
     const endDate = new Date(Date.UTC(year, month + 1, 0));        // סוף החודש הנוכחי
     endDate.setUTCHours(23, 59, 59, 999); // עד סוף היום האחרון בחודש

@@ -62,7 +62,6 @@ export const recommendedLooks = async (list: WeatherData[], date: Date, userId: 
 
     if (!outfits || outfits.length === 0) {
       sendNoOutfitsAlert(userId);
-      throw new Error("No outfits found for the user");
     }
 
     const hotLevel = 30;
