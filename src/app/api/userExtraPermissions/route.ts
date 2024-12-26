@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
     const desc = "חשבון מקושר נוסף בהצלחה";
     const alert = new Alert({
-      userId: creatorId,
+      userId: originUserId,
       title: "חשבון מקושר נוסף בהצלחה",
       desc,
       date: new Date(),
