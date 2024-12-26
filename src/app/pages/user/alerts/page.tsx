@@ -11,13 +11,6 @@ const Page = () => {
   const decreaseAlertCounter = useAlertsCounter((state) => state.decrease);
   const user = useUser();
 
-  useEffect(() => {
-    if (!user._id) {
-          console.log("Waiting for user ID to load...");
-          return;
-        }
-    initialize(user._id);
-  }, [user._id]);
   return (
     <div className="pb-6">
       {/* התראות על מלאי */}
