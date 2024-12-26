@@ -7,8 +7,6 @@ import "dayjs/locale/he";
 import heIL from "antd/locale/he_IL";
 import Image from 'next/image'
 import useUser from "@/app/store/userStore";
-import { toast } from "react-toastify";
-import axios from "axios";
 import IOutfit from "@/app/types/IOutfit";
 import OutfitsModal from "@/app/components/calendar/OutfitsModal";
 import { IDayWithLooks } from "@/app/types/IDay";
@@ -107,7 +105,7 @@ const Page: React.FC = () => {
                     key={index}
                     src={look.img}
                     alt={`Look ${index + 1}`}
-                    className="w-7 h-7 rounded-full  object-cover m-1 inline-block"
+                    className="w-7 h-7 rounded-full  object-cover m-1 inline-block border-2"
                     width={25}
                     height={25}
                   />) : (index === 1 && <p key={index} className="text-xs text-gray-500">+{dayLooks.looks.length - 1}</p>)
@@ -158,13 +156,6 @@ const Page: React.FC = () => {
     }
     catch (error) {
       console.error("Failed to process user looks:", error);
-      if (axios.isAxiosError(error)) {
-        const serverError = error.response?.data?.error || "Unknown server error";
-        toast.error(`Server Error: ${serverError}`);
-      } else {
-        toast.error("An unexpected error occurred");
-      }
-      throw error;
     }
   };
 

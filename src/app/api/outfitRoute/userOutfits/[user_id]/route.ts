@@ -17,12 +17,7 @@ export async function GET(request: NextRequest,{ params }: { params: { user_id: 
   
       // שליפת כל הלוקים של המשתמש
       const outfits = await Outfit.find({ userId: _id });
-      if (!outfits) {
-        return NextResponse.json(
-          { error: "Outfits for this user not found" },
-          { status: 404 }
-        );
-      }
+      
   
       // חישוב טווח תאריכים של החודש האחרון
       const now = new Date();

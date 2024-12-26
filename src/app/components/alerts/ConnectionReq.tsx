@@ -52,10 +52,10 @@ const ConnectionReq: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => 
 
     switch (status) {
       case "pending":
-        labelContent = `${connectionReq.sendersName} wants to connect to you`;
+        labelContent = `${connectionReq.sendersName} רוצה להתחבר אלייך`;
         childrenContent = (
           <div>
-            <p>Would you want to connect?</p>
+            <p>רוצה לאשר את ההתחברות?</p>
             <div className="flex justify-start gap-4 mt-4">
               <Button
                 type="primary"
@@ -75,14 +75,14 @@ const ConnectionReq: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => 
         break;
 
       case "rejected":
-        labelContent = `You have rejected the connection request from ${connectionReq.sendersName}`;
+        labelContent = `דחית את בקשת ההתחברות מ${connectionReq.sendersName}`;
         childrenContent = (
           <div>
             <p>
-              You have rejected the connection request to user{" "}
-              {connectionReq.sendersName}.
+              דחית את בקשת ההתחברות של  {" "}
+               {connectionReq.sendersName}.
             </p>
-            <p>Regret? Would you want to connect?</p>
+            <p>התחרט/ת? רוצה לאשר את הבקשה?</p>
             <Button
               className="flex justify-start gap-4 mt-4"
               type="primary"
@@ -98,12 +98,12 @@ const ConnectionReq: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => 
         break;
 
       case "accepted":
-        labelContent = `You have connected to user ${connectionReq.sendersName}`;
+        labelContent = `אשרת את ההתחברות ל${connectionReq.sendersName}`;
         childrenContent = (
           <div>
             <p>
-              You have connected to user {connectionReq.sendersName},
-              congratulations.
+              ההתחברות למשתמש {connectionReq.sendersName} בוצעה בהצלחה,
+              ברכותינו.
             </p>
           </div>
         );
@@ -146,8 +146,8 @@ const ConnectionReq: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => 
   const acceptRequest = async (requestId: string, sender: string) => {
     console.log("accepted");
     try {
-      await updateConnections(sender, userId);
       await updateRequestStatus(requestId, "accepted");
+      await updateConnections(sender, userId);
 
       setRequests((prevRequests) =>
         prevRequests.map((request) => {
@@ -156,12 +156,12 @@ const ConnectionReq: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => 
               ...request,
               status: "accepted",
               label: (
-                <span style={{ fontWeight: request.readen ? "normal" : "bold" }}>{`You have connected to user ${request.sender_name}`}</span>),
+                <span style={{ fontWeight: request.readen ? "normal" : "bold" }}>{`אשרת את ההתחברות ל${request.sender_name}`}</span>),
               children: (
                 <div>
                   <p>
-                    You have connected to user {request.sender_name},
-                    congratulations.
+                  ההתחברות למשתמש {request.sender_name} בוצעה בהצלחה,
+                  ברכותינו.
                   </p>
                 </div>
               ),
@@ -189,14 +189,14 @@ const ConnectionReq: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => 
             return {
               ...request,
               status: "rejected",
-              label: `You have rejected the connection request from ${request.sender_name}`,
+              label: `דחית את בקשת ההתחברות ל${request.sender_name}`,
               children: (
                 <div>
                   <p>
-                    You have rejected the connection request to user{" "}
+                    דחית את בקשת ההתחברות של משתמש  {" "}
                     {request.sender_name}.
                   </p>
-                  <p>Regret? Would you want to connect?</p>
+                  <p>התחרט/ת? רוצה לאשר את הבקשה?</p>
                   <Button
                     className="flex justify-start gap-4 mt-4"
                     type="primary"

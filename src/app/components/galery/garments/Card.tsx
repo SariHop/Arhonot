@@ -65,7 +65,7 @@ const Card = ({ garment, isForOutfit }: { garment: IGarment; isForOutfit: boolea
     };
 
     return (
-        <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm relative p-1 h-[200px]"
+        <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm relative p-1 h-[250px]"
             onClick={handleClickcard ? () => handleClickcard(garment.img, garment._id) : openModal}
         >
             <div className="h-[160px] w-full p-1">
@@ -78,7 +78,7 @@ const Card = ({ garment, isForOutfit }: { garment: IGarment; isForOutfit: boolea
                     className="w-full h-full object-contain rounded-lg"
                 />
             </div>
-            <p className="text-xs md:text-sm 2xl:text-base 3xl:text-lg line-clamp-1">{garment.desc}</p>
+            <p className="text-xs md:text-sm 2xl:text-base 3xl:text-lg md:line-clamp-1 line-clamp-2">{garment.desc}</p>
 
             <div
                 className={`absolute top-2 right-2 w-5 h-5 rounded-full ${getCircleColor(garment.range, temperature)}`}

@@ -22,9 +22,7 @@ export async function GET(
         const objectId = new Types.ObjectId(userId);
 
         const garments = await Garment.find({ userId: objectId });
-        if (!garments) {
-            return NextResponse.json({ error: "garments not found" }, { status: 404 });
-        }
+        
         return NextResponse.json({ success: true, data: garments }, { status: 200 });
     } catch (error: unknown) {
         console.error("Error geting garments:", error);

@@ -22,9 +22,14 @@ export async function GET(
     }
 
     // חיפוש ההתראות של המשתמש
-    const connectionReq = await ConnectionRequest.find({ userIdReciver: _idUser });
+    const connectionReq = await ConnectionRequest.find({
+      userIdReciver: _idUser,
+    });
 
-    return NextResponse.json({ success: true, data: connectionReq }, { status: 200 });
+    return NextResponse.json(
+      { success: true, data: connectionReq },
+      { status: 200 }
+    );
   } catch (error: unknown) {
     console.error("Error get connection requests:", error);
 
@@ -35,12 +40,13 @@ export async function GET(
       );
     } else {
       return NextResponse.json(
-        { message: "Error getting connection requests", error: "Unknown error occurred" },
+        {
+          message: "Error getting connection requests",
+          error: "Unknown error occurred",
+        },
         { status: 500 }
       );
     }
   }
 }
-
-
 

@@ -15,6 +15,7 @@ type UserStore = {
   children: Types.ObjectId[];
   setUser: (user: Partial<UpdateUserTypeForStore>) => void;
   updateUser: (updatedFields: Partial<IUserTypeWithId>) => void;
+  updateChildren: (children: Types.ObjectId[]) => void; // פונקציה חדשה לעדכון children
   resetUser: () => void;
 };
 
@@ -68,6 +69,13 @@ const useUser = create(
         ? new Date(updatedFields.dateOfBirth)
         : state.dateOfBirth,
     })),
+
+     // פונקציה לעדכון מערך ה-children בלבד
+     updateChildren: (children) =>
+      set((state) => ({
+        ...state,
+        children: children, 
+      })),
 
   // פונקציה לאיפוס היוזר לערכים ריקים
   resetUser: () =>
