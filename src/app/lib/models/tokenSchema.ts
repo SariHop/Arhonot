@@ -1,4 +1,4 @@
-import  { Model, Schema, Types, model, models } from 'mongoose';
+import  { Model, Schema, model, models } from 'mongoose';
 import { IToken } from '../../types/IUser'
 
 const TokenSchema = new Schema<IToken>({

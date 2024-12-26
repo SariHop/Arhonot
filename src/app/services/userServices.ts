@@ -4,7 +4,7 @@ import useUser from "@/app/store/userStore";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useOriginUser from "@/app/store/originUserStore";
-import { ObjectId, Types } from "mongoose";
+import { Types } from "mongoose";
 
 export const apiUrl = "/api/userRoute";
 

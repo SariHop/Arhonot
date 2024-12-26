@@ -84,7 +84,7 @@ const ConnectionList = () => {
               <p className="text-sm text-gray-600">
                 גיל: {child.age}, עיר: {child.city}
               </p>
-              <p className="text-sm text-gray-500">דוא"ל: {child.email}</p>
+              <p className="text-sm text-gray-500"> {child.email}</p>
             </li>
           );
         })}
