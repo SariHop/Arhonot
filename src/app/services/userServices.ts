@@ -318,30 +318,22 @@ const AlertsSetCounter = () => {
   const { increase } = useAlertsCounter();
   increase();
 }
-export const createSubAccont = async (formData: IUserType) => {
-  const { _id: creatorId,  email: creatorEmail, } =  useOriginUser.getState();
-  console.log(creatorId,'creatorId',creatorEmail,'creatorEmail' );
-  
+//יצירת חשבון בן חדש
+export const createSubAccount = async (formData: IUserType) => {
   try {
-    if (!creatorEmail||creatorEmail==="") {
-      return { success: false, message: "האימייל של המשתמש המקורי לא נמצא", status: 400 };
-    }
-    const enteredPassword = prompt("אנא הזן את סיסמתך לאימות:");
-    if (!enteredPassword) {
-      return { success: false, message: "האימות בוטל על ידי המשתמש", status: 401 };
-    }
-    const encryptedPassword = await hashPassword(enteredPassword);
-    const authResponse = await axios.post("/api/signIn", {
-      email: creatorEmail,
-      password: encryptedPassword,
-    });
-    if (authResponse.status !== 200 && authResponse.status !== 201) {
-      return { success: false, message: "אימות הסיסמה נכשל", status: authResponse.status };
-    }
+    const { _id: userId2 } = useUser.getState();
+    const { _id: originUserId2 } = useOriginUser.getState();
 
-    AlertsSetCounter();
+    if (userId2?.toString() === originUserId2?.toString()) {
+      // השגת נתוני ה־creator ואימות הסיסמה
+      const originUserData = await getOriginUserDataWithAuthentication();
+      if (!originUserData.success) {
+        return originUserData;
+      }
 
-    const encryptedNewPassword = await hashPassword(formData.password);
+      const { originUserId } = originUserData.data!;
+      // הצפנת סיסמה חדשה
+      const encryptedNewPassword = await hashPassword(formData.password);
 
       // הכנת הנתונים ליצירת חשבון משני
       const { confirmPassword, ...rest } = formData;
@@ -355,19 +347,13 @@ export const createSubAccont = async (formData: IUserType) => {
       console.log("data:", data); // שליחת הנתונים לשרת
       const response = await axios.post("/api/userExtraPermissions", data);
       if (response.status === 200 || response.status === 201) {
+        AlertsSetCounter();
         const userId = response.data.data._id;
-        useUser
-          .getState()
-          .updateChildren([...useUser.getState().children, userId]); // עדכון ה-UserStore
-        useOriginUser
-          .getState()
-          .updateChildren([...useOriginUser.getState().children, userId]); // עדכון ה-UserOriginStore
+        useUser.getState().updateChildren([...useUser.getState().children, userId]); // עדכון ה-UserStore
+        useOriginUser.getState().updateChildren([...useOriginUser.getState().children, userId]); // עדכון ה-UserOriginStore
 
         console.log("User state after createSubAccount:", useUser.getState());
-        console.log(
-          "Origin user state after createSubAccount:",
-          useOriginUser.getState()
-        );
+        console.log("Origin user state after createSubAccount:", useOriginUser.getState());
         return { success: true, data: response.data };
       } else {
         const message =
@@ -420,21 +406,21 @@ export const getUser = async (userId: Types.ObjectId) => {
   }
 };
 //פונקציה למעבר בין חשבונות מקושרים
-export const SwitchAccounts = async (userId: Types.ObjectId) => {
-  const { setUser } = useUser.getState();
-  const { setOriginUser } = useOriginUser.getState();
-  try {
-    const { _id: userId2 } = useUser.getState();
-    const { _id: originUserId } = useOriginUser.getState();
-    if (userId2?.toString() === originUserId?.toString()) {
-      //אימות משתמש
-      const authResult = await getOriginUserDataWithAuthentication();
-      if (authResult.success) {
-        const response= await getUser(userId);
-        console.log('response',response);
+// export const SwitchAccounts = async (userId: Types.ObjectId) => {
+//   const { setUser } = useUser.getState();
+//   const { setOriginUser } = useOriginUser.getState();
+//   try {
+//     const { _id: userId2 } = useUser.getState();
+//     const { _id: originUserId } = useOriginUser.getState();
+//     if (userId2?.toString() === originUserId?.toString()) {
+//       //אימות משתמש
+//       const authResult = await getOriginUserDataWithAuthentication();
+//       if (authResult.success) {
+//         const response= await getUser(userId);
+//         console.log('response',response);
         
-      } else {
-      }
-    }
-  } catch (error) {}
-};
+//       } else {
+//       }
+//     }
+//   } catch (error) {}
+// };
