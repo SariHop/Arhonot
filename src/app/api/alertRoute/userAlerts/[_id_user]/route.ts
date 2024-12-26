@@ -1,5 +1,6 @@
 import connect from "@/app/lib/db/mongoDB";
 import Alert from "@/app/lib/models/alertSchema";
+import axios from "axios";
 import { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -8,7 +9,6 @@ export async function GET(
   { params }: { params: { _id_user: Types.ObjectId } }
 ) {
   try {
-    // console.log("Request method:", request.method); // לשם דיבאג
     await connect();
 
     const _idUser = params._id_user;
@@ -26,6 +26,15 @@ export async function GET(
   } catch (error: unknown) {
     console.error("Error get alerts:", error);
 
+    if (axios.isAxiosError(error)) {
+      const serverError =
+        error.response?.data?.error || "An unknown server error occurred";
+      return NextResponse.json(
+        { message: "Server error while fetching alerts", error: serverError },
+        { status: error.response?.status || 500 } // Use status from Axios if available
+      );
+    }
+    
     if (error instanceof Error) {
       return NextResponse.json(
         { message: "Error getting alerts", error: error.message },
