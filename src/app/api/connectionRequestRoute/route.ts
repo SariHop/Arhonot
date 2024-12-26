@@ -3,7 +3,7 @@ import connect from "@/app/lib/db/mongoDB";
 import User from "@/app/lib/models/userSchema";
 import ConnectionRequest from "@/app/lib/models/connectionRequestSchema";
 import { Types } from "mongoose";
-// import Alert from "@/app/lib/models/alertSchema";
+import Alert from "@/app/lib/models/alertSchema";
 
 export async function GET() {
   try {
@@ -66,8 +66,7 @@ export async function POST(request: NextRequest) {
           },
           { status: 202 }
         );
-      }
-      else{
+      } else {
         return NextResponse.json(
           {
             success: true,
@@ -76,7 +75,6 @@ export async function POST(request: NextRequest) {
           },
           { status: 203 }
         );
-
       }
     } else {
       const newconnectionRequest = new ConnectionRequest(body);
@@ -85,7 +83,11 @@ export async function POST(request: NextRequest) {
       await newconnectionRequest.validate();
       const savedconnectionRequest = await newconnectionRequest.save();
       return NextResponse.json(
-        { success: true, data: savedconnectionRequest, message: "Connection request status created", },
+        {
+          success: true,
+          data: savedconnectionRequest,
+          message: "Connection request status created",
+        },
         { status: 200 }
       );
     }
@@ -144,14 +146,26 @@ export async function PUT(request: NextRequest) {
       receiver.children = [...(receiver.children || []), objSender];
 
     // שמירת השינויים ב-DB
-    const senderAfterSave= await sender.save();
-    const receiverAfterSave= await receiver.save();
-
+    const senderAfterSave = await sender.save();
+    const receiverAfterSave = await receiver.save();
+    const formattedDesc = `בקשת החיבור שלך ל${receiverAfterSave.userName} התקבל והנך מקושר/ת כעת ל${receiver.userName}`;
+    const alert = new Alert({
+      userId: senderAfterSave._id,
+      title: "בקשת התחברות נענתה בהצלחה",
+      desc: formattedDesc,
+      date: new Date(),
+      readen: false,
+    });
+    alert.save();
     return NextResponse.json(
-      { success: true, message: "Connections updated successfully",data:{
-        sender: senderAfterSave,
-        receiver: receiverAfterSave,
-      },},
+      {
+        success: true,
+        message: "Connections updated successfully",
+        data: {
+          sender: senderAfterSave,
+          receiver: receiverAfterSave,
+        },
+      },
       { status: 200 }
     );
   } catch (error: unknown) {
