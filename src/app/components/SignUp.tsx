@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { userSchemaZod, IUserType } from "@/app/types/IUser";
 import { ZodError } from "zod";
 import { signup, createSubAccount } from "@/app/services/userServices";
@@ -11,9 +11,12 @@ import { useCityQuery } from "@/app/hooks/cityQueryHook";
 import { Select } from "antd";
 import { DefaultOptionType } from "antd/es/select";
 import { usePathname, useRouter } from "next/navigation"; // ייבוא מתוך next/navigation
+import {initialize} from "@/app/store/alertsCounterStore"
+import useUser from "../store/userStore";
 
 const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const user = useUser();
   const [formData, setFormData] = useState<IUserType>({
     password: "",
     confirmPassword: "",
@@ -25,6 +28,13 @@ const SignUp = () => {
     city: "ירושלים",
     sensitive: "none",
   });
+  useEffect(() => {
+    if (!user._id) {
+      console.log("Waiting for user ID to load...");
+      return;
+    }
+    initialize(user._id);
+  }, [user._id]);
 
   const [errors, setErrors] = useState<
     Partial<Record<keyof IUserType, string>>
@@ -43,7 +53,7 @@ const SignUp = () => {
     ? "יצירת חשבון מקושר"
     : "ברוך הבא";
 
-    const buttonSubmit = isSignUpPage
+  const buttonSubmit = isSignUpPage
     ? "התחברות:"
     : isUserPage
     ? "יצירת חשבון מקושר"
@@ -65,32 +75,43 @@ const SignUp = () => {
       const validationResult = await userSchemaZod.parseAsync(formData);
       console.log("הנתונים תקינים:", validationResult);
       setErrors({});
-  
+
       let result;
       if (isUserPage) {
         result = await createSubAccount(formData);
       } else {
         result = await signup(formData);
-      }  
-      if (result.success) {
-        console.log("Signup successful:", result.data);        
-        router.push("/pages/user"); // הפניה לעמוד הבית
+      }
+      if (
+        "status" in result &&
+        (result.status === 200 || result.status === 201)
+      ) {
+        if (result.success) {
+          console.log("Signup successful:", result.data);
+          toast.success("החשבון נוצר בהצלחה");
+          router.push("/pages/user"); // הפניה לעמוד הבית
+        } else if (!result.success) {
+          console.log("result.success", result.success);
+        } else {
+          console.log("status is not existing in result");
+        }
       } else {
         if ("status" in result && result.status !== undefined) {
-          if( result.status === 403){
+          if (result.status === 403) {
             toast.error("הסיסמה שהקשת שגויה");
           }
           if (result.status === 404) {
             toast.error("אימייל זה כבר קיים במערכת,\nנסה אולי התחברות");
           } else if (result.status === 402) {
             toast.error("העיר שנבחרה לא תקינה");
-          } else {
+          } else if ("message" in result) {
             toast.error(`Signup failed: \n${result.message}`);
           }
         } else {
+          console.log("", result);
           toast.error("שגיאה כללית בעת ההרשמה");
         }
-  
+
         setIsSubmitting(false);
       }
     } catch (err) {
@@ -106,7 +127,6 @@ const SignUp = () => {
       setIsSubmitting(false);
     }
   };
-  
 
   if (isLoading) return <div>מחפש...</div>;
   if (error) return <div>שגיאה בטעינת ערים {String(error)}</div>;

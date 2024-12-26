@@ -2,7 +2,9 @@
 import { fetchUserAlerts, updateAlertStatus } from "@/app/services/AlertsServices";
 import { AlertProps, AlertTypeFotCollapse, IAlertTypeWithId } from "@/app/types/IAlert";
 import { Collapse, Tabs } from "antd";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 
 const Alert: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => {
@@ -24,7 +26,6 @@ const Alert: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => {
         const returnAlerts: AlertTypeFotCollapse[] = [];
         try {
           const alerts: IAlertTypeWithId[] = await fetchUserAlerts(
-            // "675007691ba3350d49f9b4e5"
             userId
           );
     
@@ -46,27 +47,54 @@ const Alert: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => {
           return returnAlerts;
         } catch (error) {
           console.error("Failed to fetch alerts in getAlerts:", error);
+          if (axios.isAxiosError(error)) {
+            const serverError = error.response?.data?.error || "Unknown server error";
+            const status = error.response?.status || 500;
+      
+            // מציג הודעה מפורטת למשתמש
+            if (status === 400) {
+              toast.error("שגיאה בקבלת נתונים, נסה שוב.");
+            } else {
+              toast.error(`שגיאת שרת: ${serverError}`);
+            }
+          } else {
+            toast.error("שגיאה בטעינת התראות משתמש");
+          }
           return []; // החזרת מערך ריק במקרה של שגיאה
         }
       };
 
       const handlePanelAlertsChange = async (key: string | string[]) => {
-        if (Array.isArray(key)) {
-          key = key[key.length - 1];
-        }
-        if (typeof key !== "string") {
-          return;
-        }
-    
-        const updatedAlerts = alerts.map((alert) => {
-          if (alert.key === key && !alert.readen) {
-            decreaseAlertCounter();
-            updateAlertStatus(key); 
-            return { ...alert, readen: true, label: <span>{alert.title}</span> };
+        try{
+          if (Array.isArray(key)) {
+            key = key[key.length - 1];
           }
-          return alert;
-        });
-        setAlerts(updatedAlerts);
+          if (typeof key !== "string") {
+            return;
+          }
+      
+          const updatedAlerts = alerts.map((alert) => {
+            if (alert.key === key && !alert.readen) {
+              decreaseAlertCounter();
+              updateAlertStatus(key); 
+              return { ...alert, readen: true, label: <span>{alert.title}</span> };
+            }
+            return alert;
+          });
+          setAlerts(updatedAlerts);
+      }catch(error){
+        console.error(
+          "Error fetching alerts:",
+          error || "Invalid response format"
+        );
+        if (axios.isAxiosError(error)) {
+          const serverError = error.response?.data?.error || "אירעה שגיאה בלתי צפויה";
+          toast.error(`שגיאת שרת: ${serverError}`);
+        } else {
+          toast.error(" אירעה שגיאה בלתי צפויה בעדכון התראה" );
+        }
+        toast.error("שגיאה בעדכון התראה");
+      }
       };
 
       const renderAlerts = (status: boolean) =>

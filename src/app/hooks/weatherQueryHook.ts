@@ -16,7 +16,7 @@ export const useWeatherQuery = (/*{ enabled }: { enabled: boolean }*/)  => {
       } catch (error: unknown) {
         const errorMessage = (error instanceof Error) ? error.message : 'שגיאה לא ידועה';
         toast.error(`לא הצלחנו למשוך את נתוני מזג האוויר: ${errorMessage}`);
-        throw error; 
+        return {}; 
       }
     },
     staleTime: 24 * 60 * 60 * 1000, // נתונים תקפים ל-24 שעות

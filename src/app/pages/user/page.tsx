@@ -41,7 +41,8 @@ const Page = () => {
               console.log("looks from algorithem: ", looks);
               addToAllLooks(looks);
             } catch (error) {
-              toast.error(`${error || 'Unknown error'}`, {
+              console.log("error with algorithem", error);
+              toast.error("לא הצלחנו להביא את הלוקים המתאימים", {
                 position: 'top-right',
                 autoClose: 3000,
               });
@@ -49,11 +50,17 @@ const Page = () => {
           }
         } catch (error: unknown) {
           if (axios.isAxiosError(error)) {
-            console.error("Axios error:", error.response?.data || error.message);
-          } else if (error instanceof Error) {
-            console.error("Unexpected error:", error.message);
+            const serverError = error.response?.data?.error || "Unknown server error";
+            const status = error.response?.status || 500;
+      
+            if(status===500){
+              toast.error(`שגיאת שרת: ${serverError}`);
+            }
+            else{
+              toast.error("אירעה שגיאה לא צפויה בעת טעינת לוקים");
+            }
           } else {
-            console.error("Unknown error occurred.");
+            toast.error(" אירעה שגיאה בעת טעינת לוקים");
           }
           setOutfits([]);
           if (weatherData) {
@@ -75,27 +82,27 @@ const Page = () => {
         const response = await setLooksForDay(weatherData.list, user._id, selectedDate, selectedLooks);
 
         if (response.success) {
-          toast.success('השינויים נשמרו בהצלחה!', {
+          toast.success("השינויים נשמרו בהצלחה", {
             position: 'top-right',
             autoClose: 3000,
           });
         } else {
           if (response && response.error) {
-            toast.error(`Failed to save changes: ${response.error || 'Unknown error'}`, {
+            toast.error(`שגיאה בשמירת נתונים: ${response.error || 'Unknown error'}`, {
               position: 'top-right',
               autoClose: 3000,
             });
           }
         }
       } else {
-        toast.warn('Missing required data to save changes.', {
+        toast.warn('חסר נתוני מזג אוויר כדי לשמור את השינוים', {
           position: 'top-right',
           autoClose: 3000,
         });
       }
     } catch (error) {
       console.error('Error fetching data:', error);
-      toast.error('An unexpected error occurred.', {
+      toast.error('אירעה שגיאה בלתי צפויה בעת שמירת הנתונים', {
         position: 'top-right',
         autoClose: 3000,
       });

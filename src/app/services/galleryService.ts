@@ -1,3 +1,4 @@
+// פנקציה זו מחזירה כמה פריטים לשים בגלריה  לפי גודל המסך
 export const numberOfItemsInPage = () => {
     if(window.innerWidth > 1535) return 9*3;
     if(window.innerWidth > 1279) return 8*4;

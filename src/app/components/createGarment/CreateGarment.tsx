@@ -110,7 +110,7 @@ const CreateGarment = ({garment, closeModal= () => {} }:{garment: IGarment|null,
           const newGarment = await createGarment(garmentWithUserId);
           addGarment(newGarment);
         }
-        toast.success(isGalleryPage? "הבגד עודכן בהצלחה!": "הבגד נוצר בהצלחה!");
+        toast.success(isGalleryPage? "הבגד עודכן בהצלחה": "הבגד נוצר בהצלחה, ונוסף לגלריה שלך");
         setFormData({
           desc: "",
           season: "",

@@ -3,8 +3,7 @@ import React, { useEffect, useState } from "react";
 import { IDayWithLooks, IOutfitsModalProps } from "../../types/IDay";
 import UserOutfits from "./UserOutfits";
 import { getChildrenLooks } from "@/app/services/daysService";
-import axios from "axios";
-import { toast } from "react-toastify";
+
 
 const OutfitsModal: React.FC<IOutfitsModalProps> = ({isOpen, setIsOpen, dateDetails, date}) => {
   const [childrensLooks, setChildrensLooks] = useState<Record<string, IDayWithLooks>>({});
@@ -23,13 +22,6 @@ const OutfitsModal: React.FC<IOutfitsModalProps> = ({isOpen, setIsOpen, dateDeta
       setChildrensLooks(response);
     } catch (error) {
       console.error("Failed to process user looks:", error);
-      if (axios.isAxiosError(error)) {
-        const serverError =
-          error.response?.data?.error || "Unknown server error";
-        toast.error(`Server Error: ${serverError}`);
-      } else {
-        toast.error("An unexpected error occurred");
-      }
     } finally {
       setIsLoading(false); // הסרת טוען
     }
