@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { IOutfitProps } from "../../../types/IOutfit";
-import { useRouter } from 'next/navigation';
 import useCanvasStore from "@/app/store/canvasStore";
 import { IoMdClose } from "react-icons/io";
 import useOutfits from "@/app/store/outfitsStore";
@@ -15,7 +14,6 @@ const Outfit = ({ outfit, closeModal }: IOutfitProps) => {
     const [updateOpen, setUpdateOpen] = useState(false);
     const { deleteOutfit: deleteFromStore } = useOutfits();
     const [isDeleting, setIsDeleting] = useState(false); // מצב המחיקה
-    const router = useRouter();
     const { setEditOutfit, setGarments } = useCanvasStore();
     
     const toggleMenu = () => {
@@ -90,7 +88,7 @@ const Outfit = ({ outfit, closeModal }: IOutfitProps) => {
         const garmentIds = outfit.clothesId.map((id) => id.toString());
         setGarments(garmentIds);
         setEditOutfit(outfit);
-        router.push("/pages/user/outfit_form");
+        // router.push("/pages/user/outfit_form");
         } catch(error) {
             console.log("error accured while editing outfit: ", error)
 
@@ -196,8 +194,11 @@ const Outfit = ({ outfit, closeModal }: IOutfitProps) => {
             </div>)}
         <div onClick={(e) => e.stopPropagation()}>
           {updateOpen && (
+            
             // <UpdateGarment outfit={outfit} closeModal={closeModal} />
-            <p></p>
+            <div>  <p>akup kur</p>
+              </div>
+          
           )}
         </div>
         </div>
