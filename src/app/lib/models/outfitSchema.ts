@@ -35,10 +35,6 @@ export const OutfitSchema: Schema<IOutfit> = new Schema({
         required: true, 
         enum: [1, 2, 3, 4, 5, 6, 7] 
     },
-    canvasJson:{
-        type: Object,
-        require:true
-    }
 });
 
 const Outfit: Model<IOutfit> = mongoose.models.Outfit || mongoose.model<IOutfit>('Outfit', OutfitSchema);

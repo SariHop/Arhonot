@@ -1,22 +1,17 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { IOutfitType, outfitSchemaZod } from '@/app/types/IOutfit'
-import Image from "next/image";
+// import { IOutfitType, outfitSchemaZod } from '@/app/types/IOutfit'
 import { Rate } from "antd";
-import useUser from "@/app/store/userStore";
 import { validSeasons, tags, rangeWheatherDeescription } from "@/app/data/staticArrays"
-import { cloudinaryUploud } from "@/app/services/image/saveToCloudinary";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useCanvasStore from "@/app/store/canvasStore";
 import { useRouter } from 'next/navigation';
 import { ZodError } from "zod";
-import { createOutfit } from "@/app/services/outfitServices"
-import ButtonNavigathion from '@/app/components/createOutfit/ButtonNavigathion'
+// import { updateOutfit } from "@/app/services/outfitServices"
 
 const OutfitForm: React.FC = () => {
-    const { _id: userId } = useUser((state) => state);
-    const { garments, canvasUrl, setCanvas, setGarments, setSelectedObject } = useCanvasStore();
+    const { editOutfit } = useCanvasStore();
 
     // State for form fields
     const [season, setSeason] = useState("");
@@ -24,32 +19,21 @@ const OutfitForm: React.FC = () => {
     const [rangeWeather, setRangeWeather] = useState(4);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [rate, setRate] = useState(0);
-    // img
-    const [outfitFromCloudinary, setOutfitFromCloudinary] = useState("");
-    const [isImageLoading, setIsImageLoading] = useState(true);
+
     // error messege
     const [errormessege, setErrormessege] = useState("");
 
     const router = useRouter()
 
     useEffect(() => {
-        const saveImageToCloudinary = async () => {
-            try {
-                setIsImageLoading(true);
-                const { imageUrl } = await cloudinaryUploud(canvasUrl); // שם מתוקן
-                setOutfitFromCloudinary(imageUrl);
-                setIsImageLoading(false);
-
-            } catch (error) {
-                console.error("Image upload error:", error);
-                toast.error("שגיאה בטעינת הלוק");
-            }
-        };
-
-        saveImageToCloudinary();
-
-    }, [canvasUrl]);
-
+        if (editOutfit) {
+            setSeason(editOutfit.season);
+            setDescription(editOutfit.desc || "");
+            setRangeWeather(editOutfit.rangeWheather);
+            setSelectedTags(editOutfit.tags);
+            setRate(editOutfit.favorite);
+        }
+    }, [editOutfit]);
 
     const handleTagChange = (tag: string, checked: boolean) => {
         setSelectedTags((prevTags) =>
@@ -60,25 +44,21 @@ const OutfitForm: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const outfitFinal: IOutfitType = {
-            userId: String(userId),
-            clothesId: garments,
+        const outfitFinal = {
             desc: description,
             season: season,
             tags: selectedTags,
-            img: outfitFromCloudinary,
             favorite: rate,
             rangeWheather: rangeWeather,
         };
 
         try {
-            await outfitSchemaZod.parseAsync(outfitFinal);
-            await createOutfit(outfitFinal);
-            toast.success("לוק נוצר בהצלחה!");
-            // לנקות את הקנבס?
-            setCanvas(null)
-            setGarments([])
-            setSelectedObject(null)
+            debugger
+            const submitOutfit = { ...editOutfit, ...outfitFinal };
+            console.log(submitOutfit)
+            // await outfitSchemaZod.parseAsync(submitOutfit);
+            // await updateOutfit(submitOutfit, editOutfit._id as string);
+            toast.success("לוק עודכן בהצלחה!");
             router.push("/pages/user");
 
         } catch (err) {
@@ -96,31 +76,7 @@ const OutfitForm: React.FC = () => {
     return (
         <>
             <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-7 bg-white rounded shadow-md space-y-4 ">
-                <ButtonNavigathion value="חזרה לעמוד עריכה" path="outfit_canvas" />
-                <h1 className="text-2xl font-semibold text-center">יצירת לבוש </h1>
-
-                {/* Image Preview */}
-                <div className="relative flex flex-col items-center">
-                    <div className="relative w-full max-w-sm h-64 overflow-hidden rounded-lg border shadow-sm mb-4">
-                        {isImageLoading ? (
-                            <div className="flex items-center justify-center w-full h-full bg-gray-200">
-                                <p className="text-gray-600">טוען תמונה...</p>
-                            </div>
-                        ) : outfitFromCloudinary ? (
-                            <Image
-                                src={outfitFromCloudinary}
-                                layout="fill"
-                                style={{ objectFit: "contain" }}
-                                alt="תמונה ללא רקע"
-                                className="rounded-lg"
-                            />
-                        ) : (
-                            <div className="flex items-center justify-center w-full h-full bg-gray-100">
-                                <p className="text-gray-500">תמונה לא זמינה</p>
-                            </div>
-                        )}
-                    </div>
-                </div>
+                <h1 className="text-2xl font-semibold text-center">{editOutfit ? "עריכת לבוש" : "יצירת לבוש"} </h1>
 
                 {/* Season Selector */}
                 <select
@@ -200,13 +156,9 @@ const OutfitForm: React.FC = () => {
                 {/* Submit Button */}
                 <button
                     type="submit"
-                    disabled={!outfitFromCloudinary || isImageLoading}
-                    className={`w-full py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 ${!outfitFromCloudinary || isImageLoading
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-indigo-600 text-white hover:bg-indigo-700"
-                        }`}
+                    className={`w-full py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 `}
                 >
-                    צור לבוש
+                    שמור שינויים
                 </button>
             </form>
         </>
