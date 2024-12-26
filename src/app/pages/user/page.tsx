@@ -75,7 +75,7 @@ const Page = () => {
         const response = await setLooksForDay(weatherData.list, user._id, selectedDate, selectedLooks);
 
         if (response.success) {
-          toast.success('Changes saved successfully!', {
+          toast.success('השינויים נשמרו בהצלחה!', {
             position: 'top-right',
             autoClose: 3000,
           });

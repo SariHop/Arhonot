@@ -96,7 +96,7 @@ const GarmentForm = () => {
 
       try {
         await createGarment(garmentWithUserId);
-        toast.success("Garment created successfully!");
+        toast.success("הבגד נוצר בהצלחה!");
         setFormData({
           desc: "",
           season: "",
