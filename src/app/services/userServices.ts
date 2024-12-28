@@ -406,65 +406,94 @@ export const getUser = async (userId: Types.ObjectId) => {
   }
 };
 //פונקציה למעבר בין חשבונות מקושרים
-export const SwitchAccounts = async (
+export const SwitchAccount = async (
   senderId: Types.ObjectId,
   selectedUser: string
 ) => {
-  // const { setUser } = useUser.getState();
-  // const { setOriginUser } = useOriginUser.getState();
+  const { setUser } = useUser.getState();
+  const { setOriginUser } = useOriginUser.getState();
   try {
-    const { _id: userId } = useUser.getState();
-    const { _id: originUserId } = useOriginUser.getState();
     //אימות משתמש
     const authResult = await getOriginUserDataWithAuthentication();
     if (authResult.success) {
-      const response = await getUser(senderId);
-      if (!response) {
-        toast.error("משתמש מבקש לא קיים.");
-        return { success: false, message: "Sender not found." };
-      }
-      console.log("response", response);
-      const { children } = response;
-
-      // תנאי 1: אם יוזר מקןרי- שולח- והיוזר הנבחר זהים
-      if (userId?.toString() === originUserId?.toString() && selectedUser) {
-        if (children.includes(selectedUser)) {
-          toast.success("הועברת לחשבון המבוקש");
-          return { success: true, message: "Switched account successfully." };
-        } else {
-          toast.error("אינך מורשה לעבור לחשבון המבוקש");
-          return {
-            success: false,
-            message: "You are not authorized to access the selected account.",
-          };
-        }
+      if (!selectedUser) {
+        toast.error("יש לבחור יוזר.");
+        return { success: false, message: "No user selected." };
       }
 
-      // תנאי 2: אם יוזר מקורי- השולח- והיוזר הנבחר שונים
-      if (userId?.toString() !== originUserId?.toString() && selectedUser) {
-        if (
-          children.includes(selectedUser) ||
-          selectedUser.toString() === userId?.toString()
-        ) {
-          console.log("Switching account.");
-          toast.success("הועברת לחשבון המבוקש");
-          return { success: true, message: "Switched account successfully." };
-        } else {
-          toast.error("אינך מורשה לעבור לחשבון המבוקש");
-          return {
-            success: false,
-            message: "You are not authorized to access the selected account.",
-          };
-        }
+      const response = await axios.get(`/api/userExtraPermissions`, {
+        params: { sender: senderId, receiver: selectedUser },
+      });
+      const { data } = response;
+      // בדיקת תגובת השרת
+      if (data.success) {
+        toast.success("הועברת לחשבון המבוקש");
+          setOriginUser(response.data.sender)
+          console.log("Origin user state after signup:", useOriginUser.getState());
+          setUser(response.data.receiver); //עדכון הUserOriginStore
+          console.log("User state after signin:", useUser.getState())
+        
+        return {
+          success: true,
+          message: "Switched account successfully.",
+          data: data.data,
+        };
+      } else {
+        toast.error(data.message || "אינך מורשה לעבור לחשבון המבוקש");
+        return {
+          success: false,
+          message:
+            data.message || "Unauthorized access to the selected account.",
+        };
       }
-      toast.error("אינך מורשה לעבור לחשבון המבוקש");
+    } else {
+      // משתמש שאינו מורשה
       return {
         success: false,
-        message: "Unauthorized access to the selected account.",
+        message: "אין לך הרשאה לבצע פעולה זו.",
+        status: 403,
       };
     }
-  } catch (error) {
-    console.error(error);
-    return { success: false, message: "An error occurred switching account" };
+  } catch (error: unknown) {
+    console.error("Error during account switch:", error);
+
+    // טיפול בשגיאות מהשרת
+    if (axios.isAxiosError(error)) {
+      // טיפול בשגיאות AxiosError
+      const { response } = error;
+      if (response?.data) {
+        const { error: serverError, message } = response.data;
+        const translatedMessage = translateServerMessage(
+          serverError || message
+        );
+        if (translatedMessage) {
+          toast.error(translatedMessage);
+          return { success: false, message: translatedMessage };
+        }
+      }
+    }
+
+    // טיפול בשגיאות כלליות
+    toast.error("אירעה שגיאה במעבר לחשבון המבוקש.");
+    return {
+      success: false,
+      message: "אירעה שגיאה במעבר לחשבון המבוקש.",
+    };
   }
+};
+
+// פונקציה לתרגום הודעות השרת לעברית
+const translateServerMessage = (message: string): string => {
+  const translations: { [key: string]: string } = {
+    "Sender not found in the database": "השולח לא נמצא במערכת.",
+    "Receiver not found in the database": "המקבל לא נמצא במערכת.",
+    "Both sender and receiver IDs are required":
+      "יש לספק מזהה שולח ומזהה מקבל.",
+    "Invalid sender or receiver ID": "מזהה שולח או מקבל אינו חוקי.",
+    "Receiver is not authorized for this sender":
+      "אינך מורשה לעבור לחשבון המבוקש.",
+    "Error validating connection": "שגיאה באימות הנתונים.",
+  };
+
+  return translations[message] || message; // ברירת מחדל: מחזיר את ההודעה המקורית אם אין תרגום
 };
