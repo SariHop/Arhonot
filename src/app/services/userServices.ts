@@ -344,13 +344,19 @@ export const createSubAccount = async (formData: IUserType) => {
       const response = await axios.post("/api/userExtraPermissions", data);
       if (response.status === 200 || response.status === 201) {
         const userId = response.data.data._id;
-        useUser.getState().updateChildren([...useUser.getState().children, userId]); // עדכון ה-UserStore
-        useOriginUser.getState().updateChildren([...useOriginUser.getState().children, userId]); // עדכון ה-UserOriginStore
+        useUser
+          .getState()
+          .updateChildren([...useUser.getState().children, userId]); // עדכון ה-UserStore
+        useOriginUser
+          .getState()
+          .updateChildren([...useOriginUser.getState().children, userId]); // עדכון ה-UserOriginStore
 
         console.log("User state after createSubAccount:", useUser.getState());
-        console.log("Origin user state after createSubAccount:", useOriginUser.getState());
-        return { success: true, data: response.data,status: response.status};
-
+        console.log(
+          "Origin user state after createSubAccount:",
+          useOriginUser.getState()
+        );
+        return { success: true, data: response.data, status: response.status };
       } else {
         const message =
           response.data?.message || "שגיאה לא ידועה ביצירת חשבון המשני.";
@@ -379,7 +385,6 @@ export const createSubAccount = async (formData: IUserType) => {
 
 //פונקציה לחיפוש משתמש עפ"י מייל
 export const getUserByEmail = async (emailInput: string) => {
-
   try {
     const response = await axios.get(`${apiUrl}/searchRoute/${emailInput}`);
     return response.data.data;
@@ -393,7 +398,6 @@ export const getUser = async (userId: Types.ObjectId) => {
   try {
     const response = await axios.get(`${apiUrl}/${userId}`);
     console.log("response.data", response.data);
-    console.log("response.data.data", response.data.data);
 
     return response.data;
   } catch (error) {
@@ -402,21 +406,65 @@ export const getUser = async (userId: Types.ObjectId) => {
   }
 };
 //פונקציה למעבר בין חשבונות מקושרים
-// export const SwitchAccounts = async (userId: Types.ObjectId) => {
-//   const { setUser } = useUser.getState();
-//   const { setOriginUser } = useOriginUser.getState();
-//   try {
-//     const { _id: userId2 } = useUser.getState();
-//     const { _id: originUserId } = useOriginUser.getState();
-//     if (userId2?.toString() === originUserId?.toString()) {
-//       //אימות משתמש
-//       const authResult = await getOriginUserDataWithAuthentication();
-//       if (authResult.success) {
-//         const response= await getUser(userId);
-//         console.log('response',response);
-        
-//       } else {
-//       }
-//     }
-//   } catch (error) {}
-// };
+export const SwitchAccounts = async (
+  senderId: Types.ObjectId,
+  selectedUser: string
+) => {
+  // const { setUser } = useUser.getState();
+  // const { setOriginUser } = useOriginUser.getState();
+  try {
+    const { _id: userId } = useUser.getState();
+    const { _id: originUserId } = useOriginUser.getState();
+    //אימות משתמש
+    const authResult = await getOriginUserDataWithAuthentication();
+    if (authResult.success) {
+      const response = await getUser(senderId);
+      if (!response) {
+        toast.error("משתמש מבקש לא קיים.");
+        return { success: false, message: "Sender not found." };
+      }
+      console.log("response", response);
+      const { children } = response;
+
+      // תנאי 1: אם יוזר מקןרי- שולח- והיוזר הנבחר זהים
+      if (userId?.toString() === originUserId?.toString() && selectedUser) {
+        if (children.includes(selectedUser)) {
+          toast.success("הועברת לחשבון המבוקש");
+          return { success: true, message: "Switched account successfully." };
+        } else {
+          toast.error("אינך מורשה לעבור לחשבון המבוקש");
+          return {
+            success: false,
+            message: "You are not authorized to access the selected account.",
+          };
+        }
+      }
+
+      // תנאי 2: אם יוזר מקורי- השולח- והיוזר הנבחר שונים
+      if (userId?.toString() !== originUserId?.toString() && selectedUser) {
+        if (
+          children.includes(selectedUser) ||
+          selectedUser.toString() === userId?.toString()
+        ) {
+          console.log("Switching account.");
+          toast.success("הועברת לחשבון המבוקש");
+          return { success: true, message: "Switched account successfully." };
+        } else {
+          toast.error("אינך מורשה לעבור לחשבון המבוקש");
+          return {
+            success: false,
+            message: "You are not authorized to access the selected account.",
+          };
+        }
+      }
+      toast.error("אינך מורשה לעבור לחשבון המבוקש");
+      return {
+        success: false,
+        message: "Unauthorized access to the selected account.",
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: "An error occurred switching account" };
+  }
+};

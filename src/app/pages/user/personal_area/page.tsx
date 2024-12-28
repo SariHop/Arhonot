@@ -8,10 +8,12 @@ import CreateSubAccount from '@/app/components/userPersonalArea/CreateSubAccount
 import ConnectExisting from '@/app/components/userPersonalArea/ConnectExisting'
 import DisconnectAccount from '@/app/components/userPersonalArea/DisconnectAccount'
 import SwitchAccounts from '@/app/components/userPersonalArea/SwitchAccounts'
+import useOriginUser from "@/app/store/originUserStore";
 
 const PersonalArea = () => {
   const [activeKey, setActiveKey] = useState<string | null>(null);
-  const { userName } = useUser();
+  const { userName: currentUser } = useUser();
+  const {userName: originUser} = useOriginUser();
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const handleTogglePanel = (key: string | null) => {
     setActiveKey(key);
@@ -51,10 +53,13 @@ const PersonalArea = () => {
           : "w-1/3" 
        }`}
       >
-        {userName && !isMobile && (
-          <h1 className="text-xl font-bold mb-6 text-center">
-            שלום {userName}
-          </h1>
+        {currentUser && originUser && !isMobile && (
+          <div>
+          <h2 className="mb-1 text-center">
+            שלום {originUser} 😊
+          </h2>
+          <h2 className='font-bold text-lg text-center'>הנך מחובר/ת כ: {currentUser}</h2>
+          </div>
         )}
         <div className="flex flex-col gap-3 w-full">
           {[{key: "settings", icon: <FaCog />, label: "הגדרות" },
@@ -69,7 +74,7 @@ const PersonalArea = () => {
               onClick={() => handleTogglePanel(key)}
               className={`w-full flex items-center gap-3 p-3 rounded-md text-right transition-colors duration-300 ${
                 activeKey === key
-                  ? "bg-blue-500 text-white"
+                  ? "bg-indigo-500 text-white"
                   : "bg-white hover:bg-gray-200"
               }`}
             >

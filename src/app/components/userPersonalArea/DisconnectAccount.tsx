@@ -20,8 +20,6 @@ const ConnectionList = () => {
     const fetchUserData = async () => {
       if (!senderId) return;
       try {
-        
-
         const response = await getUser(senderId);
         console.log("Response:", response); 
         if (response?.success) {
@@ -37,7 +35,6 @@ const ConnectionList = () => {
 
     fetchUserData();
   }, [senderId]);
-
 
   const handleUserClick = (receiverId: string) => {
     setSelectedUser(receiverId);
@@ -111,13 +108,13 @@ const ConnectionList = () => {
                 className="bg-indigo-500 text-white font-bold ml-4 px-4 py-2 rounded hover:bg-indigo-800"
                 onClick={handleCancelConnection}
               >
-                כן
+                V
               </button>
               <button
                 className="bg-gray-300 text-black font-bold px-4 py-2 rounded hover:bg-gray-400"
                 onClick={handleCancelDialog}
               >
-                לא
+                X
               </button>
             </div>
           </div>
