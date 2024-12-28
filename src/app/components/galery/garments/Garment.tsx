@@ -8,7 +8,7 @@ import { FaBars, FaTrash, FaEdit } from "react-icons/fa";
 import { deleteGarment } from "@/app/services/garmentService";
 import CreateGarment from "../../createGarment/CreateGarment";
 import useGarments from "@/app/store/garmentsStore";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 const Garment = ({ garment, closeModal }: GarmentProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -186,7 +186,6 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
           )}
         </div>
       </div>
-      <ToastContainer position="top-center" autoClose={false} hideProgressBar />
     </>
   );
 };
