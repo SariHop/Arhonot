@@ -82,7 +82,6 @@ const Outfit = ({ outfit, closeModal }: IOutfitProps) => {
     
 
     const handleEdit = () => {
-        debugger
         setUpdateOpen(true);
     };
 

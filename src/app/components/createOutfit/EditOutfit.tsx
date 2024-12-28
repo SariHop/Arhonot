@@ -1,14 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { IOutfitProps, outfitSchemaZod } from '@/app/types/IOutfit'
-// import { IOutfitProps, IOutfitType, outfitSchemaZod } from '@/app/types/IOutfit'
 import { Rate } from "antd";
 import { validSeasons, tags, rangeWheatherDeescription } from "@/app/data/staticArrays"
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useRouter } from 'next/navigation';
 import { ZodError } from "zod";
-// import { updateOutfit } from "@/app/services/outfitServices";
+import { updateOutfit } from "@/app/services/outfitServices";
 
 const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
 
@@ -19,10 +17,10 @@ const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [rate, setRate] = useState(0);
 
-    // error messege
+    // messege
     const [errormessege, setErrormessege] = useState("");
+    const [isUpdating, setIsUpdating] = useState(false);
 
-    const router = useRouter()
 
     useEffect(() => {
         if (outfit) {
@@ -42,6 +40,7 @@ const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsUpdating(true);
 
         const outfitFinal = {
             desc: description,
@@ -52,13 +51,18 @@ const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
         };
 
         try {
-            debugger
-            const submitOutfit = { ...outfit, ...outfitFinal };
+            const submitOutfit = {
+                ...outfit,
+                ...outfitFinal,
+                userId: outfit.userId.toString(),
+                clothesId: outfit.clothesId.map((id) => id.toString())
+            };
+
             console.log(submitOutfit)
             await outfitSchemaZod.parseAsync(submitOutfit);
-            // await updateOutfit(submitOutfit, editOutfit._id as string);
+            await updateOutfit(submitOutfit, outfit._id as string);
             toast.success("לוק עודכן בהצלחה!");
-            router.push("/pages/user");
+            closeModal()
 
         } catch (err) {
             if (err instanceof ZodError) {
@@ -69,6 +73,8 @@ const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
                 console.error("Unexpected error:", err);
                 setErrormessege("שגיאה . נסה שנית!");
             }
+        } finally {
+            setIsUpdating(false); // החזר את המצב לנורמלי
         }
     };
 
@@ -155,10 +161,15 @@ const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
                 {/* Submit Button */}
                 <button
                     type="submit"
-                    className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    disabled={isUpdating} // חסום את הכפתור בזמן עדכון
+                    className={`w-full py-2 px-4 rounded-md focus:outline-none focus:ring-2 ${isUpdating
+                            ? "bg-gray-400 text-white cursor-not-allowed"
+                            : "bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500"
+                        }`}
                 >
-                    עדכן לבוש
+                    {isUpdating ? "מעדכן..." : "עדכן לבוש"}
                 </button>
+
 
                 <button
                     type="button"
