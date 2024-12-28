@@ -1,17 +1,16 @@
 "use client";
 import React, { useState, useEffect } from "react";
-// import { IOutfitType, outfitSchemaZod } from '@/app/types/IOutfit'
+import { IOutfitProps, outfitSchemaZod } from '@/app/types/IOutfit'
+// import { IOutfitProps, IOutfitType, outfitSchemaZod } from '@/app/types/IOutfit'
 import { Rate } from "antd";
 import { validSeasons, tags, rangeWheatherDeescription } from "@/app/data/staticArrays"
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import useCanvasStore from "@/app/store/canvasStore";
 import { useRouter } from 'next/navigation';
 import { ZodError } from "zod";
-// import { updateOutfit } from "@/app/services/outfitServices"
+// import { updateOutfit } from "@/app/services/outfitServices";
 
-const OutfitForm: React.FC = () => {
-    const { editOutfit } = useCanvasStore();
+const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
 
     // State for form fields
     const [season, setSeason] = useState("");
@@ -26,14 +25,14 @@ const OutfitForm: React.FC = () => {
     const router = useRouter()
 
     useEffect(() => {
-        if (editOutfit) {
-            setSeason(editOutfit.season);
-            setDescription(editOutfit.desc || "");
-            setRangeWeather(editOutfit.rangeWheather);
-            setSelectedTags(editOutfit.tags);
-            setRate(editOutfit.favorite);
+        if (outfit) {
+            setSeason(outfit.season);
+            setDescription(outfit.desc || "");
+            setRangeWeather(outfit.rangeWheather);
+            setSelectedTags(outfit.tags);
+            setRate(outfit.favorite);
         }
-    }, [editOutfit]);
+    }, [outfit]);
 
     const handleTagChange = (tag: string, checked: boolean) => {
         setSelectedTags((prevTags) =>
@@ -54,9 +53,9 @@ const OutfitForm: React.FC = () => {
 
         try {
             debugger
-            const submitOutfit = { ...editOutfit, ...outfitFinal };
+            const submitOutfit = { ...outfit, ...outfitFinal };
             console.log(submitOutfit)
-            // await outfitSchemaZod.parseAsync(submitOutfit);
+            await outfitSchemaZod.parseAsync(submitOutfit);
             // await updateOutfit(submitOutfit, editOutfit._id as string);
             toast.success("לוק עודכן בהצלחה!");
             router.push("/pages/user");
@@ -76,7 +75,7 @@ const OutfitForm: React.FC = () => {
     return (
         <>
             <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-7 bg-white rounded shadow-md space-y-4 ">
-                <h1 className="text-2xl font-semibold text-center">{editOutfit ? "עריכת לבוש" : "יצירת לבוש"} </h1>
+                <h1 className="text-2xl font-semibold text-center">{outfit ? "עריכת לבוש" : "יצירת לבוש"} </h1>
 
                 {/* Season Selector */}
                 <select
@@ -156,9 +155,17 @@ const OutfitForm: React.FC = () => {
                 {/* Submit Button */}
                 <button
                     type="submit"
-                    className={`w-full py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 `}
+                    className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
-                    שמור שינויים
+                    עדכן לבוש
+                </button>
+
+                <button
+                    type="button"
+                    onClick={closeModal}
+                    className="w-full bg-gray-400 text-white py-2 px-4 rounded-md mt-4 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                >
+                    ביטול
                 </button>
             </form>
         </>

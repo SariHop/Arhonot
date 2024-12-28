@@ -2,19 +2,18 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { IOutfitProps } from "../../../types/IOutfit";
-import useCanvasStore from "@/app/store/canvasStore";
 import { IoMdClose } from "react-icons/io";
 import useOutfits from "@/app/store/outfitsStore";
 import { toast } from "react-toastify";
 import { deleteOutfit } from "@/app/services/outfitServices";
 import { FaBars, FaEdit, FaTrash } from "react-icons/fa";
+import EditOutfit from "../../createOutfit/EditOutfit";
 
 const Outfit = ({ outfit, closeModal }: IOutfitProps) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [updateOpen, setUpdateOpen] = useState(false);
     const { deleteOutfit: deleteFromStore } = useOutfits();
     const [isDeleting, setIsDeleting] = useState(false); // מצב המחיקה
-    const { setEditOutfit, setGarments } = useCanvasStore();
     
     const toggleMenu = () => {
         setMenuOpen((prev) => !prev);
@@ -83,16 +82,7 @@ const Outfit = ({ outfit, closeModal }: IOutfitProps) => {
     
 
     const handleEdit = () => {
-        try{
-        // אם המערך בלוקל מלא לשאול לומר לו שיש שינויים שלא ישמרו
-        const garmentIds = outfit.clothesId.map((id) => id.toString());
-        setGarments(garmentIds);
-        setEditOutfit(outfit);
-        // router.push("/pages/user/outfit_form");
-        } catch(error) {
-            console.log("error accured while editing outfit: ", error)
-
-        }
+        debugger
         setUpdateOpen(true);
     };
 
@@ -193,16 +183,11 @@ const Outfit = ({ outfit, closeModal }: IOutfitProps) => {
                 </div>
             </div>)}
         <div onClick={(e) => e.stopPropagation()}>
-          {updateOpen && (
-            
-            // <UpdateGarment outfit={outfit} closeModal={closeModal} />
-            <div>  <p>akup kur</p>
-              </div>
-          
+          {updateOpen && (           
+            <EditOutfit closeModal={closeModal} outfit={outfit}/>
           )}
         </div>
         </div>
-        {/* <ToastContainer position="top-center" autoClose={false} hideProgressBar /> */}
 
     </>
 
