@@ -1,27 +1,26 @@
-import React from "react";
 import useDay from "@/app/store/currentDayStore";
 import Image from "next/image";
 import ShowGalery from "./ShowGalery";
 import Outfit from "../user/Outfit";
 
-const LooksList: React.FC<{ saveChanges: () => void }> = ({ saveChanges }) => {
+const LooksList: React.FC<{ saveChanges: () => void, changed:boolean, setChanged:(c: boolean) => void }> = ({ saveChanges, changed, setChanged }) => {
     const { allLooks, selectedLooks, selectLook } = useDay();
 
     return (
         <div className="flex flex-col gap-6">
             <div className="flex flex-wrap gap-4">
                 {allLooks.map((look) => (
-                    <Outfit key={look?._id || look.id} look={look} />
+                    <Outfit key={look?._id || look.id} look={look} setChanged={setChanged}/>
                 ))}
-                <ShowGalery />
+                <ShowGalery setChanged={setChanged}/>
             </div>
             {/* הצגת הלוקים הנבחרים */}
             <div className="flex flex-wrap gap-3 justify-center">
                 {selectedLooks.map((look) => (
                     <div
-                        key={look.id}
+                        key={look?._id || look.id}
                         className="border border-gray-300 rounded-lg p-2 max-w-[80px] text-center cursor-pointer transition-all duration-300 hover:scale-105"
-                        onClick={() => selectLook(look)} // הפעלת פונקציית selectLook
+                        onClick={() => {console.log("function select book");console.log("changed", changed, "clicked", look);setChanged(true);selectLook(look)}} // הפעלת פונקציית selectLook
                     >
                         <Image
                             src={look.img}
@@ -33,12 +32,14 @@ const LooksList: React.FC<{ saveChanges: () => void }> = ({ saveChanges }) => {
                     </div>
                 ))}
             </div>
+            {changed && 
             <button
                 className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-all duration-300"
-                onClick={() => saveChanges()} // פונקציה לשמירת השינויים
+                onClick={() => {saveChanges(); setChanged(false)}} // פונקציה לשמירת השינויים
             >
                 שמור שינויים
             </button>
+            }
         </div>
     );
 };

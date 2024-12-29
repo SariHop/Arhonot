@@ -105,7 +105,7 @@ const SignUp = () => {
           } else if (result.status === 402) {
             toast.error("העיר שנבחרה לא תקינה");
           } else if ("message" in result) {
-            toast.error(`Signup failed: \n${result.message}`);
+            toast.error(`ההרשמה נכשלה: \n${result.message}`);
           }
         } else {
           console.log("", result);
