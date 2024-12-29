@@ -33,7 +33,7 @@ export default function SignInPage() {
           setError("הסיסמא שהוקשה שגויה");
         }
         else {
-          toast.error(`Signin failed: \n${result.message}`);
+          toast.error(`ההתחברות נכשלה: \n${result.message}`);
         }
         setIsSubmitting(false);
       }

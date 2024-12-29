@@ -6,7 +6,6 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-
 const Alert: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => {
     const [alerts, setAlerts] = useState<AlertTypeFotCollapse[]>([]);
 
@@ -25,9 +24,7 @@ const Alert: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => {
         console.log(userId);
         const returnAlerts: AlertTypeFotCollapse[] = [];
         try {
-          const alerts: IAlertTypeWithId[] = await fetchUserAlerts(
-            userId
-          );
+          const alerts: IAlertTypeWithId[] = await fetchUserAlerts(userId);
     
           alerts.map((alert: IAlertTypeWithId) =>
             returnAlerts.push({
@@ -42,8 +39,7 @@ const Alert: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => {
               readen: alert.readen,
               date: alert.date,
               status: alert.readen,
-            })
-          );
+            }));
           return returnAlerts;
         } catch (error) {
           console.error("Failed to fetch alerts in getAlerts:", error);

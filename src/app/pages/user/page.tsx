@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import WeeklyCalendar from '@/app/components/swiper/WeeklyCalendar'
 import { getDay } from '@/app/services/daysService'
 import useUser from "@/app/store/userStore";
@@ -16,6 +16,8 @@ const Page = () => {
   const { data: weatherData } = useWeatherQuery();
   const user = useUser();
   const { selectedDate, setSelectedDate, setOutfits, setUserId, userId, addToAllLooks, selectedLooks } = useDay();
+  const [changed, setChanged] = useState(false);
+
   useEffect(() => {
     setSelectedDate(new Date());
   }, [setSelectedDate]);
@@ -42,7 +44,7 @@ const Page = () => {
               addToAllLooks(looks);
             } catch (error) {
               console.log("error with algorithem", error);
-              toast.error("לא הצלחנו להביא את הלוקים המתאימים", {
+              toast.warn("אין לך לוקים מתאימים למזג אוויר זה, הוסף לוק", {
                 position: 'top-right',
                 autoClose: 3000,
               });
@@ -60,14 +62,14 @@ const Page = () => {
               toast.error("אירעה שגיאה לא צפויה בעת טעינת לוקים");
             }
           } else {
-            toast.error(" אירעה שגיאה בעת טעינת לוקים");
+            // toast.error(" אירעה שגיאה בעת טעינת לוקים");
           }
           setOutfits([]);
-          if (weatherData) {
-            const looks = await recommendedLooks(weatherData.list, selectedDate, userId, user.sensitive);
-            console.log("looks from algorithem: ", looks);
-            addToAllLooks(looks);
-          }
+          // if (weatherData) {
+          //   const looks = await recommendedLooks(weatherData.list, selectedDate, userId, user.sensitive);
+          //   console.log("looks from algorithem: ", looks);
+          //   addToAllLooks(looks);
+          // }
         }
       }
     };
@@ -110,10 +112,10 @@ const Page = () => {
   };
   return (
     <div className='flex gap-10 flex-col p-2'>
-      <WeeklyCalendar saveChanges={saveChanges} />
+      <WeeklyCalendar saveChanges={saveChanges} changed={changed} setChanged={setChanged}   />
       {/* <ImageCaruseka looks={looks} /> */}
       {/* <SwiperComponent /> */}
-      <LooksList saveChanges={saveChanges} />
+      <LooksList saveChanges={saveChanges} changed={changed} setChanged={setChanged} />
     </div>
   )
 }
