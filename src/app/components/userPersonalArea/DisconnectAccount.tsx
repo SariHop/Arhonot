@@ -6,11 +6,12 @@ import { getUser } from "@/app/services/userServices";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UpdateUserTypeForStore } from "@/app/types/IUser";
+import { PiUserCircleDuotone } from "react-icons/pi";
 
 const ConnectionList = () => {
-  const { _id: senderId } = useOriginUser(); 
-  const [children, setChildren] = useState<UpdateUserTypeForStore[]>([]); 
-  const [selectedUser, setSelectedUser] = useState<string | null>(null); 
+  const { _id: senderId } = useOriginUser();
+  const [children, setChildren] = useState<UpdateUserTypeForStore[]>([]);
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [confirmDialog, setConfirmDialog] = useState(false);
 
   // שליפת פרטי המשתמש והילדים
@@ -21,10 +22,10 @@ const ConnectionList = () => {
       if (!senderId) return;
       try {
         const response = await getUser(senderId);
-        console.log("Response:", response); 
+        console.log("Response:", response);
         if (response?.success) {
           console.log("Children data from response:", response.data.children); // הדפסת המידע שהתקבל
-          setChildren(response.data.children); 
+          setChildren(response.data.children);
         } else {
           console.error("Error fetching user data:", response?.error);
         }
@@ -54,8 +55,8 @@ const ConnectionList = () => {
       toast.error("שגיאה בהסרת החיבור");
     }
 
-    setConfirmDialog(false); 
-    setSelectedUser(null); 
+    setConfirmDialog(false);
+    setSelectedUser(null);
   };
 
   const handleCancelDialog = () => {
@@ -66,9 +67,13 @@ const ConnectionList = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h3 className="text-xl font-bold text-center mb-4">החיבורים שלי</h3>
-      <ul className="space-y-4">
+      <ul
+        className={`grid gap-4 ${
+          children.length > 0 ? "grid-cols-1 sm:grid-cols-2" : ""
+        }`}
+      >
         {children.map((child) => {
-          console.log("Rendering child:", child); 
+          console.log("Rendering child:", child);
           return (
             <li
               key={child._id as string}
@@ -77,7 +82,12 @@ const ConnectionList = () => {
               } cursor-pointer hover:bg-gray-100`}
               onClick={() => handleUserClick(child._id)}
             >
-              <p className="text-lg font-medium">{child.userName}</p>
+              <p className="flex justify-between items-center text-lg font-medium">
+                {child.userName}
+                <span className="ml-2 text-gray-500">
+                  <PiUserCircleDuotone className="w-6 h-6" />
+                </span>
+              </p>
               <p className="text-sm text-gray-600">
                 גיל: {child.age}, עיר: {child.city}
               </p>
@@ -94,7 +104,7 @@ const ConnectionList = () => {
         >
           <div
             className="bg-white p-6 rounded-lg shadow-lg"
-            onClick={(e) => e.stopPropagation()} 
+            onClick={(e) => e.stopPropagation()}
           >
             <p className="mb-4 text-center">
               האם אתה רוצה לבטל את החיבור שלך למשתמש{" "}

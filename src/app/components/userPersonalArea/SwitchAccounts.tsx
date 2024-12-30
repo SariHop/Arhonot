@@ -1,29 +1,33 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { switchAccount } from "@/app/services/userServices";
 import useOriginUser from "@/app/store/originUserStore";
-import { SwitchAccount} from "@/app/services/userServices";
+import useUser from "@/app/store/userStore";
 import { getUser } from "@/app/services/userServices";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UpdateUserTypeForStore } from "@/app/types/IUser";
+import { PiUserCircleDuotone } from "react-icons/pi";
 
-const SwitchAccounts= () => {
-  const { _id: senderId,userName:originUserNme} = useOriginUser();
+const SwitchAccounts = () => {
+  const { _id: senderId, userName: originUserName} = useOriginUser();
+  const { _id: currentId } = useUser();
+
   const [children, setChildren] = useState<UpdateUserTypeForStore[]>([]);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [confirmDialog, setConfirmDialog] = useState(false);
+  const [originEqualsCurrentUser, setOriginEqualsCurrentUser] = useState(true);
+  const [isSwitching, setIsSwitching] = useState(false);
+  const [localCurrentId, setLocalCurrentId] = useState<string | null>(
+    currentId ? currentId.toString() : null
+  );
 
   // שליפת פרטי המשתמש והילדים
   useEffect(() => {
-    console.log("senderId:", senderId);
-
     const fetchUserData = async () => {
       if (!senderId) return;
       try {
         const response = await getUser(senderId);
-        console.log("Response:", response);
         if (response?.success) {
-          console.log("Children data from response:", response.data.children);
           setChildren(response.data.children);
         } else {
           console.error("Error fetching user data:", response?.error);
@@ -36,39 +40,69 @@ const SwitchAccounts= () => {
     fetchUserData();
   }, [senderId]);
 
+  // בדיקה אם המשתמש הנוכחי הוא המשתמש המקורי
+  useEffect(() => {
+    setOriginEqualsCurrentUser(senderId === localCurrentId )
+  }, [senderId, localCurrentId ])
+
   const handleUserClick = (receiverId: string) => {
     setSelectedUser(receiverId);
     setConfirmDialog(true);
   };
 
-  const handleSwitchAccount= async () => {
-    if (!senderId || !selectedUser) return;
+  const handleSwitchAccount = async (receiverId: string | null) => {
+    if (!senderId || !receiverId || isSwitching) return;
 
-    // קריאה לפונקציה להחלפת החשבון
-    const response = await SwitchAccount(senderId, selectedUser);
-    if (response?.success) {
-      toast.success("החיבור הוסר בהצלחה");
-    
-    } else {
-      toast.error("שגיאה בהסרת החיבור");
+    setIsSwitching(true);
+
+    try {
+      const response = await switchAccount(senderId, receiverId);
+      if (response?.success) {
+        console.log("החלפת חשבון בהצלחה");
+        setLocalCurrentId(receiverId); 
+      } else {
+        console.error("תקלה בהחלפת חשבון");
+      }
+    } catch (error) {
+      console.error("שגיאה בהחלפת חשבון:", error);
+    } finally {
+      setConfirmDialog(false);
+      setIsSwitching(false);
     }
-
-    setConfirmDialog(false);
-    setSelectedUser(null);
   };
 
   const handleCancelDialog = () => {
-    setConfirmDialog(false);
     setSelectedUser(null);
+    setConfirmDialog(false);
+  };
+
+  const handleSwitchToOriginUser = () => {
+    if (!senderId) return;
+    setSelectedUser(senderId.toString())
+    setConfirmDialog(true);
   };
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h3 className="text-xl font-bold text-center mb-4">החיבורים של {originUserNme}  
+      <h3 className="text-xl font-bold text-center mb-4">
+        החיבורים של {originUserName}
       </h3>
-      <ul className="space-y-4">
+      {!originEqualsCurrentUser && (
+        <div className="text-left mb-4">
+          <button
+            className="bg-indigo-500 text-white font-bold px-4 py-2 rounded hover:bg-indigo-800"
+            onClick={handleSwitchToOriginUser}
+          >
+            חזרה למשתמש מקורי
+          </button>
+        </div>
+      )}
+      <ul
+        className={`grid gap-4 ${
+          children.length > 0 ? "grid-cols-1 sm:grid-cols-2" : ""
+        }`}
+      >
         {children.map((child) => {
-          console.log("Rendering child:", child);
           return (
             <li
               key={child._id as string}
@@ -77,7 +111,12 @@ const SwitchAccounts= () => {
               } cursor-pointer hover:bg-gray-100`}
               onClick={() => handleUserClick(child._id)}
             >
-              <p className="text-lg font-medium">{child.userName}</p>
+              <p className="flex justify-between items-center text-lg font-medium">
+                {child.userName}
+                <span className="ml-2 text-gray-500">
+                  <PiUserCircleDuotone className="w-6 h-6" />
+                </span>
+              </p>
               <p className="text-sm text-gray-600">
                 גיל: {child.age}, עיר: {child.city}
               </p>
@@ -99,14 +138,17 @@ const SwitchAccounts= () => {
             <p className="mb-4 text-center">
               האם לעבור לחשבון של {}
               <strong>
-                {children.find((child) => child._id === selectedUser)?.userName}
+                {selectedUser?.toString()=== senderId?.toString()
+                  ? originUserName // שם המשתמש המקורי
+                  : children.find((child) => child._id === selectedUser)
+                      ?.userName}
               </strong>
               ?
             </p>
             <div className="flex justify-center space-x-4">
               <button
                 className="bg-indigo-500 text-white font-bold ml-4 px-4 py-2 rounded hover:bg-indigo-800"
-                onClick={handleSwitchAccount}
+                onClick={() => handleSwitchAccount(selectedUser)} // עטיפה של הקריאה
               >
                 V
               </button>
@@ -124,12 +166,6 @@ const SwitchAccounts= () => {
   );
 };
 
-export default SwitchAccounts
+export default SwitchAccounts;
 
-
-
-
- 
-
- 
 

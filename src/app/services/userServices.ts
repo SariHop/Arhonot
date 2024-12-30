@@ -397,7 +397,7 @@ export const getUserByEmail = async (emailInput: string) => {
 export const getUser = async (userId: Types.ObjectId) => {
   try {
     const response = await axios.get(`${apiUrl}/${userId}`);
-    console.log("response.data", response.data);
+    // console.log("response.data", response.data);
 
     return response.data;
   } catch (error) {
@@ -406,7 +406,7 @@ export const getUser = async (userId: Types.ObjectId) => {
   }
 };
 //פונקציה למעבר בין חשבונות מקושרים
-export const SwitchAccount = async (
+export const switchAccount = async (
   senderId: Types.ObjectId,
   selectedUser: string
 ) => {
@@ -428,11 +428,9 @@ export const SwitchAccount = async (
       // בדיקת תגובת השרת
       if (data.success) {
         toast.success("הועברת לחשבון המבוקש");
-          setOriginUser(response.data.sender)
-          console.log("Origin user state after signup:", useOriginUser.getState());
-          setUser(response.data.receiver); //עדכון הUserOriginStore
-          console.log("User state after signin:", useUser.getState())
-        
+        setOriginUser(data.data.sender);//עדכון היוזר המקורי
+        setUser(data.data.receiver); //עדכון יוזר מחובר כעת
+
         return {
           success: true,
           message: "Switched account successfully.",
@@ -457,9 +455,7 @@ export const SwitchAccount = async (
   } catch (error: unknown) {
     console.error("Error during account switch:", error);
 
-    // טיפול בשגיאות מהשרת
     if (axios.isAxiosError(error)) {
-      // טיפול בשגיאות AxiosError
       const { response } = error;
       if (response?.data) {
         const { error: serverError, message } = response.data;
