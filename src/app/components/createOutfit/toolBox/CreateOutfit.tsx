@@ -7,16 +7,16 @@ import { cloudinaryUploud } from '@/app/services/image/saveToCloudinary';
 import { toast } from 'react-toastify';
 
 const ButtonCreateOutfit = () => {
-    const [loading, setLoading] = useState(false); // מצב טעינה
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
     const { garments, canvas, setCanvasurl } = useCanvasStore();
 
     const handleCreate = () => {
         if (!canvas) return;
-
-        setLoading(true); // התחלת טעינה
+        setLoading(true);
 
         const saveImageToCloudinary = async () => {
+            // שמירת הקנבס כניתוב לתמונה ושמירת הניתוב כקובץ תמונה בענן
             try {
                 const dataURL = canvas.toDataURL({
                     format: "png",
@@ -30,7 +30,7 @@ const ButtonCreateOutfit = () => {
                 console.error("Image upload error:", error);
                 toast.error("שגיאה בטעינת הלוק");
             } finally {
-                setLoading(false); // סיום טעינה
+                setLoading(false);
             }
         };
         saveImageToCloudinary();
@@ -40,7 +40,7 @@ const ButtonCreateOutfit = () => {
         <div className="my-auto">
             <Button
                 variant="contained"
-                disabled={garments.length === 0 || loading} // מניעה מלחיצה בזמן טעינה
+                disabled={garments.length === 0 || loading}
                 onClick={handleCreate}
             >
                 צור לוק

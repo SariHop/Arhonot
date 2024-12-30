@@ -13,6 +13,7 @@ import { DefaultOptionType } from "antd/es/select";
 import { usePathname, useRouter } from "next/navigation"; // ייבוא מתוך next/navigation
 import {initialize} from "@/app/store/alertsCounterStore"
 import useUser from "../store/userStore";
+import { CircularProgress } from "@mui/material";
 
 const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -128,7 +129,7 @@ const SignUp = () => {
     }
   };
 
-  if (isLoading) return <div>מחפש...</div>;
+  if (isLoading) return <div className="m-auto"><CircularProgress /></div>;
   if (error) return <div>שגיאה בטעינת ערים {String(error)}</div>;
 
   const cityOptions: DefaultOptionType[] = (cities || []).map(
@@ -148,7 +149,7 @@ const SignUp = () => {
         onSubmit={(e) => {
           handleSubmit(e);
         }}
-        className="bg-white p-8 shadow-md rounded-md w-full max-w-md"
+        className="bg-white p-8 shadow-md rounded-md w-full max-w-md m-3"
       >
         <h2 className="text-2xl font-bold mb-4 text-gray-800">{title}</h2>
         <div className="grid grid-cols-2 gap-4 mb-4">
