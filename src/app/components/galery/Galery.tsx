@@ -9,7 +9,7 @@ import useGarments from "../../store/garmentsStore";
 import useUser from "@/app/store/userStore";
 import useOutfits from "@/app/store/outfitsStore";
 
-const Gallery = ({ viewMode }: { viewMode: ("view" | "createOtfit" | "selectForDay") }) => {
+const Gallery = ({ viewMode, setChanged = () => {} }: { viewMode: ("view" | "createOtfit" | "selectForDay") , setChanged?: (b:boolean) => void}) => {
   const { setGarments } = useGarments();
   const { setOutfits } = useOutfits();
   const { _id } = useUser((state) => state);
@@ -65,7 +65,7 @@ const Gallery = ({ viewMode }: { viewMode: ("view" | "createOtfit" | "selectForD
     return (
       <>
         < GaleryHeader activeTab={"outfits"} setActiveTab={setActiveTab} isForOutfit={true} />
-        <OutfitsGallary isSelectForDay={true} />
+        <OutfitsGallary isSelectForDay={true} setChanged={setChanged}/>
       </>
     )
   }

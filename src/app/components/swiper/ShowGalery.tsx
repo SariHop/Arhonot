@@ -5,7 +5,7 @@ import Gallery from '../galery/Galery';
 import Image from "next/image";
 import useDay from '../../store/currentDayStore'; // ייבוא ה-store
 
-export default function SwipeableEdgeDrawer() {
+export default function SwipeableEdgeDrawer({setChanged = () => {}}:{setChanged?: (b:boolean)=>void}) {
   const { openGalery, toggleDrawer } = useDay();  // שימוש ב-store
   return (
     <div className="h-full my-1">
@@ -52,14 +52,14 @@ export default function SwipeableEdgeDrawer() {
           <div className="text-center pt-6">
             <button
               className="w-full bg-teal-100 text-black hover:bg-teal-200 p-2 rounded-md"
-              onClick={() => toggleDrawer(false)}
+              onClick={() => {toggleDrawer(false)}}
             >
               ▼
             </button>
           </div>
 
           {/* הצגת גלריה */}
-          <Gallery viewMode="selectForDay" />
+          <Gallery viewMode="selectForDay" setChanged={setChanged} />
         </div>
       </SwipeableDrawer>
     </div>

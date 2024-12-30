@@ -4,7 +4,7 @@ import React from 'react'
 import Image from "next/image";
 import useDay from "@/app/store/currentDayStore";
 
-const Outfit = ({ look }: { look: IOutfit }) => {
+const Outfit = ({ look, setChanged }: { look: IOutfit , setChanged: (b:boolean)=> void}) => {
     const { selectedLooks, selectLook } = useDay();
 
     const isSelected = selectedLooks.some((item) => item._id === look._id);
@@ -12,7 +12,7 @@ const Outfit = ({ look }: { look: IOutfit }) => {
     return (
         <div
             className="relative border border-gray-300 rounded-lg p-4 max-w-[200px] text-center cursor-pointer transition-all duration-300 bg-transparent"
-            onClick={() => selectLook(look)}
+            onClick={() => {setChanged(true); selectLook(look)}}
         >
             {/* אם הלוק נבחר, מציגים וי ירוק */}
             {isSelected && (

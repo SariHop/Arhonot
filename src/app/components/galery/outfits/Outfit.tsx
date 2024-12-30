@@ -63,17 +63,10 @@ const Outfit = ({ outfit, closeModal }: IOutfitProps) => {
     
       function handleDelete() {
         try {
-            console.log("in delete");
           deleteOutfit(String(outfit._id));
-          console.log("after delete outfit");
           deleteFromStore(outfit);
-          console.log("after delete outfit store");
           closeModal();
-          console.log("after close modal");
-
           toast.success("הלוק נמחק בהצלחה!");
-          console.log("after toast");
-
         } catch (error: unknown) {
           console.log("error accured while deleting outfit: ", error)
         }

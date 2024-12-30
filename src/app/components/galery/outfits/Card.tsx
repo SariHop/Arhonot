@@ -5,7 +5,7 @@ import Outfit from "./Outfit";
 import IOutfit from "@/app/types/IOutfit";
 import useDay from '@/app/store/currentDayStore';
 
-const Card = ({ outfit, isSelectForDay }: { outfit: IOutfit, isSelectForDay: boolean }) => {
+const Card = ({ outfit, isSelectForDay ,setChanged = () => {}}: { outfit: IOutfit, isSelectForDay: boolean, setChanged?: (b:boolean)=>void }) => {
     // הפונקציה להוספת בגד לקנבס
     // const context: CanvasContextType | null = useContext(CanvasContext);
     // const { addImageToCanvas } = context;
@@ -20,7 +20,7 @@ const Card = ({ outfit, isSelectForDay }: { outfit: IOutfit, isSelectForDay: boo
     }
 
     return (
-        <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm p-1 h-[200px]" onClick={isSelectForDay ? () => { addOutfit(outfit); toggleDrawer(false); } : openModal}>
+        <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm p-1 h-[200px]" onClick={isSelectForDay ? () => {setChanged(true); addOutfit(outfit); toggleDrawer(false); } : openModal}>
             <div className="h-[160px] w-full p-1">
             <Image
                 src={outfit.img}
