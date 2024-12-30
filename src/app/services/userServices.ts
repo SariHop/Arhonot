@@ -286,7 +286,7 @@ export const updateUser = async (_id: Types.ObjectId | null, body: object) => {
         );
         return {
           success: true,
-          message: "User updated successfully",
+          message: "המשתמש עודכן בהצלחה",
           data: response.data.data,
           status: 200,
         };
@@ -306,9 +306,9 @@ export const updateUser = async (_id: Types.ObjectId | null, body: object) => {
     console.error("Failed to update connection request:", error);
     if (axios.isAxiosError(error)) {
       const serverError = error.response?.data?.error || "Unknown server error";
-      toast.error(`Server Error: ${serverError}`);
+      toast.error(`שגיאת שרת: ${serverError}`);
     } else {
-      toast.error("An unexpected error occurred");
+      toast.error("שגיאה לא צפויה אריעה בעת העדכון, אנא נסה שנית");
     }
     throw error;
   }

@@ -14,19 +14,11 @@ export const fetchUsersConnectionReq = async (
     if (!userId) {
       throw new Error("userId is null or undefined.");
     }
-    const response = await axios.get(
-      `/api/connectionRequestRoute/userConnectionRequests/${userId}`
-    );
+    const response = await axios.get(`/api/connectionRequestRoute/userConnectionRequests/${userId}`);
     console.log("User connection requests:", response.data);
     return response.data.data;
   } catch (error: unknown) {
     console.error("Failed to fetch user connection requests:", error);
-    if (axios.isAxiosError(error)) {
-      const serverError = error.response?.data?.error || "Unknown server error";
-      toast.error(`Server Error: ${serverError}`);
-    } else {
-      toast.error("An unexpected error occurred");
-    }
     throw error;
   }
 };
@@ -46,11 +38,7 @@ export const updateRequestStatus = async (
       }
 
       const response = await axios.put(
-        `/api/connectionRequestRoute/${requestId}`,
-        {
-          status: status,
-        }
-      );
+        `/api/connectionRequestRoute/${requestId}`,{status: status});
       if (response.status !== 200) throw response;
       return response.data;
     } else {
@@ -63,34 +51,17 @@ export const updateRequestStatus = async (
     }
   } catch (error: unknown) {
     console.error("Failed to update connection request:", error);
-    if (axios.isAxiosError(error)) {
-      const serverError = error.response?.data?.error || "Unknown server error";
-      toast.error(`Server Error: ${serverError}`);
-    } else {
-      toast.error("An unexpected error occurred");
-    }
     throw error;
   }
 };
 
 export const updateRequestReadable = async (requestId: string) => {
   try {
-    const response = await axios.put(
-      `/api/connectionRequestRoute/${requestId}`,
-      {
-        readen: true,
-      }
-    );
+    const response = await axios.put(`/api/connectionRequestRoute/${requestId}`, {readen: true});
     if (response.status !== 200) throw response;
     return response.data;
   } catch (error: unknown) {
     console.error("Failed to update connection request:", error);
-    if (axios.isAxiosError(error)) {
-      const serverError = error.response?.data?.error || "Unknown server error";
-      toast.error(`Server Error: ${serverError}`);
-    } else {
-      toast.error("An unexpected error occurred");
-    }
     throw error;
   }
 };
@@ -145,9 +116,19 @@ export const updateConnections = async (
     console.error("Failed to update connection request:", error);
     if (axios.isAxiosError(error)) {
       const serverError = error.response?.data?.error || "Unknown server error";
-      toast.error(`Server Error: ${serverError}`);
+      const status = error.response?.status || 501;
+
+      if (status === 400) {
+        toast.error("שגיאה בקבלת נתונים בשרת, נסה שוב.");
+      } else if(status===404){
+        toast.error("פרטיך או פרטי המשתמש השני לא נמצאו במערכת")
+      } else if(status===500){
+        toast.error(`שגיאת שרת: ${serverError}`);
+      }else{
+        toast.error("אירעה שגיאה לא צפויה בשרת");
+      }
     } else {
-      toast.error("An unexpected error occurred");
+      toast.error(" אירעה שגיאה בעת עדכון החשבונות המקשורים שלכם. נסה שוב");
     }
     throw error;
   }
@@ -226,6 +207,7 @@ export const removeConnectionRequest = async (
         return response.data;
       } else {
         console.error("שגיאה לא צפויה, סטטוס:", response.status);
+        return { success: false, message: "שגיאה לא צפויה", status:500 };
       }
     } else {
       // משתמש שאינו מורשה

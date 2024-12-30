@@ -171,6 +171,20 @@ export async function PUT(request: NextRequest) {
   } catch (error: unknown) {
     console.error("Error updating connections:", error);
 
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { message: "Error update connectionRequest readen", error: error.message },
+        { status: 500 }
+      );
+    } else {
+      return NextResponse.json(
+        {
+          message: "Unknown Error occured while updateing connectionRequest",
+          error: "Unknown error occurred",
+        },
+        { status: 501 }
+      );
+    }
     return NextResponse.json(
       { error: "An error occurred while updating connections" },
       { status: 500 }
