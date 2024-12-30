@@ -3,7 +3,6 @@ import { persist } from "zustand/middleware";
 import { fabric } from "fabric";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import IOutfit from "../types/IOutfit";
 
 type CanvasStore = {
   canvas: fabric.Canvas | null;
@@ -16,10 +15,8 @@ type CanvasStore = {
   setGarments: (newGarments: string[]) => void;
   selectedObject: fabric.Object | null;
   setSelectedObject: (obj: fabric.Object | null) => void;
-  editOutfit: IOutfit | null;
   canvasUrl: string
   setCanvasurl: (url: string) => void
-  setEditOutfit: (outfit: IOutfit | null) => void;
   loadImage: (garmentURL: string, garmentId: string) => Promise<void>;
   addImageToCanvasFromGallery: (garmentURL: string, garmentId: string | unknown) => Promise<void>;
 };
@@ -51,9 +48,6 @@ const useCanvasStore = create<CanvasStore>()(
       setSelectedObject: (obj: fabric.Object | null) => {
         set({ selectedObject: obj });
       },
-      // אאוטפיט קיים פתוח לעריכה
-      editOutfit: null,
-      setEditOutfit: (outfit: IOutfit | null) => set({ editOutfit: outfit }),
       // ייצוא של הקנבס לתמונה
       canvasUrl: "",
       setCanvasurl: async (url: string) => set({ canvasUrl: url }),
@@ -108,7 +102,6 @@ const useCanvasStore = create<CanvasStore>()(
       partialize: (state) => ({
         canvasUrl: state.canvasUrl,
         garments: state.garments,
-        editOutfit: state.editOutfit,
         canvasJSON: state.canvas?.toJSON(["garmentId"])
       }),
     }
