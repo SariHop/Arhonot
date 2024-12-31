@@ -1,5 +1,5 @@
 import connect from "@/app/lib/db/mongoDB";
-import ConnectionRequest from "@/app/lib/models/connectionRequestSchema";
+// import ConnectionRequest from "@/app/lib/models/connectionRequestSchema";
 import { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import User from "@/app/lib/models/userSchema";
@@ -37,12 +37,12 @@ export async function PUT(request: NextRequest) {
       }
   
       // מחיקת בקשת חיבור קיימת
-      const deleteResult = await ConnectionRequest.deleteOne({
-        $or: [
-          { userIdSender: senderId, userIdReciver: receiverId },
-          { userIdSender: receiverId, userIdReciver: senderId },
-        ],
-      });
+      // const deleteResult = await ConnectionRequest.deleteOne({
+      //   $or: [
+      //     { userIdSender: senderId, userIdReciver: receiverId },
+      //     { userIdSender: receiverId, userIdReciver: senderId },
+      //   ],
+      // });
   
       // if (deleteResult.deletedCount === 0) {
       //   return NextResponse.json(
