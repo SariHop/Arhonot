@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ZodError } from "zod";
 import { updateOutfit } from "@/app/services/outfitServices";
+import useOutfits from "@/app/store/outfitsStore";
 
 const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
 
@@ -20,6 +21,7 @@ const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
     const [errormessege, setErrormessege] = useState("");
     const [isUpdating, setIsUpdating] = useState(false);
 
+    const {updateOutfitS} = useOutfits()
 
     useEffect(() => {
         if (outfit) {
@@ -59,7 +61,8 @@ const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
 
             console.log(submitOutfit)
             await outfitSchemaZod.parseAsync(submitOutfit);
-            await updateOutfit(submitOutfit, outfit._id as string);
+            const updatedlook = await updateOutfit(submitOutfit, outfit._id as string);
+            updateOutfitS(updatedlook)
             toast.success("לוק עודכן בהצלחה!");
             closeModal()
 
