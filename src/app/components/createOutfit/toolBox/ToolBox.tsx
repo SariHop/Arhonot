@@ -36,8 +36,6 @@ const ToolBox = () => {
     };
   }, [canvas, setSelectedObject]);
 
-
-
   return (
     <div
       className="flex justify-center p-3 gap-7 m-1"

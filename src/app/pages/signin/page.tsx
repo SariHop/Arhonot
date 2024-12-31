@@ -46,7 +46,7 @@ export default function SignInPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="max-w-md w-full bg-white p-6 rounded-lg shadow-md">
+      <div className="max-w-md w-full bg-white p-6 rounded-lg shadow-md m-3">
         <h2 className="text-2xl font-bold text-center mb-6 text-gray-700">התחברות</h2>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
