@@ -6,6 +6,7 @@ import { getUser } from "@/app/services/userServices";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UpdateUserTypeForStore } from "@/app/types/IUser";
+import { PiUserCircleDuotone } from "react-icons/pi";
 
 const ConnectionList = () => {
   const { _id: senderId } = useOriginUser();
@@ -43,22 +44,19 @@ const ConnectionList = () => {
 
   const handleCancelConnection = async () => {
     if (!senderId || !selectedUser) return;
-    try {
-      await removeConnectionRequest(senderId, selectedUser);
-      // if (response?.success) {
-        toast.success("החיבור הוסר בהצלחה");
-        setChildren((prevChildren) =>
-          prevChildren.filter((child) => child._id !== selectedUser)
-        ); // עדכון הרשימה לאחר הסרה
-      // } else {
-      //   toast.error("שגיאה בהסרת החיבור");
-      // }
-    } catch (error) {
-      console.log("error deleting the connection: ", error);
-    } finally {
-      setConfirmDialog(false);
-      setSelectedUser(null);
+
+    const response = await removeConnectionRequest(senderId, selectedUser);
+    if (response?.success) {
+      toast.success("החיבור הוסר בהצלחה");
+      setChildren((prevChildren) =>
+        prevChildren.filter((child) => child._id !== selectedUser)
+      ); // עדכון הרשימה לאחר הסרה
+    } else {
+      toast.error("שגיאה בהסרת החיבור");
     }
+
+    setConfirmDialog(false);
+    setSelectedUser(null);
   };
 
   const handleCancelDialog = () => {
@@ -69,7 +67,11 @@ const ConnectionList = () => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h3 className="text-xl font-bold text-center mb-4">החיבורים שלי</h3>
-      <ul className="space-y-4">
+      <ul
+        className={`grid gap-4 ${
+          children.length > 0 ? "grid-cols-1 sm:grid-cols-2" : ""
+        }`}
+      >
         {children.map((child) => {
           console.log("Rendering child:", child);
           return (
@@ -80,7 +82,12 @@ const ConnectionList = () => {
               } cursor-pointer hover:bg-gray-100`}
               onClick={() => handleUserClick(child._id)}
             >
-              <p className="text-lg font-medium">{child.userName}</p>
+              <p className="flex justify-between items-center text-lg font-medium">
+                {child.userName}
+                <span className="ml-2 text-gray-500">
+                  <PiUserCircleDuotone className="w-6 h-6" />
+                </span>
+              </p>
               <p className="text-sm text-gray-600">
                 גיל: {child.age}, עיר: {child.city}
               </p>
@@ -111,13 +118,13 @@ const ConnectionList = () => {
                 className="bg-indigo-500 text-white font-bold ml-4 px-4 py-2 rounded hover:bg-indigo-800"
                 onClick={handleCancelConnection}
               >
-                כן
+                V
               </button>
               <button
                 className="bg-gray-300 text-black font-bold px-4 py-2 rounded hover:bg-gray-400"
                 onClick={handleCancelDialog}
               >
-                לא
+                X
               </button>
             </div>
           </div>
