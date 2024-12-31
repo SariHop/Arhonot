@@ -29,20 +29,26 @@ const useCanvasStore = create<CanvasStore>()(
       setCanvas: (canvas: fabric.Canvas | null) => set({ canvas }),
       // הצג גלריה
       OpenGallery: false, // הצגת גלריה
-      toggleOpenGallery: (flag: boolean) => set({ OpenGallery:flag }),
+      toggleOpenGallery: (flag: boolean) => set({ OpenGallery: flag }),
       // מערך בגדים נבחרים
       garments: [],
+      // בפונקציות עידכון של מערך הבגדים למחוק את הניתוב, 
+      // כי ברגע שיש שינוי המערך התמונה ששמורה חטופס לא נכונה 
+      // וימנע חלק מהמקרי קצה שקשורים בניתוב לעמוד עריכה
       addGarment: (garmentId: string) => {
         if (!get().garments.includes(garmentId)) {
           set((state) => ({ garments: [...state.garments, garmentId] }));
+          set(() => ({ canvasUrl: "" }))
         }
       },
       deleteGarment: (garmentId: string) => {
-        set((state) => ({
-          garments: state.garments.filter((id) => id !== garmentId),
-        }));
+        set((state) => ({ garments: state.garments.filter((id) => id !== garmentId), }));
+        set(() => ({ canvasUrl: "" }))
       },
-      setGarments: (newGarments: string[]) => set({ garments: newGarments }),
+      setGarments: (newGarments: string[]) => {
+        set({ garments: newGarments })
+        set(() => ({ canvasUrl: "" }))
+      },
       // אובייקט נבחר בקנבס לעריכה
       selectedObject: null,
       setSelectedObject: (obj: fabric.Object | null) => {

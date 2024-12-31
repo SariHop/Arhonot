@@ -83,10 +83,7 @@ export async function DELETE(
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { _id: string } }
-) {
+export async function PUT(request: NextRequest,{ params }: { params: { _id: string } }) {
   try {
     await connect();
     const _id = params._id;

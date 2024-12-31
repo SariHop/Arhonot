@@ -6,6 +6,11 @@ import { getOriginUserDataWithAuthentication } from "@/app/services/userServices
 import { Types } from "mongoose";
 import useOriginUser from "@/app/store/originUserStore";
 import useUser from "../store/userStore";
+import {
+  isHandledError,
+  markErrorAsHandled,
+  printErrorsOfAuthenticationToUser,
+} from "./errorServices";
 
 export const fetchUsersConnectionReq = async (
   userId: Types.ObjectId | null
@@ -21,12 +26,6 @@ export const fetchUsersConnectionReq = async (
     return response.data.data;
   } catch (error: unknown) {
     console.error("Failed to fetch user connection requests:", error);
-    if (axios.isAxiosError(error)) {
-      const serverError = error.response?.data?.error || "Unknown server error";
-      toast.error(`Server Error: ${serverError}`);
-    } else {
-      toast.error("An unexpected error occurred");
-    }
     throw error;
   }
 };
@@ -41,33 +40,39 @@ export const updateRequestStatus = async (
 
     if (userId?.toString() === originUserId?.toString()) {
       const originUserData = await getOriginUserDataWithAuthentication();
-      if (!originUserData.success) {
-        return originUserData;
-      }
+      printErrorsOfAuthenticationToUser(originUserData);
 
       const response = await axios.put(
         `/api/connectionRequestRoute/${requestId}`,
-        {
-          status: status,
-        }
+        { status: status }
       );
       if (response.status !== 200) throw response;
       return response.data;
     } else {
       // משתמש שאינו מורשה
-      return {
-        success: false,
-        message: "אין לך הרשאה לבצע פעולה זו.",
-        status: 403,
-      };
+      toast.error("אין לך הרשאה לבצע פעולה זו.");
+      const error = new Error("אין לך הרשאה לבצע פעולה זו.");
+      markErrorAsHandled(error);
+      throw error;
     }
   } catch (error: unknown) {
     console.error("Failed to update connection request:", error);
+    if (isHandledError(error)) throw error;
     if (axios.isAxiosError(error)) {
       const serverError = error.response?.data?.error || "Unknown server error";
-      toast.error(`Server Error: ${serverError}`);
+      const status = error.response?.status || 501;
+
+      if (status === 400) {
+        toast.error("שגיאה בקבלת נתונים בשרת, נסה שוב.");
+      } else if (status === 404) {
+        toast.error("בקשת ההתחברות הזו לא נמצאת במערכת");
+      } else if (status === 500) {
+        toast.error(`שגיאת שרת: ${serverError}`);
+      } else {
+        toast.error("אירעה שגיאה לא צפויה בשרת");
+      }
     } else {
-      toast.error("An unexpected error occurred");
+      toast.error(" אירעה שגיאה בעת עדכון מצב של הבקשת התחברות, נסה שוב");
     }
     throw error;
   }
@@ -77,20 +82,12 @@ export const updateRequestReadable = async (requestId: string) => {
   try {
     const response = await axios.put(
       `/api/connectionRequestRoute/${requestId}`,
-      {
-        readen: true,
-      }
+      { readen: true }
     );
     if (response.status !== 200) throw response;
     return response.data;
   } catch (error: unknown) {
     console.error("Failed to update connection request:", error);
-    if (axios.isAxiosError(error)) {
-      const serverError = error.response?.data?.error || "Unknown server error";
-      toast.error(`Server Error: ${serverError}`);
-    } else {
-      toast.error("An unexpected error occurred");
-    }
     throw error;
   }
 };
@@ -135,19 +132,29 @@ export const updateConnections = async (
       return response.data;
     } else {
       // משתמש שאינו מורשה
-      return {
-        success: false,
-        message: "אין לך הרשאה לבצע פעולה זו.",
-        status: 403,
-      };
+      toast.error("אין לך הרשאה לבצע פעולה זו.");
+      const error = new Error("אין לך הרשאה מתאימה לבצע פעולה זו.");
+      markErrorAsHandled(error);
+      throw error;
     }
   } catch (error: unknown) {
     console.error("Failed to update connection request:", error);
+    if (isHandledError(error)) throw error;
     if (axios.isAxiosError(error)) {
       const serverError = error.response?.data?.error || "Unknown server error";
-      toast.error(`Server Error: ${serverError}`);
+      const status = error.response?.status || 501;
+
+      if (status === 400) {
+        toast.error("שגיאה בקבלת נתונים בשרת, נסה שוב.");
+      } else if (status === 404) {
+        toast.error("פרטיך או פרטי המשתמש השני לא נמצאו במערכת");
+      } else if (status === 500) {
+        toast.error(`שגיאת שרת: ${serverError}`);
+      } else {
+        toast.error("אירעה שגיאה לא צפויה בשרת");
+      }
     } else {
-      toast.error("An unexpected error occurred");
+      toast.error(" אירעה שגיאה בעת עדכון החשבונות המקשורים שלכם. נסה שוב");
     }
     throw error;
   }
@@ -162,37 +169,80 @@ export const createNewConnectionRequest = async (
 
     if (userId?.toString() === originUserId?.toString()) {
       const originUserData = await getOriginUserDataWithAuthentication();
-      if (!originUserData.success) {
-        return originUserData;
-      }
+      printErrorsOfAuthenticationToUser(originUserData);
+
       const response = await axios.post(
         "/api/connectionRequestRoute",
         formData
       );
-      if (response.status === 200 || response.status === 201) {
-        return { success: true, data: response.data };
+      if (
+        response &&
+        "status" in response &&
+        response.status >= 200 &&
+        response.status < 204
+      ) {
+        switch (response.status) {
+          case 202:
+            toast.info("בקשת החיבור כבר אושרה בעבר.");
+            break;
+          case 203:
+            toast.info("בקשת החיבור כבר במצב ממתין לאישור.");
+            break;
+          default:
+            toast.success("בקשת החיבור נשלחה בהצלחה");
+            break;
+        }
+        return response.data;
+        // } else if (response && response.success) {
+        //   if ("message" in response && typeof response.message === "string") {
+        //     // טיפול במקרים ספציפיים לפי ההודעה
+        //     switch (response.message) {
+        //       case "Connection request status created":
+        //         toast.success("בקשת החיבור נשלחה בהצלחה");
+        //         break;
+        //       // case "Connection request status already acceted":
+        //       //   toast.info("בקשת החיבור כבר אושרה בעבר.");
+        //       //   break;
+        //       // // case "Connection request status already pending":
+        //       // //   toast.info("בקשת החיבור כבר במצב ממתין לאישור.");
+        //       // //   break;
+        //       default:
+        //         toast.success(`הצלחה: ${response.message}`);
+        //     }
+        //   } else {
+        //     // הודעת הצלחה כללית במקרה שאין הודעה מפורשת
+        //     toast.success("בקשת החיבור נשלחה בהצלחה");
+        //   }
+        // }
+
+        // if (response.status === 200 || response.status === 201) {
+        //   return response.data;
       } else {
-        const message =
-          response.data?.message || "שגיאה לא ידועה בשליחת בקשת התחברות .";
-        return { success: false, message, status: response.status };
+        throw response;
       }
     } else {
       // משתמש שאינו מורשה
-      return {
-        success: false,
-        message: "אין לך הרשאה לבצע פעולה זו.",
-        status: 403,
-      };
+      toast.error("אין לך הרשאה לבצע פעולה זו.");
+      const error = new Error("אין לך הרשאה לבצע פעולה זו.");
+      markErrorAsHandled(error);
+      throw error;
     }
   } catch (error) {
     console.error("error during create new connection request", error);
+    if (isHandledError(error)) throw error;
     if (axios.isAxiosError(error)) {
-      const message = error.response?.data?.message || "שגיאה לא צפויה";
-      const status = error.response?.status || 500;
-      return { success: false, message, status };
+      const serverError = error.response?.data?.error || "Unknown server error";
+      const status = error.response?.status || 501;
+
+      if (status === 500) {
+        toast.error(`שגיאת שרת: ${serverError}`);
+      } else {
+        toast.error("אירעה שגיאה לא צפויה בשרת");
+      }
     } else {
-      return { success: false, message: "שגיאה פנימית במערכת", status: 500 };
+      toast.error(" אירעה שגיאה בעת יצירת בקשת התחברות חדשה, נסה שוב");
     }
+    throw error;
   }
 };
 //פונקציה לניתוק קשר בין 2 משתמשים
@@ -206,43 +256,58 @@ export const removeConnectionRequest = async (
 
     if (userId?.toString() === originUserId?.toString()) {
       const originUserData = await getOriginUserDataWithAuthentication();
-      if (!originUserData.success) {
-        return originUserData;
-      }
+      printErrorsOfAuthenticationToUser(originUserData);
       console.log(senderId, "userIdSender", receiverId, "userIdToRemove");
 
-      const response = await axios.put(`/api/connectionRequestRoute/userConnectionRequests`, null, {
-        params: { sender: senderId, receiver: receiverId },
-      });
-      if (response.status == 200) {
+      const response = await axios.put(
+        `/api/connectionRequestRoute/userConnectionRequests`,
+        null,
+        { params: { sender: senderId, receiver: receiverId } }
+      );
+      if (response.status !== 200) throw response;
+      else {
         const updatedSender = response.data?.data?.updatedSender;
         if (!updatedSender) {
-          console.error("שגיאה: הנתונים שחזרו מהשרת אינם כוללים את updatedSender");
-          return { success: false, message: "נתונים חסרים מהשרת", status: 500 };
+          console.error(
+            "שגיאה: הנתונים שחזרו מהשרת אינם כוללים את updatedSender"
+          );
+          toast.error("חסרים נתונים מהשרת");
+          const error = new Error("חסרים נתונים מהשרת");
+          markErrorAsHandled(error);
+          throw error;
         }
         useUser.getState().updateChildren(updatedSender.children);
         useOriginUser.getState().updateChildren(updatedSender.children);
-      
         return response.data;
-      } else {
-        console.error("שגיאה לא צפויה, סטטוס:", response.status);
       }
-    } else {
+    }else {
       // משתמש שאינו מורשה
-      return {
-        success: false,
-        message: "אין לך הרשאה לבצע פעולה זו.",
-        status: 403,
-      };
+      toast.error("אין לך הרשאה לבצע פעולה זו.");
+      const error = new Error("אין לך הרשאה לבצע פעולה זו.");
+      markErrorAsHandled(error);
+      throw error;
     }
   } catch (error) {
     console.error("שגיאה במהלך מחיקת ההתקשרות", error);
+    if (isHandledError(error)) throw error;
     if (axios.isAxiosError(error)) {
-      const message = error.response?.data?.message || "שגיאה לא צפויה";
-      const status = error.response?.status || 500;
-      return { success: false, message, status };
+      const serverError = error.response?.data?.error || "Unknown server error";
+      const status = error.response?.status || 501;
+
+      if (status === 400) {
+        toast.error("שגיאה במחיקת נתונים בשרת, נסה שוב.");
+      } else if (status === 404) {
+        toast.error("תקלה שרת בקבלת המשתמש שלך או של החבר, בדוק את החיבור לאינטרנט");
+      } else if (status === 405) {
+        toast.error("בקשת ההתחברות הזו לא נמצאת במערכת");
+      } else if (status === 500) {
+        toast.error(`שגיאת שרת: ${serverError}`);
+      } else {
+        toast.error("אירעה שגיאה לא צפויה בשרת");
+      }
     } else {
-      return { success: false, message: "שגיאה פנימית במערכת", status: 500 };
+      toast.error(" אירעה שגיאה בעת מחיקת התקשרות, נסה שוב");
     }
+    throw error;
   }
 };

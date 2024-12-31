@@ -18,6 +18,7 @@ const Page = () => {
         }
     initialize(user._id);
   }, [user._id]);
+  
   return (
     <div className="pb-6">
       {/* התראות על מלאי */}

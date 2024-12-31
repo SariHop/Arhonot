@@ -44,19 +44,22 @@ const ConnectionList = () => {
 
   const handleCancelConnection = async () => {
     if (!senderId || !selectedUser) return;
-
-    const response = await removeConnectionRequest(senderId, selectedUser);
-    if (response?.success) {
-      toast.success("החיבור הוסר בהצלחה");
-      setChildren((prevChildren) =>
-        prevChildren.filter((child) => child._id !== selectedUser)
-      ); // עדכון הרשימה לאחר הסרה
-    } else {
-      toast.error("שגיאה בהסרת החיבור");
+    try {
+      await removeConnectionRequest(senderId, selectedUser);
+      // if (response?.success) {
+        toast.success("החיבור הוסר בהצלחה");
+        setChildren((prevChildren) =>
+          prevChildren.filter((child) => child._id !== selectedUser)
+        ); // עדכון הרשימה לאחר הסרה
+      // } else {
+      //   toast.error("שגיאה בהסרת החיבור");
+      // }
+    } catch (error) {
+      console.log("error deleting the connection: ", error);
+    } finally {
+      setConfirmDialog(false);
+      setSelectedUser(null);
     }
-
-    setConfirmDialog(false);
-    setSelectedUser(null);
   };
 
   const handleCancelDialog = () => {

@@ -23,8 +23,10 @@ const OutfitForm: React.FC = () => {
     const [rangeWeather, setRangeWeather] = useState(4);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [rate, setRate] = useState(0);
-    // error messege
+    // messeges
     const [errormessege, setErrormessege] = useState("");
+    const [isLoading, setIsLoading] = useState(false); // מצב טעינה
+
 
     const router = useRouter()
 
@@ -36,6 +38,7 @@ const OutfitForm: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true)
 
         const outfitFinal: IOutfitType = {
             userId: String(userId),
@@ -173,14 +176,15 @@ const OutfitForm: React.FC = () => {
                 {/* Submit Button */}
                 <button
                     type="submit"
-                    disabled={!canvasUrl}
-                    className={`w-full py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 ${!canvasUrl
+                    disabled={!canvasUrl || isLoading}
+                    className={`w-full py-2 px-4 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 ${!canvasUrl || isLoading
                         ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-indigo-600 text-white hover:bg-indigo-700"
+                        : "bg-indigo-600 hover:bg-indigo-700"
                         }`}
                 >
-                    צור לבוש
+                    {isLoading ? "טוען..." : "צור לבוש"}
                 </button>
+            
             </form>
         </>
     );
