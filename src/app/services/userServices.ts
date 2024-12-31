@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useOriginUser from "@/app/store/originUserStore";
 import { Types } from "mongoose";
+import { isHandledError, printErrorsOfAuthenticationToUser } from "./errorServices";
 
 export const apiUrl = "/api/userRoute";
 
@@ -323,9 +324,7 @@ export const createSubAccount = async (formData: IUserType) => {
     if (userId2?.toString() === originUserId2?.toString()) {
       // השגת נתוני ה־creator ואימות הסיסמה
       const originUserData = await getOriginUserDataWithAuthentication();
-      if (!originUserData.success) {
-        return originUserData;
-      }
+      printErrorsOfAuthenticationToUser(originUserData);
 
       const { originUserId } = originUserData.data!;
       // הצפנת סיסמה חדשה
@@ -372,7 +371,8 @@ export const createSubAccount = async (formData: IUserType) => {
     }
   } catch (error) {
     console.error("Error during create sub account:", error);
-
+    if (isHandledError(error)) throw error;
+    
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message || "שגיאה לא צפויה";
       const status = error.response?.status || 500;

@@ -162,7 +162,7 @@ const Page: React.FC = () => {
 
   return (
     <ConfigProvider locale={heIL}>
-      <div className=" w-full max-w-[800px] m-auto ">
+      <div className=" w-full max-w-[800px] m-auto h-full">
         <Calendar
           onPanelChange={onPanelChange}
           fullCellRender={calendarMode === "month" ? fullCellRender : undefined}

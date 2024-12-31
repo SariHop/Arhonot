@@ -87,7 +87,7 @@ const Settings = () => {
   if (error) return <div>שגיאה בטעינת ערים{String(error)}</div>;
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-white py-10">
+    <div className="flex justify-center items-center h-full py-10 px-4">
       <form
         onSubmit={handleSubmit}
         className="bg-gray-100 p-6 shadow-lg rounded-md w-full max-w-lg"

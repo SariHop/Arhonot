@@ -4,7 +4,7 @@ import { CreateConnectionRequestType } from "@/app/types/IConnectionRequest";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useOriginUser from "@/app/store/originUserStore";
-import { getUserByEmail } from "@/app/services/userServices";
+// import { getUserByEmail } from "@/app/services/userServices";
 import { BsSendFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 
@@ -23,20 +23,6 @@ const ConnectExisting = () => {
   const handleEmailSearch = async () => {
     try {
       setIsLoading(true);
-      const user = await getUserByEmail(emailInput);
-      if (!user) {
-        toast.error("לא נמצא משתמש עם כתובת המייל שהוזנה");
-        setIsLoading(false);
-        return user;
-      }
-
-      console.log("User found:", user);
-
-      if (!user._id) {
-        toast.error("המשתמש שנמצא לא תקין. חסר מזהה ייחודי (_id).");
-        setIsLoading(false);
-        return;
-      }
 
       if (!creatorId) {
         toast.error("המשתמש הנוכחי לא מזוהה. אנא התחבר מחדש.");
@@ -46,7 +32,7 @@ const ConnectExisting = () => {
 
       const connectionRequest: CreateConnectionRequestType = {
         userIdSender: creatorId,
-        userIdReciver: user._id,
+        userIdReciver: "",
         status: "pending",
         readen: false,
         date: new Date(),
@@ -54,7 +40,7 @@ const ConnectExisting = () => {
       };
 
       // יצירת בקשת חיבור
-      const response = await createNewConnectionRequest(connectionRequest);
+      const response = await createNewConnectionRequest(connectionRequest, emailInput);
       console.log("Response:", response); // להדפיס את התשובה מהשרת
 
       // if ( response && "status" in response && response.status > 201 && response.status < 204) {
@@ -104,7 +90,7 @@ const ConnectExisting = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen py-10 px-5 bg-gray-50">
+    <div className="flex flex-col items-center justify-start min-h-full py-10 px-5 bg-gray-50">
       {/* כותרת */}
       <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">{`שליחת בקשת חיבור`}</h2>
 

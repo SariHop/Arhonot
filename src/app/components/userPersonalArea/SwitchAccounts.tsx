@@ -7,22 +7,29 @@ import { getUser } from "@/app/services/userServices";
 import "react-toastify/dist/ReactToastify.css";
 import { UpdateUserTypeForStore } from "@/app/types/IUser";
 import { PiUserCircleDuotone } from "react-icons/pi";
+interface SwitchAccountsProps {
+  currentId: string|null;
+  setcurrentId: (id: string|null) => void;
+}
 
-const SwitchAccounts = () => {
+const SwitchAccounts = ({ currentId: localCurrentId, setcurrentId: setLocalCurrentId }: SwitchAccountsProps) => {
   const { _id: senderId, userName: originUserName} = useOriginUser();
   const { _id: currentId } = useUser();
 
   const [children, setChildren] = useState<UpdateUserTypeForStore[]>([]);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [confirmDialog, setConfirmDialog] = useState(false);
-  const [originEqualsCurrentUser, setOriginEqualsCurrentUser] = useState(true);
   const [isSwitching, setIsSwitching] = useState(false);
-  const [localCurrentId, setLocalCurrentId] = useState<string | null>(
-    currentId ? currentId.toString() : null
+  // const [localCurrentId, setLocalCurrentId] = useState<string | null>(
+  //   currentId ? currentId.toString() : null
+  // );
+  const [originId, setOriginId] = useState<string | null>(
+    senderId ? senderId.toString() : null
   );
 
   // שליפת פרטי המשתמש והילדים
   useEffect(() => {
+    setOriginId(senderId?.toString() || null);
     const fetchUserData = async () => {
       if (!senderId) return;
       try {
@@ -40,10 +47,7 @@ const SwitchAccounts = () => {
     fetchUserData();
   }, [senderId]);
 
-  // בדיקה אם המשתמש הנוכחי הוא המשתמש המקורי
-  useEffect(() => {
-    setOriginEqualsCurrentUser(senderId === localCurrentId )
-  }, [senderId, localCurrentId ])
+
 
   const handleUserClick = (receiverId: string) => {
     setSelectedUser(receiverId);
@@ -83,11 +87,11 @@ const SwitchAccounts = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto py-10 min-h-full px-3 md:px-0">
       <h3 className="text-xl font-bold text-center mb-4">
-        החיבורים של {originUserName}
+      {currentId === senderId? "החיבורים שלי": ` החיבורים של ${originUserName}`}
       </h3>
-      {!originEqualsCurrentUser && (
+      {localCurrentId!==originId && (
         <div className="text-left mb-4">
           <button
             className="bg-indigo-500 text-white font-bold px-4 py-2 rounded hover:bg-indigo-800"

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaCog,
   FaSignOutAlt,
@@ -20,9 +20,20 @@ import useUser from "@/app/store/userStore";
 
 const PersonalArea = () => {
   const [activeKey, setActiveKey] = useState<string | null>(null);
-  const { /*_id: currentId,*/ userName: currentUser } = useUser();
-  const { /*_id: originId,*/ userName: originUser } = useOriginUser();
+  const { _id: currentUserId, userName: currentUser } = useUser();
+  const { _id: originUserId, userName: originUser } = useOriginUser();
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const [currentId, setcurrentId] = useState<string | null>(
+    currentUserId ? currentUserId.toString() : null
+  );
+  const [originId, setOriginId] = useState<string | null>(
+    originUserId ? originUserId.toString() : null
+  );
+
+  useEffect(()=>{
+    setOriginId(originUserId?.toString() || null)
+  },[originUserId])
+
   const handleTogglePanel = (key: string | null) => {
     setActiveKey(key);
   };
@@ -40,21 +51,45 @@ const PersonalArea = () => {
       case "disconnect_account":
         return <DisconnectAccount />;
       case "switch_accounts":
-        return <SwitchAccounts />;
+        return <SwitchAccounts setcurrentId={setcurrentId} currentId={currentId} />;
       default:
         return null;
     }
   };
 
-  const menuItems = [
+  const menuItemsOriginUser = [
     { key: "settings", icon: <FaCog />, label: "הגדרות" },
-    { key: "logout",icon: <FaSignOutAlt className="rotate-180" />, label: "התנתקות"},
+    {
+      key: "logout",
+      icon: <FaSignOutAlt className="rotate-180" />,
+      label: "התנתקות",
+    },
     { key: "create_sub_account", icon: <FaPlus />, label: "יצירת חשבון מקושר" },
     { key: "connect_existing", icon: <FaLink />, label: "התקשרות לחשבון אחר" },
-    { key: "disconnect_account", icon: <FaUnlink />, label: "ניתוק חשבון מקושר" },
-    { key: "switch_accounts", icon: <FaExchangeAlt />, label: "מעבר בין חשבונות" },
+    {
+      key: "disconnect_account",
+      icon: <FaUnlink />,
+      label: "ניתוק חשבון מקושר",
+    },
+    {
+      key: "switch_accounts",
+      icon: <FaExchangeAlt />,
+      label: "מעבר בין חשבונות",
+    },
   ];
-  
+
+  const menuItemsCurrentUser = [
+    {
+      key: "logout",
+      icon: <FaSignOutAlt className="rotate-180" />,
+      label: "התנתקות",
+    },
+    {
+      key: "switch_accounts",
+      icon: <FaExchangeAlt />,
+      label: "מעבר בין חשבונות",
+    },
+  ];
 
   // const filteredMenuItems =
   //  currentId === originId
@@ -69,13 +104,11 @@ const PersonalArea = () => {
   //           ].includes(key)
   //       );
 
-        
-
   return (
-    <div className="flex h-full w-screen">
+    <div className="flex h-full w-full">
       {/* תפריט */}
       <div
-        className={`transition-all duration-500 bg-gray-100 shadow-lg overflow-y-auto flex flex-col items-center p-6 ${
+        className={`transition-all duration-500 bg-gray-100 shadow-lg overflow-hidden flex flex-col h-full items-center px-6 p-4 ${
           isMobile ? (activeKey ? "w-2/9" : "w-3/4") : "w-1/3"
         }`}
       >
@@ -88,7 +121,7 @@ const PersonalArea = () => {
           </div>
         )}
         <div className="flex flex-col gap-3 w-full">
-          {menuItems.map(({ key, icon, label }) => (
+        {(currentId === originId ? menuItemsOriginUser : menuItemsCurrentUser).map(({ key, icon, label }) => (
             <button
               key={key}
               onClick={() => handleTogglePanel(key)}

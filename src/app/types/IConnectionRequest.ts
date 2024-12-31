@@ -39,7 +39,7 @@ export type IConnectionRequestTypeWithId = z.infer<typeof ConnectionRequestSchem
 // טיפוס ליצירת בקשת חיבור
 export type CreateConnectionRequestType = {
     userIdSender:Types.ObjectId;
-    userIdReciver:Types.ObjectId;
+    userIdReciver: string;
     status: string;
     readen: boolean;
     date: Date;

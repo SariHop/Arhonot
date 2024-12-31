@@ -161,7 +161,7 @@ export const updateConnections = async (
 };
 //פונקציה ליצירת בקשת התחברות חדשה
 export const createNewConnectionRequest = async (
-  formData: CreateConnectionRequestType
+  formData: CreateConnectionRequestType, email: string
 ) => {
   try {
     const { _id: userId } = useUser.getState();
@@ -173,7 +173,7 @@ export const createNewConnectionRequest = async (
 
       const response = await axios.post(
         "/api/connectionRequestRoute",
-        formData
+        {formData, email}
       );
       if (
         response &&
@@ -193,30 +193,6 @@ export const createNewConnectionRequest = async (
             break;
         }
         return response.data;
-        // } else if (response && response.success) {
-        //   if ("message" in response && typeof response.message === "string") {
-        //     // טיפול במקרים ספציפיים לפי ההודעה
-        //     switch (response.message) {
-        //       case "Connection request status created":
-        //         toast.success("בקשת החיבור נשלחה בהצלחה");
-        //         break;
-        //       // case "Connection request status already acceted":
-        //       //   toast.info("בקשת החיבור כבר אושרה בעבר.");
-        //       //   break;
-        //       // // case "Connection request status already pending":
-        //       // //   toast.info("בקשת החיבור כבר במצב ממתין לאישור.");
-        //       // //   break;
-        //       default:
-        //         toast.success(`הצלחה: ${response.message}`);
-        //     }
-        //   } else {
-        //     // הודעת הצלחה כללית במקרה שאין הודעה מפורשת
-        //     toast.success("בקשת החיבור נשלחה בהצלחה");
-        //   }
-        // }
-
-        // if (response.status === 200 || response.status === 201) {
-        //   return response.data;
       } else {
         throw response;
       }
@@ -234,7 +210,11 @@ export const createNewConnectionRequest = async (
       const serverError = error.response?.data?.error || "Unknown server error";
       const status = error.response?.status || 501;
 
-      if (status === 500) {
+      if (status === 404) {
+        toast.error("לא נמצא משתמש עם כתובת המייל שהוזנה");
+      }else if (status === 403) {
+        toast.error("המשתמש שנמצא לא תקין. חסר מזהה ייחודי.");
+      }else if (status === 500) {
         toast.error(`שגיאת שרת: ${serverError}`);
       } else {
         toast.error("אירעה שגיאה לא צפויה בשרת");
