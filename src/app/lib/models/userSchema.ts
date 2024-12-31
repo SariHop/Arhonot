@@ -14,6 +14,8 @@ const UserSchema : Schema<IUser> = new Schema({
         return value <= new Date(); // Date of birth cannot be in the future
     }, "תאריך לידה לא יכול להיות עתידי"] },
     city: { type: String, required: true},
+    lat:{type:Number, required:true, validate: { validator: function(value: number) { return value >= -90 && value <= 90; }, message: "קואורדינטת latitude חייבת להיות בין -90 ל-90"}},
+    lon:{type:Number, required:true, validate: { validator: function(value: number) { return value >= -180 && value <= 180; }, message: "קואורדינטת longitude חייבת להיות בין -180 ל-180" }},
     sensitive: { type: String, required: true, enum: ["cold", "heat", "none"]},
     // userDays: {type: [Types.ObjectId], required:true, ref: "day" },
 })

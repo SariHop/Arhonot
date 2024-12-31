@@ -30,17 +30,6 @@ const Canvas = () => {
   const { setCanvas, canvas, setSelectedObject } = useCanvasStore();
   const [canvasFromLocacl, setCanvasFromLocacl] = useState(null);
 
-  const getCanvasfromlocaStorage = () => {
-    const savedCanvas = localStorage.getItem("canvas-store");
-    if (savedCanvas) {
-      const savedCanvasObj = JSON.parse(savedCanvas);
-      const canvasJSON = savedCanvasObj.state.canvasJSON
-      if (canvasJSON && canvasJSON.objects.length > 0) {
-        return canvasJSON
-      }
-    }
-    return null;
-  };
 
   useEffect(() => {
     // Calculate width of the canvas based on the window size
@@ -95,10 +84,23 @@ const Canvas = () => {
     };
   }, [canvas, canvasFromLocacl, setSelectedObject]);
 
+  const getCanvasfromlocaStorage = () => {
+    const savedCanvas = localStorage.getItem("canvas-store");
+    if (savedCanvas) {
+      const savedCanvasObj = JSON.parse(savedCanvas);
+      const canvasJSON = savedCanvasObj.state.canvasJSON
+      if (canvasJSON && canvasJSON.objects.length > 0) {
+        return canvasJSON
+      }
+    }
+    return null;
+  };
+
+
   return (
     <div className="flex flex-col justify-center mt-3">
 
-     <ButtonNavigathion value="חזרה לדף הבית" path=""/>
+      <ButtonNavigathion value="חזרה לדף הבית" path="" />
 
       <div className="bg-white">
         <ShowGallery />
@@ -108,6 +110,7 @@ const Canvas = () => {
       <div className="bg-checkered-pattern flex justify-center items-center gap-5 p-7 flex-col">
         <canvas key="canvas" id="canvas" ref={canvasRef} className="shadow-lg max-w-full h-0 w-0" />
       </div>
+      
     </div>
   );
 };

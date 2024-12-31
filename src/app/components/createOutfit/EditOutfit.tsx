@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ZodError } from "zod";
 import { updateOutfit } from "@/app/services/outfitServices";
+import useOutfits from "@/app/store/outfitsStore";
 
 const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
 
@@ -16,11 +17,11 @@ const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
     const [rangeWeather, setRangeWeather] = useState(4);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [rate, setRate] = useState(0);
-
-    // messege
+    // messeges
     const [errormessege, setErrormessege] = useState("");
     const [isUpdating, setIsUpdating] = useState(false);
 
+    const {updateOutfitS} = useOutfits()
 
     useEffect(() => {
         if (outfit) {
@@ -60,7 +61,8 @@ const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
 
             console.log(submitOutfit)
             await outfitSchemaZod.parseAsync(submitOutfit);
-            await updateOutfit(submitOutfit, outfit._id as string);
+            const updatedlook = await updateOutfit(submitOutfit, outfit._id as string);
+            updateOutfitS(updatedlook)
             toast.success("לוק עודכן בהצלחה!");
             closeModal()
 
@@ -163,8 +165,8 @@ const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
                     type="submit"
                     disabled={isUpdating} // חסום את הכפתור בזמן עדכון
                     className={`w-full py-2 px-4 rounded-md focus:outline-none focus:ring-2 ${isUpdating
-                            ? "bg-gray-400 text-white cursor-not-allowed"
-                            : "bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500"
+                        ? "bg-gray-400 text-white cursor-not-allowed"
+                        : "bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500"
                         }`}
                 >
                     {isUpdating ? "מעדכן..." : "עדכן לבוש"}

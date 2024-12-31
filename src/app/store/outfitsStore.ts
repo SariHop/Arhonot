@@ -14,6 +14,8 @@ type OutfitsStore = {
     setOutfits: (outfits: IOutfit[]) => void;
     deleteOutfit: (outfit: IOutfit) => void;
     resetOutfits: () => void;
+    updateOutfitS: (outfit: IOutfit) => void
+
     setOutfitSelectedRate: (rate: number | undefined) => void
     setOutfitSelectedSeason: (season: string | undefined) => void;
     setOutfitSelectedRange: (range: number | undefined) => void;
@@ -57,6 +59,17 @@ const useOutfits = create<OutfitsStore>((set) => ({
         set({
             outfits: [],
         })
+    },
+    updateOutfitS: (outfit: IOutfit) => {
+        set((state) => {
+            const updatedOutfits = state.outfits.map((g) =>
+                g._id === outfit._id ? outfit : g
+            );
+            return {
+                outfits: updatedOutfits,
+                sortedOutfits: filterOutfits(updatedOutfits, state),
+            };
+        });
     },
 
     setOutfitSelectedRate: (rate) => {
