@@ -161,7 +161,7 @@ export const updateConnections = async (
 };
 //פונקציה ליצירת בקשת התחברות חדשה
 export const createNewConnectionRequest = async (
-  formData: CreateConnectionRequestType
+  formData: CreateConnectionRequestType, email: string
 ) => {
   try {
     const { _id: userId } = useUser.getState();
@@ -173,7 +173,7 @@ export const createNewConnectionRequest = async (
 
       const response = await axios.post(
         "/api/connectionRequestRoute",
-        formData
+        {formData, email}
       );
       if (
         response &&
@@ -234,7 +234,11 @@ export const createNewConnectionRequest = async (
       const serverError = error.response?.data?.error || "Unknown server error";
       const status = error.response?.status || 501;
 
-      if (status === 500) {
+      if (status === 404) {
+        toast.error("לא נמצא משתמש עם כתובת המייל שהוזנה");
+      }else if (status === 403) {
+        toast.error("המשתמש שנמצא לא תקין. חסר מזהה ייחודי.");
+      }else if (status === 500) {
         toast.error(`שגיאת שרת: ${serverError}`);
       } else {
         toast.error("אירעה שגיאה לא צפויה בשרת");
