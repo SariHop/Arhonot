@@ -11,7 +11,7 @@ import { useCityQuery } from "@/app/hooks/cityQueryHook";
 import { Select } from "antd";
 import { DefaultOptionType } from "antd/es/select";
 import { usePathname, useRouter } from "next/navigation"; // ייבוא מתוך next/navigation
-import {initialize} from "@/app/store/alertsCounterStore"
+import { initialize } from "@/app/store/alertsCounterStore";
 import useUser from "../store/userStore";
 import { isHandledError } from "../services/errorServices";
 
@@ -116,8 +116,6 @@ const SignUp = () => {
       }
     } catch (err) {
       if (isHandledError(err)) console.log("שגיאה באימות");
-      ;
-      
       const fieldErrors: Partial<Record<keyof IUserType, string>> = {};
       if (err instanceof ZodError) {
         err.errors.forEach((error) => {
@@ -146,7 +144,11 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 ">
+    <div
+      className={`flex justify-center items-center min-h-full ${
+        isUserPage ? "py-10 px-2 bg-gray-50" : " bg-gray-100"
+      }`}
+    >
       <form
         onSubmit={(e) => {
           handleSubmit(e);

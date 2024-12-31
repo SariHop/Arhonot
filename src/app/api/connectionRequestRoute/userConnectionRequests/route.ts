@@ -44,13 +44,14 @@ export async function PUT(request: NextRequest) {
         ],
       });
   
-      if (deleteResult.deletedCount === 0) {
-        return NextResponse.json(
-          { error: "Connection request not found" },
-          { status: 405 }
-        );
-      }
+      // if (deleteResult.deletedCount === 0) {
+      //   return NextResponse.json(
+      //     { error: "Connection request not found" },
+      //     { status: 405 }
+      //   );
+      // }
   
+      
       //המרה לobjectId
       const objReceiver = new Types.ObjectId(receiverId);
       const objSender = new Types.ObjectId(senderId);
