@@ -11,8 +11,13 @@ import './stylesCarusela.css';
 
 // import required modules
 import { EffectCoverflow, Pagination, Navigation } from 'swiper/modules';
+import useDay from "@/app/store/currentDayStore";
+import ShowGalery from "./ShowGalery";
+import Outfit from "../user/Outfit";
 
-export default function App() {
+
+const Carusela: React.FC<{ setChanged: (c: boolean) => void }> = ({ setChanged }) => {
+    const { allLooks } = useDay();
     return (
         <div>
             <Swiper
@@ -31,33 +36,18 @@ export default function App() {
                 modules={[EffectCoverflow, Pagination, Navigation]}
             >
                 <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/nature-1.jpg" />
+                    <ShowGalery setChanged={setChanged} />
                 </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/nature-2.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/nature-3.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/nature-4.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/nature-5.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/nature-6.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/nature-7.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/nature-8.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/nature-9.jpg" />
-                </SwiperSlide>
+                {allLooks.map((look) => (
+                    <SwiperSlide key={look?._id || look.id}>
+                        <Outfit look={look} setChanged={setChanged} />
+                    </SwiperSlide>
+
+                ))}
             </Swiper>
         </div>
-    );
+    )
+
 }
+export default Carusela
+
