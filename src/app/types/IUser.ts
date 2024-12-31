@@ -10,6 +10,8 @@ export default interface IUser extends Document {
     gender: string;
     dateOfBirth: Date;
     city: string;
+    lat: number;
+    lon: number;
     sensitive: string;
 }
 
