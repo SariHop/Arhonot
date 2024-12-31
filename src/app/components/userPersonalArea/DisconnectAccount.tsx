@@ -7,9 +7,11 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UpdateUserTypeForStore } from "@/app/types/IUser";
 import { PiUserCircleDuotone } from "react-icons/pi";
+import useUser from "@/app/store/userStore";
 
 const ConnectionList = () => {
-  const { _id: senderId } = useOriginUser();
+  const { _id: senderId, userName: originUsersName } = useOriginUser();
+  const {_id: userId} = useUser();
   const [children, setChildren] = useState<UpdateUserTypeForStore[]>([]);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [confirmDialog, setConfirmDialog] = useState(false);
@@ -68,8 +70,8 @@ const ConnectionList = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h3 className="text-xl font-bold text-center mb-4">החיבורים שלי</h3>
+    <div className="max-w-4xl mx-auto py-10 min-h-full px-3 md:px-0">
+      <h3 className="text-xl font-bold text-center mb-4">{userId === senderId? "החיבורים שלי": ` החיבורים של ${originUsersName}`}</h3>
       <ul
         className={`grid gap-4 ${
           children.length > 0 ? "grid-cols-1 sm:grid-cols-2" : ""

@@ -20,7 +20,7 @@ const Page = () => {
   }, [user._id]);
   
   return (
-    <div className="pb-6">
+    <div className="pb-6 h-full">
       {/* התראות על מלאי */}
       <div className="p-6 pt-2 h-[30vh]">
         <p className="font-sans text-base pb-2 font-thin">

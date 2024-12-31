@@ -32,7 +32,7 @@ const Logout = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full">
+    <div className="flex flex-col items-center justify-center min-h-full">
       <PiUserCircleDuotone className="text-8xl mb-14" />
       <h2 className="text-center font-bold text-2xl">
        את/ה בטוח/ה שברצונך להתנתק?

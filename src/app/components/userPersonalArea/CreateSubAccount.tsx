@@ -4,7 +4,7 @@ import SignUp from "@/app/components/SignUp";
 
 const CreateSubAccount = () => {
   return (
-    <div>
+    <div className="flex justify-center items-center bg-gray-50">
         <SignUp />
     </div>
   );
