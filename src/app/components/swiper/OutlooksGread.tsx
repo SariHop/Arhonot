@@ -1,18 +1,14 @@
 import useDay from "@/app/store/currentDayStore";
 import Image from "next/image";
-import ShowGalery from "./ShowGalery";
-import Outfit from "../user/Outfit";
+import Carusela from "./Carusela";
 
 const LooksList: React.FC<{ saveChanges: () => void, changed:boolean, setChanged:(c: boolean) => void }> = ({ saveChanges, changed, setChanged }) => {
-    const { allLooks, selectedLooks, selectLook } = useDay();
+    const { selectedLooks, selectLook } = useDay();
 
     return (
         <div className="flex flex-col gap-6">
-            <div className="flex flex-wrap gap-4">
-                {allLooks.map((look) => (
-                    <Outfit key={look?._id || look.id} look={look} setChanged={setChanged}/>
-                ))}
-                <ShowGalery setChanged={setChanged}/>
+            <div >
+              <Carusela setChanged={setChanged}/>
             </div>
             {/* הצגת הלוקים הנבחרים */}
             <div className="flex flex-wrap gap-3 justify-center">

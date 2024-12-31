@@ -129,8 +129,24 @@ const SignUp = () => {
     }
   };
 
-  if (isLoading) return <div className="m-auto"><CircularProgress /></div>;
-  if (error) return <div>שגיאה בטעינת ערים {String(error)}</div>;
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <CircularProgress />
+      </div>
+    );
+  
+  if (error)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative max-w-md text-center shadow-md">
+          <strong className="font-bold">שגיאה!</strong>
+          <span className="block sm:inline mt-2">
+            שגיאה בטעינת ערים: {String(error)}
+          </span>
+        </div>
+      </div>
+    );
 
   const cityOptions: DefaultOptionType[] = (cities || []).map(
     (city: string) => ({
@@ -144,12 +160,12 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 ">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-green-200 to-blue-300 ">
       <form
         onSubmit={(e) => {
           handleSubmit(e);
         }}
-        className="bg-white p-8 shadow-md rounded-md w-full max-w-md m-3"
+        className="bg-white p-8 shadow-md rounded-md w-full max-w-md m-5"
       >
         <h2 className="text-2xl font-bold mb-4 text-gray-800">{title}</h2>
         <div className="grid grid-cols-2 gap-4 mb-4">

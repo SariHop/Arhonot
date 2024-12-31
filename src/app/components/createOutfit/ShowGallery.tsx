@@ -15,7 +15,7 @@ const drawerBleeding = 85
 const Puller = styled('div')(() => ({
   width: 30,
   height: 6,
-  backgroundColor: grey[300],
+  backgroundColor: grey[400],
   borderRadius: 3,
   position: 'absolute',
   top: 8,
@@ -30,14 +30,14 @@ export default function SwipeableEdgeDrawer() {
       <Global
         styles={{
           '.MuiDrawer-root > .MuiPaper-root': {
-            height: `calc(90% - ${drawerBleeding}px)`,
+            height: `calc(95% - ${drawerBleeding}px)`,
             overflow: 'visible',
           },
         }}
       />
       <Box sx={{ textAlign: 'center' }}>
-        <Button size="large" variant="outlined" sx={{width: "100%", borderRadius:"0", padding:"3"}} onClick={()=>{toggleOpenGallery(true)}}>
-          לחץ כאן כדי לפתוח את הגלריה ולהוסיף פריטים ללוק
+        <Button size="large" variant="outlined" className='text-lg' sx={{width: "100%", borderRadius:"0", fontWeight: 'bold', marginY:"5px" }} onClick={()=>{toggleOpenGallery(true)}}>
+          לחץ כאן כדי לפתוח את הגלריה ולהוסיף פריטים ללבוש
         </Button>
       </Box>
       <SwipeableDrawer
@@ -63,11 +63,10 @@ export default function SwipeableEdgeDrawer() {
               visibility: 'visible',
               right: 0,
               left: 0,
-              backgroundColor: "#f3f4f6",
               cursor: 'pointer',
 
             }}
-            className='shadow-inner'
+            className='shadow-inner bg-gradient-to-br from-green-200 to-blue-200'
             onClick={()=>{toggleOpenGallery(false)}}
           >
             <Puller />
