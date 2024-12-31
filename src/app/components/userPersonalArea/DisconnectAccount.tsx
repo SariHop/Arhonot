@@ -8,9 +8,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { UpdateUserTypeForStore } from "@/app/types/IUser";
 
 const ConnectionList = () => {
-  const { _id: senderId } = useOriginUser(); 
-  const [children, setChildren] = useState<UpdateUserTypeForStore[]>([]); 
-  const [selectedUser, setSelectedUser] = useState<string | null>(null); 
+  const { _id: senderId } = useOriginUser();
+  const [children, setChildren] = useState<UpdateUserTypeForStore[]>([]);
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [confirmDialog, setConfirmDialog] = useState(false);
 
   // שליפת פרטי המשתמש והילדים
@@ -20,13 +20,11 @@ const ConnectionList = () => {
     const fetchUserData = async () => {
       if (!senderId) return;
       try {
-        
-
         const response = await getUser(senderId);
-        console.log("Response:", response); 
+        console.log("Response:", response);
         if (response?.success) {
           console.log("Children data from response:", response.data.children); // הדפסת המידע שהתקבל
-          setChildren(response.data.children); 
+          setChildren(response.data.children);
         } else {
           console.error("Error fetching user data:", response?.error);
         }
@@ -38,7 +36,6 @@ const ConnectionList = () => {
     fetchUserData();
   }, [senderId]);
 
-
   const handleUserClick = (receiverId: string) => {
     setSelectedUser(receiverId);
     setConfirmDialog(true);
@@ -46,19 +43,22 @@ const ConnectionList = () => {
 
   const handleCancelConnection = async () => {
     if (!senderId || !selectedUser) return;
-
-    const response = await removeConnectionRequest(senderId, selectedUser);
-    if (response?.success) {
-      toast.success("החיבור הוסר בהצלחה");
-      setChildren((prevChildren) =>
-        prevChildren.filter((child) => child._id !== selectedUser)
-      ); // עדכון הרשימה לאחר הסרה
-    } else {
-      toast.error("שגיאה בהסרת החיבור");
+    try {
+      await removeConnectionRequest(senderId, selectedUser);
+      // if (response?.success) {
+        toast.success("החיבור הוסר בהצלחה");
+        setChildren((prevChildren) =>
+          prevChildren.filter((child) => child._id !== selectedUser)
+        ); // עדכון הרשימה לאחר הסרה
+      // } else {
+      //   toast.error("שגיאה בהסרת החיבור");
+      // }
+    } catch (error) {
+      console.log("error deleting the connection: ", error);
+    } finally {
+      setConfirmDialog(false);
+      setSelectedUser(null);
     }
-
-    setConfirmDialog(false); 
-    setSelectedUser(null); 
   };
 
   const handleCancelDialog = () => {
@@ -71,7 +71,7 @@ const ConnectionList = () => {
       <h3 className="text-xl font-bold text-center mb-4">החיבורים שלי</h3>
       <ul className="space-y-4">
         {children.map((child) => {
-          console.log("Rendering child:", child); 
+          console.log("Rendering child:", child);
           return (
             <li
               key={child._id as string}
@@ -97,7 +97,7 @@ const ConnectionList = () => {
         >
           <div
             className="bg-white p-6 rounded-lg shadow-lg"
-            onClick={(e) => e.stopPropagation()} 
+            onClick={(e) => e.stopPropagation()}
           >
             <p className="mb-4 text-center">
               האם אתה רוצה לבטל את החיבור שלך למשתמש{" "}

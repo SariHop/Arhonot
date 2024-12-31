@@ -190,12 +190,8 @@ const ConnectionReq: React.FC<AlertProps> = ({
   const acceptRequest = async (requestId: string, sender: string) => {
     console.log("accepted");
     try {
-      const response = await updateRequestStatus(requestId, "accepted");
-      const updateResponse = await updateConnections(sender, userId);
-      if (response.status === 403 || updateResponse.status === 403){
-        toast.error(" אין לך הרשאה לאשר התחברות לחשבון שאינו שלך");
-        return;
-      }
+      await updateRequestStatus(requestId, "accepted");
+      await updateConnections(sender, userId);
       setRequests((prevRequests) =>
         prevRequests.map((request) => {
           if (request.key === requestId) {
@@ -222,32 +218,13 @@ const ConnectionReq: React.FC<AlertProps> = ({
       );
     } catch (error) {
       console.error("Failed to update connection:", error);
-      if (axios.isAxiosError(error)) {
-        const serverError =
-          error.response?.data?.error || "Unknown server error";
-        const status = error.response?.status || 501;
-
-        if (status === 400) {
-          toast.error("שגיאה בקבלת נתונים בשרת, נסה שוב.");
-        } else if (status === 404) {
-          toast.error("בקשת ההתחברות הזו לא נמצאת במערכת");
-        } else if (status === 500) {
-          toast.error(`שגיאת שרת: ${serverError}`);
-        } else {
-          toast.error("אירעה שגיאה לא צפויה בשרת");
-        }
-      } else {
-        toast.error(" אירעה שגיאה בעת עיבוד אישור ההתחברות, נסה שוב");
-      }
     }
   };
 
   const rejectRequest = async (requestId: string) => {
     console.log("rejected");
     try {
-      const response = await updateRequestStatus(requestId, "rejected");
-      if (response.status === 403)
-        toast.error(" אין לך הרשאה לדחות התחברות לחשבון שאינו שלך");
+      await updateRequestStatus(requestId, "rejected");
       setRequests((prevRequests) =>
         prevRequests.map((request) => {
           if (request.key === requestId) {
@@ -280,23 +257,6 @@ const ConnectionReq: React.FC<AlertProps> = ({
       );
     } catch (error) {
       console.error("Failed to reject:", error);
-      if (axios.isAxiosError(error)) {
-        const serverError =
-          error.response?.data?.error || "Unknown server error";
-        const status = error.response?.status || 501;
-
-        if (status === 400) {
-          toast.error("שגיאה בקבלת נתונים בשרת, נסה שוב.");
-        } else if (status === 404) {
-          toast.error("בקשת ההתחברות הזו לא נמצאת במערכת");
-        } else if (status === 500) {
-          toast.error(`שגיאת שרת: ${serverError}`);
-        } else {
-          toast.error("אירעה שגיאה לא צפויה בשרת");
-        }
-      } else {
-        toast.error(" אירעה שגיאה בעת עיבוד דחיית ההתחברות, נסה שוב");
-      }
     }
   };
 
@@ -317,13 +277,17 @@ const ConnectionReq: React.FC<AlertProps> = ({
             label: "ממתינות",
             children: (
               <div className="tab-content">
-                <Collapse
+              {renderRequests("pending").length === 0? 
+                (<p className="text-gray-500 font-thin">אין לך בקשות חיבור שממתינות לך</p>)
+                :
+                (<Collapse
                   items={renderRequests("pending").map((request) => ({
                     ...request,
                     readen: "true",
                   }))}
                   onChange={(key) => handleReadTheRequest(key)}
-                />
+                />)
+                }
               </div>
             ),
           },
@@ -333,13 +297,16 @@ const ConnectionReq: React.FC<AlertProps> = ({
             label: "אושרו",
             children: (
               <div className="tab-content">
-                <Collapse
+                {renderRequests("accepted").length === 0? 
+                (<p className="text-gray-500 font-thin">אין לך בקשות חיבור שאושרו</p>)
+                :
+                (<Collapse
                   items={renderRequests("accepted").map((request) => ({
                     ...request,
                     readen: "true",
                   }))}
                   onChange={(key) => handleReadTheRequest(key)}
-                />
+                />)}
               </div>
             ),
           },
@@ -349,13 +316,16 @@ const ConnectionReq: React.FC<AlertProps> = ({
             label: "נדחו",
             children: (
               <div className="tab-content">
-                <Collapse
+                {renderRequests("rejected").length === 0? 
+                (<p className="text-gray-500 font-thin">אין לך בקשות חיבור שנדחו</p>)
+                :
+                (<Collapse
                   items={renderRequests("rejected").map((request) => ({
                     ...request,
                     readen: "true",
                   }))}
                   onChange={(key) => handleReadTheRequest(key)}
-                />
+                />)}
               </div>
             ),
           },

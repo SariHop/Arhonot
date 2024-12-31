@@ -47,7 +47,7 @@ export async function PUT(request: NextRequest) {
       if (deleteResult.deletedCount === 0) {
         return NextResponse.json(
           { error: "Connection request not found" },
-          { status: 404 }
+          { status: 405 }
         );
       }
   

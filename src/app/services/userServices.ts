@@ -131,7 +131,7 @@ export const getOriginUserDataWithAuthentication = async () => {
       return {
         success: false,
         message: "האימות בוטל על ידי המשתמש",
-        status: 401,
+        status: 405,
       };
     }
 
