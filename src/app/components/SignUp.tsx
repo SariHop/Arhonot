@@ -13,6 +13,7 @@ import { DefaultOptionType } from "antd/es/select";
 import { usePathname, useRouter } from "next/navigation"; // ייבוא מתוך next/navigation
 import {initialize} from "@/app/store/alertsCounterStore"
 import useUser from "../store/userStore";
+import { isHandledError } from "../services/errorServices";
 
 const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -98,9 +99,8 @@ const SignUp = () => {
       } else {
         if ("status" in result && result.status !== undefined) {
           if (result.status === 403) {
-            toast.error("הסיסמה שהקשת שגויה");
-          }
-          if (result.status === 404) {
+            toast.error("אין לך הרשאה לבצע פעולה זו");
+          } else if (result.status === 404) {
             toast.error("אימייל זה כבר קיים במערכת,\nנסה אולי התחברות");
           } else if (result.status === 402) {
             toast.error("העיר שנבחרה לא תקינה");
@@ -115,6 +115,9 @@ const SignUp = () => {
         setIsSubmitting(false);
       }
     } catch (err) {
+      if (isHandledError(err)) console.log("שגיאה באימות");
+      ;
+      
       const fieldErrors: Partial<Record<keyof IUserType, string>> = {};
       if (err instanceof ZodError) {
         err.errors.forEach((error) => {
