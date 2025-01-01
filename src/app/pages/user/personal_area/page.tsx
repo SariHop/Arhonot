@@ -22,7 +22,9 @@ const PersonalArea = () => {
   const [activeKey, setActiveKey] = useState<string | null>(null);
   const { _id: currentUserId, userName: currentUser } = useUser();
   const { _id: originUserId, userName: originUser } = useOriginUser();
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 420;
+  const isiPad = typeof window !== "undefined" && window.innerWidth > 420 && window.innerWidth < 730;
+
   const [currentId, setcurrentId] = useState<string | null>(
     currentUserId ? currentUserId.toString() : null
   );
@@ -31,8 +33,9 @@ const PersonalArea = () => {
   );
 
   useEffect(()=>{
-    setOriginId(originUserId?.toString() || null)
-  },[originUserId])
+    setOriginId(originUserId?.toString() || null);
+    setcurrentId(currentUserId?.toString() || null);
+  },[originUserId, currentUserId]);
 
   const handleTogglePanel = (key: string | null) => {
     setActiveKey(key);
@@ -91,28 +94,16 @@ const PersonalArea = () => {
     },
   ];
 
-  // const filteredMenuItems =
-  //  currentId === originId
-  //     ? menuItems
-  //     : menuItems.filter(
-  //         ({ key }) =>
-  //           ![
-  //             "settings",
-  //             "create_sub_account",
-  //             "connect_existing",
-  //             "disconnect_account",
-  //           ].includes(key)
-  //       );
-
   return (
-    <div className="flex h-full w-full">
+    <div className={`flex h-full justify-self-end ${isMobile || isiPad ? (activeKey ? (isMobile? "w-4/5": "w-5/6") : "w-1/4") : "w-2/3"
+    }`}>
       {/* תפריט */}
       <div
-        className={`transition-all duration-500 bg-gray-100 shadow-lg overflow-hidden flex flex-col h-full items-center px-6 p-4 ${
-          isMobile ? (activeKey ? "w-2/9" : "w-3/4") : "w-1/3"
+        className={`transition-all duration-500 bg-gray-100 shadow-lg overflow-y-hidden flex flex-col h-full items-center px-4 md:px-6 p-4  fixed right-0 z-20 ${
+          isMobile || isiPad ? (activeKey ? (isMobile? "w-1/5": "w-1/6") : isMobile? "w-3/4": "w-3/5") : "w-1/3"
         }`}
       >
-        {currentUser && originUser && !isMobile && (
+        {currentUser && originUser && !isMobile && !isiPad && (
           <div>
             <h2 className="mb-1 text-center">שלום {originUser} 😊</h2>
             <h2 className="font-bold text-lg text-center">
@@ -121,11 +112,12 @@ const PersonalArea = () => {
           </div>
         )}
         <div className="flex flex-col gap-3 w-full">
-        {(currentId === originId ? menuItemsOriginUser : menuItemsCurrentUser).map(({ key, icon, label }) => (
+        {(originId === currentId ? menuItemsOriginUser : menuItemsCurrentUser).map(({ key, icon, label }) => (
+          <>
             <button
               key={key}
               onClick={() => handleTogglePanel(key)}
-              className={`w-full flex items-center gap-3 p-3 rounded-md text-right transition-colors duration-300 ${
+              className={`w-full flex items-center  p-3 rounded-md text-right transition-colors duration-300 ${
                 activeKey === key
                   ? "bg-indigo-500 text-white"
                   : "bg-white hover:bg-gray-200"
@@ -133,30 +125,34 @@ const PersonalArea = () => {
             >
               <span
                 className={`text-2xl ${
-                  activeKey === key && isMobile
+                  activeKey && (isMobile || isiPad)
                     ? "flex items-center justify-center w-full"
                     : ""
                 }`}
               >
                 {icon}
               </span>
-              {!isMobile || !activeKey ? (
+              {!(isMobile || isiPad) || !activeKey ? (
                 <span className="truncate">{label}</span>
               ) : null}
             </button>
+            </>
           ))}
         </div>
       </div>
 
       {/*  תוכן הקומפוננטה המוצגת כעת*/}
+      {/* <div className="flex content-end"> */}
       <div
-        className={`transition-all duration-500 bg-white shadow-inner flex-1 relative ${
-          isMobile && activeKey ? "w-full" : "w-1/2"
-        }`}
+        className={`transition-all duration-500 bg-white shadow-inner flex-1 relative overflow-auto m-0 w-full `}
+          // ${
+        //   isMobile && activeKey ? "w-3/4" : "w-2/3"
+        // }
+        
       >
         {activeKey && (
           <>
-            {isMobile && (
+            {(isMobile || isiPad) && (
               <button
                 onClick={() => handleTogglePanel(null)}
                 className="absolute left-4 top-4 p-2 bg-gray-200 rounded-full shadow-md hover:bg-gray-300"
@@ -168,6 +164,7 @@ const PersonalArea = () => {
           </>
         )}
       </div>
+      {/* </div> */}
     </div>
   );
 };

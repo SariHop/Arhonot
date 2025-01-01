@@ -11,23 +11,22 @@ const Outfit = ({ look, setChanged }: { look: IOutfit , setChanged: (b:boolean)=
 
     return (
         <div
-            className="relative border border-gray-300 rounded-lg p-4 max-w-[200px] text-center cursor-pointer transition-all duration-300 bg-transparent"
+            className="relative text-center cursor-pointer transition-all duration-300 bg-transparent"
             onClick={() => {setChanged(true); selectLook(look)}}
         >
             {/* אם הלוק נבחר, מציגים וי ירוק */}
-            {isSelected && (
+            {isSelected ? (
                 <div className="absolute top-2 left-2 bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
                     ✓
                 </div>
-            )}
+            ):<div className="absolute top-2 left-2 bg-white border border-gray-700 rounded-full w-6 h-6 flex items-center justify-center"></div>}
             <Image
                 src={look.img}
                 alt={`look ${look.id}`}
                 width={200}
                 height={200}
-                className="w-full h-auto rounded-lg mb-4"
+                className="w-full h-auto shadow-xl border"
             />
-            <p className="text-sm text-gray-700">{look.desc}</p>
         </div>
     )
 }

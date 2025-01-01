@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { signin } from '../../services/userServices'
 import { useRouter } from 'next/navigation'; // ייבוא מתוך next/navigation
 import Link from 'antd/es/typography/Link';
+import { EyeInvisibleTwoTone, EyeTwoTone } from "@ant-design/icons";
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
@@ -11,6 +12,8 @@ export default function SignInPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
   const router = useRouter(); // שימוש ב-router מתוך next/navigation
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -63,18 +66,26 @@ export default function SignInPage() {
               required
             />
           </div>
-          <div className="mb-4">
+          <div className="mb-4 relative">
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               סיסמא:
             </label>
             <input
               id="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
               required
             />
+            {/* Icon */}
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute left-3 top-9 text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? <EyeInvisibleTwoTone /> : <EyeTwoTone />}
+            </button>
           </div>
           <div className="flex justify-between items-center my-4">
             <Link
