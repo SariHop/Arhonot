@@ -111,7 +111,7 @@ const Page = () => {
     }
   };
   return (
-    <div className='flex gap-10 flex-col p-2'>
+    <div className='flex gap-10 flex-col p-2  h-full' >
       <WeeklyCalendar saveChanges={saveChanges} changed={changed} setChanged={setChanged}   />
       {/* <ImageCaruseka looks={looks} /> */}
       {/* <SwiperComponent /> */}

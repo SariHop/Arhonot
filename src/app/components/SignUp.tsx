@@ -133,14 +133,14 @@ const SignUp = () => {
 
   if (isLoading)
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <CircularProgress />
+      <div className={`flex justify-center items-center h-full ${isUserPage? "":"bg-gradient-to-br from-green-200 to-blue-300"}`}>
+        <CircularProgress className={`${isUserPage? "":"text-white"}`}/>
       </div>
     );
   
   if (error)
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center items-center h-full">
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative max-w-md text-center shadow-md">
           <strong className="font-bold">שגיאה!</strong>
           <span className="block sm:inline mt-2">
@@ -164,7 +164,7 @@ const SignUp = () => {
   return (
 
     <div
-      className={`flex  min-h-full ${
+      className={`flex h-full ${
         isUserPage ? "py-10 px-2 bg-gray-50" : " bg-gradient-to-br from-green-200 to-blue-300 justify-center items-center"
       }`}
     >

@@ -3,7 +3,7 @@ import SignUp from "@/app/components/SignUp";
 
 const Page = () => {
   return (
-    <div>
+    <div className="h-screen">
       <SignUp />
     </div>
   );
