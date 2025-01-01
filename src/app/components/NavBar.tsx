@@ -4,7 +4,7 @@ import {
 } from "@ant-design/icons";
 import { Badge, Dropdown, MenuProps, message } from "antd";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import useAlertsCounter, { initialize } from "../store/alertsCounterStore";
 import useUser from "../store/userStore";
 import { GiClothes } from "react-icons/gi";
