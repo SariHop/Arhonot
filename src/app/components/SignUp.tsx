@@ -164,8 +164,8 @@ const SignUp = () => {
   return (
 
     <div
-      className={`flex justify-center items-center min-h-full ${
-        isUserPage ? "py-10 px-2 bg-gradient-to-br from-green-200 to-blue-300" : " bg-gradient-to-br from-green-200 to-blue-300"
+      className={`flex  min-h-full ${
+        isUserPage ? "py-10 px-2 bg-gray-50" : " bg-gradient-to-br from-green-200 to-blue-300 justify-center items-center"
       }`}
     >
 
@@ -173,7 +173,9 @@ const SignUp = () => {
         onSubmit={(e) => {
           handleSubmit(e);
         }}
-        className="bg-white p-8 shadow-md rounded-md w-full max-w-md m-5"
+        className={`bg-white  shadow-md rounded-md w-full max-w-md  ${
+          isUserPage ? "p-4" : "m-5 p-8"
+        }`}
       >
         <h2 className="text-2xl font-bold mb-4 text-gray-800">{title}</h2>
         <div className="grid grid-cols-2 gap-4 mb-4">
