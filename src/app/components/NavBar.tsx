@@ -84,7 +84,7 @@ const NavBar = () => {
   ];
 
   return (
-    <div className="bg-white left-0 w-full border-t-2 h-[10vh] flex justify-between lg:justify-around items-center shadow-md pr-6 pl-6">
+    <div className="bg-white left-0 w-full border-t-2 h-[10vh] flex justify-between lg:justify-around items-center  border-blue-600 pr-6 pl-6">
       {/* פרטי משתמש */}
         <div className="flex flex-col items-center text-xl hover:text-blue-600 gap-1 lg:flex-row md:text-3xl" onClick={() => router.push("/pages/user/personal_area")}>
           <FaUser 

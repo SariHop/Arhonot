@@ -18,7 +18,7 @@ body {
 }
 /* BG */
 .from-coral-to-magenta{
-  @apply bg-gradient-to-br from-coral to-magenta
+  @apply bg-gradient-to-br from-green-400 to-blue-600
 }
 
 /* animathion */
