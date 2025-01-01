@@ -4,7 +4,7 @@ import User from "@/app/lib/models/userSchema";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-export function generateToken(email: string): string {
+function generateToken(email: string): string {
     const secretKey = process.env.SECRET_KEY;
     if (!secretKey) {
         throw new Error('SECRET_KEY is not defined in .env file');
