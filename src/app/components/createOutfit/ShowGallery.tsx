@@ -23,7 +23,7 @@ const Puller = styled('div')(() => ({
 }));
 
 export default function SwipeableEdgeDrawer() {
-  const {toggleOpenGallery, OpenGallery  } = useCanvasStore();
+  const { toggleOpenGallery, OpenGallery } = useCanvasStore();
 
   return (
     <div className='h-full'>
@@ -36,15 +36,15 @@ export default function SwipeableEdgeDrawer() {
         }}
       />
       <Box sx={{ textAlign: 'center' }}>
-        <Button size="large" variant="outlined" className='text-lg' sx={{width: "100%", borderRadius:"0", fontWeight: 'bold', marginY:"5px" }} onClick={()=>{toggleOpenGallery(true)}}>
+        <Button size="large" variant="outlined" className='text-lg' sx={{ width: "100%", borderRadius: "0", fontWeight: 'bold', marginY: "5px" }} onClick={() => { toggleOpenGallery(true) }}>
           לחץ כאן כדי לפתוח את הגלריה ולהוסיף פריטים ללבוש
         </Button>
       </Box>
       <SwipeableDrawer
         anchor="bottom"
         open={OpenGallery}
-        onClose={()=>{toggleOpenGallery(false)}}
-        onOpen={()=>{toggleOpenGallery(true)}}
+        onClose={() => { toggleOpenGallery(false) }}
+        onOpen={() => { toggleOpenGallery(true) }}
         swipeAreaWidth={drawerBleeding}
         disableSwipeToOpen={false}
         ModalProps={{
@@ -52,22 +52,21 @@ export default function SwipeableEdgeDrawer() {
         }}
 
       >
-        <Tooltip title="הסתר גלריה" placement="top" >
+        <Tooltip title="הסתר גלריה" placement="top">
           <div
             style={{
-              // marginTop:'15px',
               position: 'absolute',
-              top: -drawerBleeding,
+              top: `-11vh`, // הגובה היחסי (10% מגובה המסך)
+              height: '11vh', // הגובה של הדיב
               borderTopLeftRadius: 8,
               borderTopRightRadius: 8,
               visibility: 'visible',
               right: 0,
               left: 0,
               cursor: 'pointer',
-
             }}
             className='shadow-inner bg-gradient-to-br from-green-200 to-blue-200'
-            onClick={()=>{toggleOpenGallery(false)}}
+            onClick={() => { toggleOpenGallery(false); }}
           >
             <Puller />
             <div className="m-4 flex justify-center items-center">
@@ -76,14 +75,13 @@ export default function SwipeableEdgeDrawer() {
                 alt="Logo"
                 width={100}
                 height={120}
-                className="p-3"
               />
             </div>
 
           </div>
         </Tooltip>
 
-        <div style={{paddingBottom:'5%', overflow: 'auto' }} className='bg-white'>
+        <div style={{ paddingBottom: '5%', overflow: 'auto' }} className='bg-white'>
           <Gallery viewMode={"createOtfit"} />
         </div>
 

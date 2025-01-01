@@ -134,7 +134,7 @@ const SignUp = () => {
   if (isLoading)
     return (
       <div className={`flex justify-center items-center h-full ${isUserPage? "":"bg-gradient-to-br from-green-200 to-blue-300"}`}>
-        <CircularProgress className={`${isUserPage? "":"text-white"}`}/>
+        <CircularProgress/>
       </div>
     );
   
