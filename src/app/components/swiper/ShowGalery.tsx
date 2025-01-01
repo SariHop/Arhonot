@@ -22,12 +22,21 @@ export default function SwipeableEdgeDrawer({ setChanged = () => { } }: { setCha
 
     if (!date) return "?"
 
+    const today = new Date();
+    if (
+        today.getDate() === date.getDate() &&
+        today.getMonth() === date.getMonth() &&
+        today.getFullYear() === date.getFullYear()
+    ) {
+        return " להיום ";
+    }
+
     const daysOfWeek = ["א'", "ב'", "ג'", "ד'", "ה'", "ו'", "שבת"];
 
     const day = date.getDate();
     const month = date.getMonth() + 1;
 
-    return ` ${daysOfWeek[date.getDay()]} ${day}.${month < 10 ? `0${month}` : month}`;
+    return ` ליום ${daysOfWeek[date.getDay()]} ${day}.${month < 10 ? `0${month}` : month}`;
   };
 
   return (
@@ -52,7 +61,7 @@ export default function SwipeableEdgeDrawer({ setChanged = () => { } }: { setCha
           <Plus size={37} strokeWidth={2.5} />
         </div>
         <span className="text-emerald-700 font-medium text-lg text-center px-3">
-          הוסף לוק ליום
+           בחר לוק 
           {formatDate(selectedDate)}
         </span>
       </div>

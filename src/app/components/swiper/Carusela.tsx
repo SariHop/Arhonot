@@ -32,18 +32,18 @@ const Carusela: React.FC<{ setChanged: (c: boolean) => void }> = ({ setChanged }
                     modifier: 1,
                     slideShadows: true,
                 }}
-                pagination={true}
+                pagination={{ clickable: true, }}
                 modules={[EffectCoverflow, Pagination, Navigation]}
             >
-                <SwiperSlide>
-                    <ShowGalery setChanged={setChanged} />
-                </SwiperSlide>
                 {allLooks.map((look) => (
                     <SwiperSlide key={look?._id || look.id}>
                         <Outfit look={look} setChanged={setChanged} />
                     </SwiperSlide>
 
                 ))}
+                <SwiperSlide>
+                    <ShowGalery setChanged={setChanged} />
+                </SwiperSlide>
             </Swiper>
         </div>
     )
