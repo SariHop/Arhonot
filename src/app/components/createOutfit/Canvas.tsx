@@ -100,7 +100,9 @@ const Canvas = () => {
   return (
     <div className="flex flex-col justify-center mt-3">
 
-      <ButtonNavigathion value="חזרה לדף הבית" path="" />
+      <div className="block lg:hidden ">
+        <ButtonNavigathion value="חזרה לדף הבית" path="" />
+      </div>
 
       <div className="bg-white">
         <ShowGallery />
@@ -110,7 +112,7 @@ const Canvas = () => {
       <div className="bg-checkered-pattern flex justify-center items-center gap-5 p-7 flex-col">
         <canvas key="canvas" id="canvas" ref={canvasRef} className="shadow-lg max-w-full h-0 w-0" />
       </div>
-      
+
     </div>
   );
 };
