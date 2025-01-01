@@ -1,11 +1,6 @@
 "use client";
 import {
-  BellOutlined,
-  CalendarOutlined,
   PlusOutlined,
-  ProductOutlined,
-  SkinOutlined,
-  UserOutlined,
 } from "@ant-design/icons";
 import { Badge, Dropdown, MenuProps, message } from "antd";
 import { useRouter } from "next/navigation";
@@ -14,8 +9,8 @@ import useAlertsCounter, { initialize } from "../store/alertsCounterStore";
 import useUser from "../store/userStore";
 import { GiClothes } from "react-icons/gi";
 import { FaBell, FaUser } from "react-icons/fa";
-import { IoCalendarNumberSharp, IoCalendarSharp } from "react-icons/io5";
-import { BsCalendar2DateFill, BsPlus } from "react-icons/bs";
+import {  IoCalendarSharp } from "react-icons/io5";
+import { BsPlus } from "react-icons/bs";
 import { AiFillProduct } from "react-icons/ai";
 
 import { FaShirt } from "react-icons/fa6";
@@ -28,7 +23,7 @@ const NavBar = () => {
   // const setAlertsCounter = useAlertsCounter((state) => state.setAlertsCounter);
   const router = useRouter();
   const user = useUser();
-  const [isLargeScreen, setIsLargeScreen] = useState(false);
+  // const [isLargeScreen, setIsLargeScreen] = useState(false);
 
   useEffect(() => {
     if (!user._id) {
@@ -38,18 +33,18 @@ const NavBar = () => {
     initialize(user._id);
   }, [user._id]);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsLargeScreen(window.innerWidth >= 1024);
-    };
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     setIsLargeScreen(window.innerWidth >= 1024);
+  //   };
 
-    window.addEventListener('resize', handleResize);
-    handleResize(); // initial check
+  //   window.addEventListener('resize', handleResize);
+  //   handleResize(); // initial check
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener('resize', handleResize);
+  //   };
+  // }, []);
 
   const onClick: MenuProps["onClick"] = ({ key }) => {
     console.log(user._id);
