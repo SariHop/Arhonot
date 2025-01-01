@@ -16,7 +16,6 @@ import useUser from "../store/userStore";
 import { isHandledError } from "../services/errorServices";
 import { CircularProgress } from "@mui/material";
 
-
 const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const user = useUser();
@@ -74,6 +73,7 @@ const SignUp = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+
     try {
       const validationResult = await userSchemaZod.parseAsync(formData);
       console.log("הנתונים תקינים:", validationResult);
@@ -85,35 +85,29 @@ const SignUp = () => {
       } else {
         result = await signup(formData);
       }
-      if (
-        "status" in result &&
-        (result.status === 200 || result.status === 201)
-      ) {
-        if (result.success) {
-          console.log("Signup successful:", result.data);
-          toast.success("החשבון נוצר בהצלחה");
-          router.push("/pages/user"); // הפניה לעמוד הבית
-        } else if (!result.success) {
-          console.log("result.success", result.success);
-        } else {
-          console.log("status is not existing in result");
-        }
+      if (result.success) {
+        // אם ההרשמה הצליחה
+        console.log("Signup successful:", result.data);
+        toast.success("החשבון נוצר בהצלחה");
+        router.push("/pages/user"); // הפניה לעמוד הבית
       } else {
-        if ("status" in result && result.status !== undefined) {
-          if (result.status === 403) {
-            toast.error("אין לך הרשאה לבצע פעולה זו");
-          } else if (result.status === 404) {
-            toast.error("אימייל זה כבר קיים במערכת,\nנסה אולי התחברות");
-          } else if (result.status === 402) {
-            toast.error("העיר שנבחרה לא תקינה");
-          } else if ("message" in result) {
-            toast.error(`ההרשמה נכשלה: \n${result.message}`);
-          }
+        // אם יש שגיאה בתשובה
+        if (result.message) {
+          toast.error(`ההרשמה נכשלה: \n${result.message}`);
         } else {
-          console.log("", result);
           toast.error("שגיאה כללית בעת ההרשמה");
         }
+      }
 
+      // במידה ואין 'success', נבדוק את הסטטוס של ה-API
+      if ("status" in result) {
+        if (result.status === 403) {
+          toast.error("אין לך הרשאה לבצע פעולה זו");
+        } else if (result.status === 404) {
+          toast.error("אימייל זה כבר קיים במערכת,\nנסה אולי התחברות");
+        } else if (result.status === 402) {
+          toast.error("העיר שנבחרה לא תקינה");
+        }
         setIsSubmitting(false);
       }
     } catch (err) {
@@ -137,7 +131,7 @@ const SignUp = () => {
         <CircularProgress />
       </div>
     );
-  
+
   if (error)
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -162,13 +156,13 @@ const SignUp = () => {
   };
 
   return (
-
     <div
       className={`flex justify-center items-center min-h-full ${
-        isUserPage ? "py-10 px-2 bg-gradient-to-br from-green-200 to-blue-300" : " bg-gradient-to-br from-green-200 to-blue-300"
+        isUserPage
+          ? "py-10 px-2 bg-gradient-to-br from-green-200 to-blue-300"
+          : " bg-gradient-to-br from-green-200 to-blue-300"
       }`}
     >
-
       <form
         onSubmit={(e) => {
           handleSubmit(e);

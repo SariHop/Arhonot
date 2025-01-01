@@ -21,15 +21,17 @@ export const fetchWeatherData = async () => {
 
     return response.data;
   } catch (error) {
-    // טיפול בשגיאות במקרה של בעיות עם הגישה למיקום
-    if (error instanceof Error && error.message.includes("User denied")) {
-      toast.error("לא ניתן לגשת למיקום שלך. אנא אפשר את גישת המיקום.");
+    if (error instanceof GeolocationPositionError && error.code === 1) {
+      // משתמש סירב לגשת למיקום
+      toast.warn("לא ניתן לגשת למיקום שלך. ננסה לשחזר מהמידע השמור.");
     } else {
-      throw error;
+      toast.error("שגיאה בלתי צפויה במיקום: " + (error instanceof Error ? error.message : ""));
     }
+    // חזרה לשרת עם ניסיון לחלץ מהמיקום השמור או IP
+    const response = await axios.get(`${apiUrl}weatherRoute`);
+    return response.data;
   }
 };
-
 
 // פונקציה לחישוב הטמפרטורה המקסימלית ליום מסוים
 export const getMaxTemperatureForDate = (list: WeatherData[], targetDate: Date) => {
