@@ -6,7 +6,7 @@ const LooksList: React.FC<{ saveChanges: () => void, changed:boolean, setChanged
     const { selectedLooks, selectLook } = useDay();
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col h-full gap-6">
             <div >
               <Carusela setChanged={setChanged}/>
             </div>
@@ -28,14 +28,15 @@ const LooksList: React.FC<{ saveChanges: () => void, changed:boolean, setChanged
                     </div>
                 ))}
             </div>
-            {changed && 
+            {/* {changed &&  */}
             <button
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-all duration-300"
+                disabled={!changed}
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-all duration-300 self-end mt-auto w-full"
                 onClick={() => {saveChanges(); setChanged(false)}} // פונקציה לשמירת השינויים
             >
                 שמור שינויים
             </button>
-            }
+            {/* } */}
         </div>
     );
 };
