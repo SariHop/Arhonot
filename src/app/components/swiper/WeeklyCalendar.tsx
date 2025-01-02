@@ -98,7 +98,8 @@ const WeeklyCalendar: React.FC<{ saveChanges: () => void, changed: boolean, setC
   };
 
   return (
-    <div className="flex justify-around flex-wrap max-w-full gap-0.5">
+    <div className="flex justify-around flex-wrap max-w-full gap-0.5  p-2">
+
       {weekDates.map((date, index) => {
         const avgTemp = weatherData && weatherData.list
           ? getAverageTemperatureForDate(weatherData.list, date)

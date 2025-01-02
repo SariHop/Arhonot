@@ -8,6 +8,7 @@ import OutfitsGallary from "./outfits/OutfitsGallary";
 import useGarments from "../../store/garmentsStore";
 import useUser from "@/app/store/userStore";
 import useOutfits from "@/app/store/outfitsStore";
+import { CircularProgress } from "@mui/material";
 
 const Gallery = ({ viewMode, setChanged = () => {} }: { viewMode: ("view" | "createOtfit" | "selectForDay") , setChanged?: (b:boolean) => void}) => {
   const { setGarments } = useGarments();
@@ -48,7 +49,14 @@ const Gallery = ({ viewMode, setChanged = () => {} }: { viewMode: ("view" | "cre
     fetchGarmentsFromServices();
     fetchOutfitsFromServices();
   }, [_id, setOutfits, setGarments]);
-  if (loading) return <p>מחפש...</p>;
+
+  if (loading) return (
+    <div className="flex justify-center items-center h-full">
+      <CircularProgress />
+    </div>
+  );
+  
+
   if (viewMode === "createOtfit") {
     return (
       <>

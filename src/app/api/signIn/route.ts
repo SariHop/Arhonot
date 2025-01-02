@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
             );
         }
         try {
-            const user = await User.findOne({ email });
+            const user = await User.findOne({ email: { $regex: new RegExp(`^${email}$`, "i") } });
             if (!user) {
                 return NextResponse.json(
                     { message: 'Invalid email.\nplease try to signup' },

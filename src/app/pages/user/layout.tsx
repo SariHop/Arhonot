@@ -47,7 +47,7 @@ const Layout = ({ children }: Readonly<{ children: React.ReactNode; }>) => {
       </div>
 
       {/* Header for small screens */}
-      <div className="lg:hidden sticky top-0 z-100">
+      <div className="lg:hidden sticky top-0 z-50">
         <HeaderArhonot />
       </div>
 

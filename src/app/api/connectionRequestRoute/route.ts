@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     const { formData: connectionRequestBody, email } = body;
     const { userIdSender } = connectionRequestBody;
 
-    const userReciver = await User.findOne({email});
+    const userReciver = await User.findOne({ email: { $regex: new RegExp(`^${email}$`, "i") } });
     if(!userReciver)
       return NextResponse.json(
         { message: "Error add connectionRequest", error: "no user with this email to recive the request" },

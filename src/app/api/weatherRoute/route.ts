@@ -46,7 +46,7 @@ export async function GET(req: Request) {
       }
     
       await connect();
-      const user = await User.findOne({ email: decoded.email });
+      const user = await User.findOne({ email: { $regex: new RegExp(`^${decoded.email}$`, "i") } });
       if (user && user.lat && user.lon) {
         lat = user.lat.toString();
         lon = user.lon.toString();
