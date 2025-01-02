@@ -107,7 +107,7 @@ export async function PUT(
     const body = await request.json();
     const { city, ...otherFields } = body;
 
-    const existingEmail = await User.findOne({ email: body.email });
+    const existingEmail = await User.findOne({ email: { $regex: new RegExp(`^${body.email}$`, "i") } });
     if (existingEmail && String(existingEmail._id) !== _id) {
       return NextResponse.json(
         { error: "Email already in use by another user" },

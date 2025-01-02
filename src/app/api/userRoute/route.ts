@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
       );
     }
     try {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email: { $regex: new RegExp(`^${email}$`, "i") } });
       if (user) {
         return NextResponse.json(
           { message: "This email already exists." },
@@ -169,12 +169,3 @@ export async function POST(request: NextRequest) {
     }
   }
 }
-
-// function generateToken(email: string): string {
-//   const secretKey = process.env.SECRET_KEY;
-//   if (!secretKey) {
-//     throw new Error("SECRET_KEY is not defined in .env file");
-//   }
-//   const token = jwt.sign({ email }, secretKey, { expiresIn: "1d" });
-//   return token;
-// }

@@ -16,7 +16,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'Email is required' }, { status: 400 });
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: { $regex: new RegExp(`^${email}$`, "i") } });
     if (!user) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }

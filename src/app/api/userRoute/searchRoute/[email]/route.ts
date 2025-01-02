@@ -20,7 +20,7 @@ export async function GET(
         { status: 400 }
       );
     }
-    const user = await User.findOne({email});
+    const user = await User.findOne({ email: { $regex: new RegExp(`^${email}$`, "i") } });
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }

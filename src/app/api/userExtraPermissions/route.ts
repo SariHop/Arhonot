@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: { $regex: new RegExp(`^${email}$`, "i") } });
     if (user) {
       return NextResponse.json(
         { message: "This email already exists." },
