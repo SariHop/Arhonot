@@ -31,7 +31,12 @@ const LooksList: React.FC<{ saveChanges: () => void, changed:boolean, setChanged
             {/* {changed &&  */}
             <button
                 disabled={!changed}
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-all duration-300 self-end mt-auto w-full"
+                className={`px-4 py-2 rounded-lg transition-all duration-300 self-end mt-auto w-full ${
+                    changed
+                      ? "bg-blue-500 hover:bg-blue-700 text-white "
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
+                // className="  "
                 onClick={() => {saveChanges(); setChanged(false)}} // פונקציה לשמירת השינויים
             >
                 שמור שינויים
