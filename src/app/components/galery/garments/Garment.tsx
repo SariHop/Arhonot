@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { GarmentProps } from "@/app/types/IGarment";
 import { rangeWheatherDeescription } from "../../../data/staticArrays";
@@ -16,6 +16,12 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
   const { deleteGarment: deleteFromStore } = useGarments();
   const [isDeleting, setIsDeleting] = useState(false); // מצב המחיקה
 
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
   };
@@ -81,11 +87,13 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
 
   return (
     <>
+      
       <div
-        className={`fixed inset-0 ${
-          isDeleting ? "pointer-events-none" : ""
-        } bg-gray-800 bg-opacity-50 flex items-center justify-center z-50`}
-      >
+          className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 ${
+            isDeleting ? "pointer-events-none" : ""
+          }`}
+          onClick={!isDeleting?handleCloseClick: ()=>{}} // הוספת מאזין ללחיצה על הרקע
+        >
         {/* שכבה נוספת לאינטראקציות */}
         {isDeleting && (
           <div className="absolute inset-0 bg-gray-500 bg-opacity-50 z-40 pointer-events-auto" />
@@ -93,7 +101,7 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
 
         {!updateOpen && (
           <div
-            className="bg-white p-4 rounded-lg shadow-xl w-full max-w-md relative text-right z-50"
+            className="fixed bg-white p-4 rounded-lg shadow-xl w-full max-w-md text-right z-50"
             onClick={(e) => {
               e.stopPropagation();
               if (menuOpen) setMenuOpen(false);
@@ -103,7 +111,7 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
             {/* Toast עם כפתורים */}
             <button
               onClick={handleCloseClick}
-              className="absolute top-4 left-4 text-3xl text-gray-500 transition"
+              className="absolute top-4 left-4 text-3xl text-gray-500 transition "
             >
               <IoMdClose />
             </button>
