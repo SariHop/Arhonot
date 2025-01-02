@@ -11,6 +11,7 @@ import { useWeatherQuery } from '@/app/hooks/weatherQueryHook';
 import { setLooksForDay } from '@/app/services/daysService';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Carusela from '@/app/components/swiper/Carusela';
 
 const Page = () => {
   const { data: weatherData } = useWeatherQuery();
@@ -54,11 +55,11 @@ const Page = () => {
           if (axios.isAxiosError(error)) {
             const serverError = error.response?.data?.error || "Unknown server error";
             const status = error.response?.status || 500;
-      
-            if(status===500){
+
+            if (status === 500) {
               toast.error(`שגיאת שרת: ${serverError}`);
             }
-            else{
+            else {
               toast.error("אירעה שגיאה לא צפויה בעת טעינת לוקים");
             }
           } else {
@@ -111,10 +112,13 @@ const Page = () => {
     }
   };
   return (
-    <div className='flex gap-10 flex-col p-2  h-full' >
-      <WeeklyCalendar saveChanges={saveChanges} changed={changed} setChanged={setChanged}   />
+    <div className='flex gap-10 flex-col  py-5  h-full' >
+      <WeeklyCalendar saveChanges={saveChanges} changed={changed} setChanged={setChanged} />
       {/* <ImageCaruseka looks={looks} /> */}
       {/* <SwiperComponent /> */}
+      <div >
+        <Carusela setChanged={setChanged} />
+      </div>
       <LooksList saveChanges={saveChanges} changed={changed} setChanged={setChanged} />
     </div>
   )

@@ -54,7 +54,7 @@ const Outfit = ({ outfit, closeModal }: IOutfitProps) => {
             autoClose: false,
             closeButton: true,
             hideProgressBar: true,
-            position: "top-center",
+            // position: "top-center",
             onClose: () => setIsDeleting(false), // מאפס את המצב גם בסגירה ידנית של ההתראה
           }
         );
@@ -81,10 +81,11 @@ const Outfit = ({ outfit, closeModal }: IOutfitProps) => {
     return (
         <>
         <div
-        className={`fixed inset-0 ${
-          isDeleting ? "pointer-events-none" : ""
-        } bg-gray-800 bg-opacity-50 flex items-center justify-center z-50`}
-      >
+          className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 ${
+            isDeleting ? "pointer-events-none" : ""
+          }`}
+          onClick={!isDeleting?handleCloseClick: ()=>{}} // הוספת מאזין ללחיצה על הרקע
+        >
         {/* שכבה נוספת לאינטראקציות */}
         {isDeleting && (
           <div className="absolute inset-0 bg-gray-500 bg-opacity-50 z-40 pointer-events-auto" />
@@ -92,7 +93,7 @@ const Outfit = ({ outfit, closeModal }: IOutfitProps) => {
 
         {!updateOpen && (
           <div
-            className="bg-white p-4 rounded-lg shadow-xl w-full max-w-md relative text-right z-50"
+            className="fixed bg-white p-4 rounded-lg shadow-xl w-full max-w-md text-right z-50"
             onClick={(e) => {
               e.stopPropagation();
               if (menuOpen) setMenuOpen(false);
