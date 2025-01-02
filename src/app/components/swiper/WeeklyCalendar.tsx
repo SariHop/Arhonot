@@ -89,7 +89,6 @@ const WeeklyCalendar: React.FC<{ saveChanges: () => void, changed:boolean, setCh
   };
 
   return (
-    <div className="flex justify-between flex-wrap max-w-full gap-0.5 p-2">
     <div className="flex justify-around flex-wrap max-w-full gap-0.5  p-2">
 
       {weekDates.map((date, index) => {
