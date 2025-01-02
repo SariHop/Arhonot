@@ -11,8 +11,10 @@ import { useCityQuery } from "@/app/hooks/cityQueryHook";
 import { Select } from "antd";
 import { DefaultOptionType } from "antd/es/select";
 import { usePathname, useRouter } from "next/navigation"; // ייבוא מתוך next/navigation
-import {initialize} from "@/app/store/alertsCounterStore"
+import { initialize } from "@/app/store/alertsCounterStore";
 import useUser from "../store/userStore";
+import { isHandledError } from "../services/errorServices";
+import { CircularProgress } from "@mui/material";
 
 const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -71,6 +73,7 @@ const SignUp = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+
     try {
       const validationResult = await userSchemaZod.parseAsync(formData);
       console.log("הנתונים תקינים:", validationResult);
@@ -82,39 +85,33 @@ const SignUp = () => {
       } else {
         result = await signup(formData);
       }
-      if (
-        "status" in result &&
-        (result.status === 200 || result.status === 201)
-      ) {
-        if (result.success) {
-          console.log("Signup successful:", result.data);
-          toast.success("החשבון נוצר בהצלחה");
-          router.push("/pages/user"); // הפניה לעמוד הבית
-        } else if (!result.success) {
-          console.log("result.success", result.success);
-        } else {
-          console.log("status is not existing in result");
-        }
+      if (result.success) {
+        // אם ההרשמה הצליחה
+        console.log("Signup successful:", result.data);
+        toast.success("החשבון נוצר בהצלחה");
+        router.push("/pages/user"); // הפניה לעמוד הבית
       } else {
-        if ("status" in result && result.status !== undefined) {
-          if (result.status === 403) {
-            toast.error("הסיסמה שהקשת שגויה");
-          }
-          if (result.status === 404) {
-            toast.error("אימייל זה כבר קיים במערכת,\nנסה אולי התחברות");
-          } else if (result.status === 402) {
-            toast.error("העיר שנבחרה לא תקינה");
-          } else if ("message" in result) {
-            toast.error(`Signup failed: \n${result.message}`);
-          }
+        // אם יש שגיאה בתשובה
+        if (result.message) {
+          toast.error(`ההרשמה נכשלה: \n${result.message}`);
         } else {
-          console.log("", result);
           toast.error("שגיאה כללית בעת ההרשמה");
         }
+      }
 
+      // במידה ואין 'success', נבדוק את הסטטוס של ה-API
+      if ("status" in result) {
+        if (result.status === 403) {
+          toast.error("אין לך הרשאה לבצע פעולה זו");
+        } else if (result.status === 404) {
+          toast.error("אימייל זה כבר קיים במערכת,\nנסה אולי התחברות");
+        } else if (result.status === 402) {
+          toast.error("העיר שנבחרה לא תקינה");
+        }
         setIsSubmitting(false);
       }
     } catch (err) {
+      if (isHandledError(err)) console.log("שגיאה באימות");
       const fieldErrors: Partial<Record<keyof IUserType, string>> = {};
       if (err instanceof ZodError) {
         err.errors.forEach((error) => {
@@ -128,8 +125,24 @@ const SignUp = () => {
     }
   };
 
-  if (isLoading) return <div>מחפש...</div>;
-  if (error) return <div>שגיאה בטעינת ערים {String(error)}</div>;
+  if (isLoading)
+    return (
+      <div className={`flex justify-center items-center h-full ${isUserPage? "":"bg-gradient-to-br from-green-200 to-blue-300"}`}>
+        <CircularProgress/>
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="flex justify-center items-center h-full">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative max-w-md text-center shadow-md">
+          <strong className="font-bold">שגיאה!</strong>
+          <span className="block sm:inline mt-2">
+            שגיאה בטעינת ערים: {String(error)}
+          </span>
+        </div>
+      </div>
+    );
 
   const cityOptions: DefaultOptionType[] = (cities || []).map(
     (city: string) => ({
@@ -143,12 +156,18 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 ">
+    <div
+      className={`flex h-full ${
+        isUserPage ? "py-10 px-2 bg-gray-50" : " bg-gradient-to-br from-green-200 to-blue-300 justify-center items-center"
+      }`}
+    >
       <form
         onSubmit={(e) => {
           handleSubmit(e);
         }}
-        className="bg-white p-8 shadow-md rounded-md w-full max-w-md"
+        className={`bg-white  shadow-md rounded-md w-full max-w-md  ${
+          isUserPage ? "p-4" : "m-5 p-8"
+        }`}
       >
         <h2 className="text-2xl font-bold mb-4 text-gray-800">{title}</h2>
         <div className="grid grid-cols-2 gap-4 mb-4">

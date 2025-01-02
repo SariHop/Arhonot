@@ -7,7 +7,7 @@ import { numberOfItemsInPage } from "@/app/services/galleryService";
 
 let ITEMS_PER_PAGE = 24;
 
-const OutfitsGallary = ({ isSelectForDay }: { isSelectForDay: boolean }) => {
+const OutfitsGallary = ({ isSelectForDay , setChanged= () => {}}: { isSelectForDay: boolean, setChanged?: (b:boolean)=>void }) => {
   const { sortedOutfits } = useOutfit();
   const [currentPage, setCurrentPage] = useState(1);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -28,7 +28,7 @@ const OutfitsGallary = ({ isSelectForDay }: { isSelectForDay: boolean }) => {
       {!sortedOutfits.length && <p>לא נמצאו לוקים עבור לקוח זה.</p>}
       <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 2xl:grid-cols-9 gap-4 px-4">
         {currentItems.map((outfit:IOutfit) => (
-          <Card key={String(outfit._id)} outfit={outfit} isSelectForDay={isSelectForDay}/>
+          <Card key={String(outfit._id)} outfit={outfit} isSelectForDay={isSelectForDay} setChanged={setChanged}/>
         ))}
       </div>
       {sortedOutfits.length > ITEMS_PER_PAGE && (

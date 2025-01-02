@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useOriginUser from "@/app/store/originUserStore";
 import { Types } from "mongoose";
+import { isHandledError, printErrorsOfAuthenticationToUser } from "./errorServices";
 
 export const apiUrl = "/api/userRoute";
 
@@ -131,7 +132,7 @@ export const getOriginUserDataWithAuthentication = async () => {
       return {
         success: false,
         message: "האימות בוטל על ידי המשתמש",
-        status: 401,
+        status: 405,
       };
     }
 
@@ -286,7 +287,7 @@ export const updateUser = async (_id: Types.ObjectId | null, body: object) => {
         );
         return {
           success: true,
-          message: "User updated successfully",
+          message: "המשתמש עודכן בהצלחה",
           data: response.data.data,
           status: 200,
         };
@@ -306,9 +307,9 @@ export const updateUser = async (_id: Types.ObjectId | null, body: object) => {
     console.error("Failed to update connection request:", error);
     if (axios.isAxiosError(error)) {
       const serverError = error.response?.data?.error || "Unknown server error";
-      toast.error(`Server Error: ${serverError}`);
+      toast.error(`שגיאת שרת: ${serverError}`);
     } else {
-      toast.error("An unexpected error occurred");
+      toast.error("שגיאה לא צפויה אריעה בעת העדכון, אנא נסה שנית");
     }
     throw error;
   }
@@ -323,9 +324,7 @@ export const createSubAccount = async (formData: IUserType) => {
     if (userId2?.toString() === originUserId2?.toString()) {
       // השגת נתוני ה־creator ואימות הסיסמה
       const originUserData = await getOriginUserDataWithAuthentication();
-      if (!originUserData.success) {
-        return originUserData;
-      }
+      printErrorsOfAuthenticationToUser(originUserData);
 
       const { originUserId } = originUserData.data!;
       // הצפנת סיסמה חדשה
@@ -344,13 +343,19 @@ export const createSubAccount = async (formData: IUserType) => {
       const response = await axios.post("/api/userExtraPermissions", data);
       if (response.status === 200 || response.status === 201) {
         const userId = response.data.data._id;
-        useUser.getState().updateChildren([...useUser.getState().children, userId]); // עדכון ה-UserStore
-        useOriginUser.getState().updateChildren([...useOriginUser.getState().children, userId]); // עדכון ה-UserOriginStore
+        useUser
+          .getState()
+          .updateChildren([...useUser.getState().children, userId]); // עדכון ה-UserStore
+        useOriginUser
+          .getState()
+          .updateChildren([...useOriginUser.getState().children, userId]); // עדכון ה-UserOriginStore
 
         console.log("User state after createSubAccount:", useUser.getState());
-        console.log("Origin user state after createSubAccount:", useOriginUser.getState());
-        return { success: true, data: response.data,status: response.status};
-
+        console.log(
+          "Origin user state after createSubAccount:",
+          useOriginUser.getState()
+        );
+        return { success: true, data: response.data, status: response.status };
       } else {
         const message =
           response.data?.message || "שגיאה לא ידועה ביצירת חשבון המשני.";
@@ -366,7 +371,8 @@ export const createSubAccount = async (formData: IUserType) => {
     }
   } catch (error) {
     console.error("Error during create sub account:", error);
-
+    if (isHandledError(error)) throw error;
+    
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message || "שגיאה לא צפויה";
       const status = error.response?.status || 500;
@@ -379,7 +385,6 @@ export const createSubAccount = async (formData: IUserType) => {
 
 //פונקציה לחיפוש משתמש עפ"י מייל
 export const getUserByEmail = async (emailInput: string) => {
-
   try {
     const response = await axios.get(`${apiUrl}/searchRoute/${emailInput}`);
     return response.data.data;
@@ -392,8 +397,7 @@ export const getUserByEmail = async (emailInput: string) => {
 export const getUser = async (userId: Types.ObjectId) => {
   try {
     const response = await axios.get(`${apiUrl}/${userId}`);
-    console.log("response.data", response.data);
-    console.log("response.data.data", response.data.data);
+    // console.log("response.data", response.data);
 
     return response.data;
   } catch (error) {
@@ -402,21 +406,90 @@ export const getUser = async (userId: Types.ObjectId) => {
   }
 };
 //פונקציה למעבר בין חשבונות מקושרים
-// export const SwitchAccounts = async (userId: Types.ObjectId) => {
-//   const { setUser } = useUser.getState();
-//   const { setOriginUser } = useOriginUser.getState();
-//   try {
-//     const { _id: userId2 } = useUser.getState();
-//     const { _id: originUserId } = useOriginUser.getState();
-//     if (userId2?.toString() === originUserId?.toString()) {
-//       //אימות משתמש
-//       const authResult = await getOriginUserDataWithAuthentication();
-//       if (authResult.success) {
-//         const response= await getUser(userId);
-//         console.log('response',response);
-        
-//       } else {
-//       }
-//     }
-//   } catch (error) {}
-// };
+export const switchAccount = async (
+  senderId: Types.ObjectId,
+  selectedUser: string
+) => {
+  const { setUser } = useUser.getState();
+  const { setOriginUser } = useOriginUser.getState();
+  try {
+    //אימות משתמש
+    const authResult = await getOriginUserDataWithAuthentication();
+    if (authResult.success) {
+      if (!selectedUser) {
+        toast.error("יש לבחור יוזר.");
+        return { success: false, message: "No user selected." };
+      }
+
+      const response = await axios.get(`/api/userExtraPermissions`, {
+        params: { sender: senderId, receiver: selectedUser },
+      });
+      const { data } = response;
+      // בדיקת תגובת השרת
+      if (data.success) {
+        toast.success("הועברת לחשבון המבוקש");
+        setOriginUser(data.data.sender);//עדכון היוזר המקורי
+        setUser(data.data.receiver); //עדכון יוזר מחובר כעת
+
+        return {
+          success: true,
+          message: "Switched account successfully.",
+          data: data.data,
+        };
+      } else {
+        toast.error(data.message || "אינך מורשה לעבור לחשבון המבוקש");
+        return {
+          success: false,
+          message:
+            data.message || "Unauthorized access to the selected account.",
+        };
+      }
+    } else {
+      // משתמש שאינו מורשה
+      return {
+        success: false,
+        message: "אין לך הרשאה לבצע פעולה זו.",
+        status: 403,
+      };
+    }
+  } catch (error: unknown) {
+    console.error("Error during account switch:", error);
+
+    if (axios.isAxiosError(error)) {
+      const { response } = error;
+      if (response?.data) {
+        const { error: serverError, message } = response.data;
+        const translatedMessage = translateServerMessage(
+          serverError || message
+        );
+        if (translatedMessage) {
+          toast.error(translatedMessage);
+          return { success: false, message: translatedMessage };
+        }
+      }
+    }
+
+    // טיפול בשגיאות כלליות
+    toast.error("אירעה שגיאה במעבר לחשבון המבוקש.");
+    return {
+      success: false,
+      message: "אירעה שגיאה במעבר לחשבון המבוקש.",
+    };
+  }
+};
+
+// פונקציה לתרגום הודעות השרת לעברית
+const translateServerMessage = (message: string): string => {
+  const translations: { [key: string]: string } = {
+    "Sender not found in the database": "השולח לא נמצא במערכת.",
+    "Receiver not found in the database": "המקבל לא נמצא במערכת.",
+    "Both sender and receiver IDs are required":
+      "יש לספק מזהה שולח ומזהה מקבל.",
+    "Invalid sender or receiver ID": "מזהה שולח או מקבל אינו חוקי.",
+    "Receiver is not authorized for this sender":
+      "אינך מורשה לעבור לחשבון המבוקש.",
+    "Error validating connection": "שגיאה באימות הנתונים.",
+  };
+
+  return translations[message] || message; // ברירת מחדל: מחזיר את ההודעה המקורית אם אין תרגום
+};

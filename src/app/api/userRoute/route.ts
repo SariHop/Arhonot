@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import connect from "@/app/lib/db/mongoDB";
 import User from "@/app/lib/models/userSchema";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 import Alert from "@/app/lib/models/alertSchema";
-import startCronJob from "@/app/lib/lib/corn"
+import startCronJob from "@/app/lib/lib/corn";
 import { Types } from "mongoose";
+import axios from "axios";
+
+// import jwt from "jsonwebtoken";
+// import { generateToken } from "@/app/api/signIn/route";
+
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+const apiUrl = `${baseUrl}/api/staticData`;
 
 export async function GET() {
   try {
@@ -35,13 +42,10 @@ export async function POST(request: NextRequest) {
 
     // await validateCity(city);
     if (city && city.length > 25) {
-      return NextResponse.json(
-        { message: "Invalid city" },
-        { status: 402 }
-      );
+      return NextResponse.json({ message: "Invalid city" }, { status: 402 });
     }
 
-    if (!password || typeof password !== 'string') {
+    if (!password || typeof password !== "string") {
       return NextResponse.json(
         { message: "Invalid password" },
         { status: 400 }
@@ -55,6 +59,26 @@ export async function POST(request: NextRequest) {
           { status: 404 }
         );
       }
+      let lat = null;
+      let lon = null;
+      try {
+        const response = await axios.get(`${apiUrl}/coordinates/`, {
+          params: { city },
+        });
+        console.log("response of cageCoordinates", response);
+
+        const coordinates = response.data;
+        lat = coordinates.lat;
+        lon = coordinates.lon;
+
+        console.log(`Coordinates for ${city}:`, lat, lon);
+      } catch (error) {
+        return NextResponse.json(
+          { message: "Error find coordinates", error },
+          { status: 501 }
+        );
+      }
+
       const saltRounds = 10;
       // יצירת ההצפנה
       const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -63,8 +87,10 @@ export async function POST(request: NextRequest) {
         city,
         email,
         password: hashedPassword,
+        lat,
+        lon,
       };
-      console.log("body:")
+      console.log("body:");
       console.log(updatedBody);
       const newUser = new User(updatedBody);
       console.log(newUser);
@@ -72,13 +98,33 @@ export async function POST(request: NextRequest) {
       const savedUser = await newUser.save();
       console.log("Saved User:", savedUser);
       console.log("Saved User after save:", savedUser.toObject());
-      const formattedDesc = "אנחנו כאן כדי לעזור לך לבחור את הלוק המושלם לכל יום, בהתאמה למזג האוויר! בין אם השמש זורחת או שמיים מעוננים, אנחנו נספק לך את ההמלצות הכי טרנדיות ונוחות לפי תחזית מזג האוויר באזור שלך.\nהתחל לחקור ולהתלבש בהתאם למזג האוויר – כי כל יום הוא הזדמנות חדשה לבלות בו בסטייל!";
+
+      // try {
+      //   const token = generateToken(newUser.email);
+      //   const response = NextResponse.json(
+      //     { success: true, data: savedUser },
+      //     { status: 201 }
+      //   );
+      //   console.log("Generated Token:", token);
+
+      //   response.cookies.set("auth_token", token, {          
+      //     httpOnly: true, // הקוקי לא נגיש ל-JavaScript בצד הלקוח
+      //     secure: process.env.NODE_ENV === "production", // רק ב-HTTPS בפרודקשן
+      //     path: "/", // זמין בכל הדפים
+      //     maxAge: 60 * 60 * 24, // תוקף ליום אחד
+      //   });
+      // } catch (error) {
+      //   console.error("Error generating token:", error);
+      // }
+
+      const formattedDesc =
+        "אנחנו כאן כדי לעזור לך לבחור את הלוק המושלם לכל יום, בהתאמה למזג האוויר! בין אם השמש זורחת או שמיים מעוננים, אנחנו נספק לך את ההמלצות הכי טרנדיות ונוחות לפי תחזית מזג האוויר באזור שלך.\nהתחל לחקור ולהתלבש בהתאם למזג האוויר – כי כל יום הוא הזדמנות חדשה לבלות בו בסטייל!";
       const welcomeAlert = new Alert({
         userId: savedUser._id,
         title: "ברוך הבא לארעונות! 🌤️👗",
         desc: formattedDesc,
         date: new Date(),
-        readen: false
+        readen: false,
       });
       welcomeAlert.save();
       startCronJob(savedUser._id as Types.ObjectId);
@@ -87,7 +133,7 @@ export async function POST(request: NextRequest) {
         { status: 201 }
       );
     } catch (error) {
-      console.error('Error hashing password:', error);
+      console.error("Error hashing password:", error);
       if (error instanceof Error) {
         return NextResponse.json(
           { message: "Internal server error", error: error.message },
@@ -115,3 +161,12 @@ export async function POST(request: NextRequest) {
     }
   }
 }
+
+// function generateToken(email: string): string {
+//   const secretKey = process.env.SECRET_KEY;
+//   if (!secretKey) {
+//     throw new Error("SECRET_KEY is not defined in .env file");
+//   }
+//   const token = jwt.sign({ email }, secretKey, { expiresIn: "1d" });
+//   return token;
+// }

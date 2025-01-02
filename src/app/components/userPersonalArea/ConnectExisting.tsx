@@ -4,7 +4,7 @@ import { CreateConnectionRequestType } from "@/app/types/IConnectionRequest";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useOriginUser from "@/app/store/originUserStore";
-import { getUserByEmail } from "@/app/services/userServices";
+// import { getUserByEmail } from "@/app/services/userServices";
 import { BsSendFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 
@@ -23,20 +23,6 @@ const ConnectExisting = () => {
   const handleEmailSearch = async () => {
     try {
       setIsLoading(true);
-      const user = await getUserByEmail(emailInput);
-      if (!user) {
-        toast.error("לא נמצא משתמש עם כתובת המייל שהוזנה");
-        setIsLoading(false);
-        return user;
-      }
-
-      console.log("User found:", user);
-
-      if (!user._id) {
-        toast.error("המשתמש שנמצא לא תקין. חסר מזהה ייחודי (_id).");
-        setIsLoading(false);
-        return;
-      }
 
       if (!creatorId) {
         toast.error("המשתמש הנוכחי לא מזוהה. אנא התחבר מחדש.");
@@ -46,7 +32,7 @@ const ConnectExisting = () => {
 
       const connectionRequest: CreateConnectionRequestType = {
         userIdSender: creatorId,
-        userIdReciver: user._id,
+        userIdReciver: "",
         status: "pending",
         readen: false,
         date: new Date(),
@@ -54,57 +40,57 @@ const ConnectExisting = () => {
       };
 
       // יצירת בקשת חיבור
-      const response = await createNewConnectionRequest(connectionRequest);
+      const response = await createNewConnectionRequest(connectionRequest, emailInput);
       console.log("Response:", response); // להדפיס את התשובה מהשרת
 
-      if ( response && "status" in response && response.status > 201 && response.status < 204) {
-        switch (response.status) {
-          case 202:
-            toast.info("בקשת החיבור כבר אושרה בעבר.");
-            break;
-          case 203: 
-            toast.info("בקשת החיבור כבר במצב ממתין לאישור.");
-            break;
-          default:
-        }
-      } else if (response && response.success) {
-        if ("message" in response && typeof response.message === "string") {
-          // טיפול במקרים ספציפיים לפי ההודעה
-          switch (response.message) {
-            case "Connection request status created":
-              toast.success("בקשת החיבור נשלחה בהצלחה");
-              break;
-            // case "Connection request status already acceted":
-            //   toast.info("בקשת החיבור כבר אושרה בעבר.");
-            //   break;
-            // // case "Connection request status already pending":
-            // //   toast.info("בקשת החיבור כבר במצב ממתין לאישור.");
-            // //   break;
-            default:
-              toast.success(`הצלחה: ${response.message}`);
-          }
-        } else {
-          // הודעת הצלחה כללית במקרה שאין הודעה מפורשת
-          toast.success("בקשת החיבור נשלחה בהצלחה");
-        }
-      } else {
-        // טיפול במקרים של שגיאה
-        if ("status" in response && response.status === 403) {
-          toast.error("הסיסמה שהקשת שגויה");
-        } else {
-          toast.error("שגיאה: הבקשה לא הצליחה.");
-        }
-      }
+      // if ( response && "status" in response && response.status > 201 && response.status < 204) {
+      //   switch (response.status) {
+      //     case 202:
+      //       toast.info("בקשת החיבור כבר אושרה בעבר.");
+      //       break;
+      //     case 203: 
+      //       toast.info("בקשת החיבור כבר במצב ממתין לאישור.");
+      //       break;
+      //     default:
+      //   }
+      // } else if (response && response.success) {
+      //   if ("message" in response && typeof response.message === "string") {
+      //     // טיפול במקרים ספציפיים לפי ההודעה
+      //     switch (response.message) {
+      //       case "Connection request status created":
+      //         toast.success("בקשת החיבור נשלחה בהצלחה");
+      //         break;
+      //       // case "Connection request status already acceted":
+      //       //   toast.info("בקשת החיבור כבר אושרה בעבר.");
+      //       //   break;
+      //       // // case "Connection request status already pending":
+      //       // //   toast.info("בקשת החיבור כבר במצב ממתין לאישור.");
+      //       // //   break;
+      //       default:
+      //         toast.success(`הצלחה: ${response.message}`);
+      //     }
+      //   } else {
+      //     // הודעת הצלחה כללית במקרה שאין הודעה מפורשת
+      //     toast.success("בקשת החיבור נשלחה בהצלחה");
+      //   }
+      // } else {
+      //   // טיפול במקרים של שגיאה
+      //   if ("status" in response && response.status === 403) {
+      //     toast.error("הסיסמה שהקשת שגויה");
+      //   } else {
+      //     toast.error("שגיאה: הבקשה לא הצליחה.");
+      //   }
+      // }
     } catch (error) {
       console.error("שגיאה 2 בשליחת הבקשה:", error);
-      toast.error("שגיאה 2 בשליחת בקשת החיבור");
+      // toast.error("שגיאה 2 בשליחת בקשת החיבור");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen py-10 px-5 bg-gray-50">
+    <div className="flex flex-col items-center justify-start min-h-full py-10 px-5 bg-gray-50">
       {/* כותרת */}
       <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">{`שליחת בקשת חיבור`}</h2>
 

@@ -33,14 +33,30 @@ export async function POST(request: NextRequest) {
   try {
     await connect();
     const body = await request.json();
-    const { userIdSender, userIdReciver } = body;
+    const { formData: connectionRequestBody, email } = body;
+    const { userIdSender } = connectionRequestBody;
+
+    const userReciver = await User.findOne({email});
+    if(!userReciver)
+      return NextResponse.json(
+        { message: "Error add connectionRequest", error: "no user with this email to recive the request" },
+        { status: 404 }
+      );
+    
+    const reciverId = userReciver._id;
+    if (!reciverId)
+      return NextResponse.json(
+        { message: "Error add connectionRequest", error: "the reciver user is missing the id" },
+        { status: 403 }
+      );
+    connectionRequestBody.userIdReciver = reciverId;
     const senderId = new Types.ObjectId(userIdSender.trim());
-    const removeId = new Types.ObjectId(userIdReciver.trim());
+    // const reciverId = new Types.ObjectId(userIdReciver.trim());
 
     const connectionRequest = await ConnectionRequest.findOne({
       $or: [
-        { userIdSender: senderId, userIdReciver: removeId },
-        { userIdSender: removeId, userIdReciver: senderId },
+        { userIdSender: senderId, userIdReciver: reciverId },
+        { userIdSender: reciverId, userIdReciver: senderId },
       ],
     });
 
@@ -77,7 +93,7 @@ export async function POST(request: NextRequest) {
         );
       }
     } else {
-      const newconnectionRequest = new ConnectionRequest(body);
+      const newconnectionRequest = new ConnectionRequest(connectionRequestBody);
       console.log(newconnectionRequest);
 
       await newconnectionRequest.validate();
@@ -171,6 +187,20 @@ export async function PUT(request: NextRequest) {
   } catch (error: unknown) {
     console.error("Error updating connections:", error);
 
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { message: "Error update connectionRequest readen", error: error.message },
+        { status: 500 }
+      );
+    } else {
+      return NextResponse.json(
+        {
+          message: "Unknown Error occured while updateing connectionRequest",
+          error: "Unknown error occurred",
+        },
+        { status: 501 }
+      );
+    }
     return NextResponse.json(
       { error: "An error occurred while updating connections" },
       { status: 500 }

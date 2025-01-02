@@ -15,7 +15,7 @@ const drawerBleeding = 85
 const Puller = styled('div')(() => ({
   width: 30,
   height: 6,
-  backgroundColor: grey[300],
+  backgroundColor: grey[400],
   borderRadius: 3,
   position: 'absolute',
   top: 8,
@@ -23,28 +23,28 @@ const Puller = styled('div')(() => ({
 }));
 
 export default function SwipeableEdgeDrawer() {
-  const {toggleOpenGallery, OpenGallery  } = useCanvasStore();
+  const { toggleOpenGallery, OpenGallery } = useCanvasStore();
 
   return (
     <div className='h-full'>
       <Global
         styles={{
           '.MuiDrawer-root > .MuiPaper-root': {
-            height: `calc(90% - ${drawerBleeding}px)`,
+            height: `calc(95% - ${drawerBleeding}px)`,
             overflow: 'visible',
           },
         }}
       />
       <Box sx={{ textAlign: 'center' }}>
-        <Button size="large" variant="outlined" sx={{width: "100%", borderRadius:"0", padding:"3"}} onClick={()=>{toggleOpenGallery(true)}}>
-          לחץ כאן כדי לפתוח את הגלריה ולהוסיף פריטים ללוק
+        <Button size="large" variant="outlined" className='text-lg' sx={{ width: "100%", borderRadius: "0", fontWeight: 'bold', marginY: "5px" }} onClick={() => { toggleOpenGallery(true) }}>
+          לחץ כאן כדי לפתוח את הגלריה ולהוסיף פריטים ללבוש
         </Button>
       </Box>
       <SwipeableDrawer
         anchor="bottom"
         open={OpenGallery}
-        onClose={()=>{toggleOpenGallery(false)}}
-        onOpen={()=>{toggleOpenGallery(true)}}
+        onClose={() => { toggleOpenGallery(false) }}
+        onOpen={() => { toggleOpenGallery(true) }}
         swipeAreaWidth={drawerBleeding}
         disableSwipeToOpen={false}
         ModalProps={{
@@ -52,23 +52,21 @@ export default function SwipeableEdgeDrawer() {
         }}
 
       >
-        <Tooltip title="הסתר גלריה" placement="top" >
+        <Tooltip title="הסתר גלריה" placement="top">
           <div
             style={{
-              // marginTop:'15px',
               position: 'absolute',
-              top: -drawerBleeding,
+              top: `-11vh`, // הגובה היחסי (10% מגובה המסך)
+              height: '11vh', // הגובה של הדיב
               borderTopLeftRadius: 8,
               borderTopRightRadius: 8,
               visibility: 'visible',
               right: 0,
               left: 0,
-              backgroundColor: "#f3f4f6",
               cursor: 'pointer',
-
             }}
-            className='shadow-inner'
-            onClick={()=>{toggleOpenGallery(false)}}
+            className='shadow-inner bg-gradient-to-br from-green-200 to-blue-200'
+            onClick={() => { toggleOpenGallery(false); }}
           >
             <Puller />
             <div className="m-4 flex justify-center items-center">
@@ -77,14 +75,13 @@ export default function SwipeableEdgeDrawer() {
                 alt="Logo"
                 width={100}
                 height={120}
-                className="p-3"
               />
             </div>
 
           </div>
         </Tooltip>
 
-        <div style={{paddingBottom:'5%', overflow: 'auto' }} className='bg-white'>
+        <div style={{ paddingBottom: '5%', overflow: 'auto' }} className='bg-white'>
           <Gallery viewMode={"createOtfit"} />
         </div>
 

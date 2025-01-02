@@ -3,10 +3,7 @@ import ConnectionRequest from "@/app/lib/models/connectionRequestSchema";
 import { Types } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { _id_user: Types.ObjectId } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { _id_user: Types.ObjectId } }) {
   try {
     console.log("Request method:", request.method); // לשם דיבאג
     await connect();
@@ -44,7 +41,7 @@ export async function GET(
           message: "Error getting connection requests",
           error: "Unknown error occurred",
         },
-        { status: 500 }
+        { status: 501 }
       );
     }
   }

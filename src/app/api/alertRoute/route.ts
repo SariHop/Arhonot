@@ -34,8 +34,8 @@ export async function POST(request: NextRequest) {
     const alert = await Alert.findOne({ userId, title, desc, date: { $gte: startOfDay, $lte: endOfDay } });
     if (alert) {
       return NextResponse.json(
-        { success: false, data: "alert is already exist." },
-        { status: 400 }
+        { success: true, data: "alert is already exist." },
+        { status: 203 }
       );
     }
     const newAlert = new Alert({ userId, title, desc, date, readen });

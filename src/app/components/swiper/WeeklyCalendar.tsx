@@ -7,11 +7,12 @@ import "react-toastify/dist/ReactToastify.css";
 import { useWeatherQuery } from '@/app/hooks/weatherQueryHook';
 import { getAverageTemperatureForDate } from '@/app/services/weatherService';
 
-const WeeklyCalendar: React.FC<{ saveChanges: () => void }> = ({ saveChanges }) => {
+const WeeklyCalendar: React.FC<{ saveChanges: () => void, changed:boolean, setChanged: (b:boolean)=> void }> = ({ saveChanges, changed, setChanged }) => {
   const [weekDates, setWeekDates] = useState<Date[]>([]);
   const { selectedDate, setSelectedDate } = useDay();
   const [pendingDate, setPendingDate] = useState<Date | null>(null); // תאריך זמני
   const { data: weatherData } = useWeatherQuery();
+
   useEffect(() => {
     const today = new Date();
     const daysOfWeek: Date[] = [];
@@ -84,6 +85,7 @@ const WeeklyCalendar: React.FC<{ saveChanges: () => void }> = ({ saveChanges }) 
         pauseOnHover: true,
       }
     );
+    setChanged(false);
   };
 
   return (
@@ -98,9 +100,10 @@ const WeeklyCalendar: React.FC<{ saveChanges: () => void }> = ({ saveChanges }) 
             className={`bg-gray-200 rounded-lg p-4 text-blue-950 text-center shadow-md w-[calc(100%/7)] h-[90px] flex flex-col items-center justify-center cursor-pointer relative
     ${isSameDate(selectedDate, date) ? 'after:content-[""] after:block after:w-full after:h-1 after:bg-blue-950 after:absolute after:bottom-0 after:rounded-b-lg' : ''}`}
             onClick={() => {
-              if (!isSameDate(selectedDate, date) && !pendingDate) {
+              if (!isSameDate(selectedDate, date) && !pendingDate && changed) {
                 confirmAndSave(date); // הצגת הטוסט
-              }
+              };
+              setSelectedDate(date);
             }}
           >
             <div className="text-sm sm:text-base md:text-lg text-center flex justify-center items-center flex-col md:flex-row md:gap-1">

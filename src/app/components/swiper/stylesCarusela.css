@@ -1,0 +1,24 @@
+.swiper {
+  width: 100%;
+  padding-top: 25px;
+  padding-bottom: 50px;
+}
+
+/* Media Query למסכים גדולים */
+@media (min-width: 680px) {
+  .swiper {
+    width: 50%;
+  }
+}
+
+.swiper-slide {
+  background-position: center;
+  background-size: cover;
+  width: 220px;
+  height: 220px;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+}

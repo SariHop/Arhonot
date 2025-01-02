@@ -6,8 +6,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-
 const Alert: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => {
+
     const [alerts, setAlerts] = useState<AlertTypeFotCollapse[]>([]);
 
     useEffect(() => {
@@ -25,9 +25,7 @@ const Alert: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => {
         console.log(userId);
         const returnAlerts: AlertTypeFotCollapse[] = [];
         try {
-          const alerts: IAlertTypeWithId[] = await fetchUserAlerts(
-            userId
-          );
+          const alerts: IAlertTypeWithId[] = await fetchUserAlerts(userId);
     
           alerts.map((alert: IAlertTypeWithId) =>
             returnAlerts.push({
@@ -42,8 +40,7 @@ const Alert: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => {
               readen: alert.readen,
               date: alert.date,
               status: alert.readen,
-            })
-          );
+            }));
           return returnAlerts;
         } catch (error) {
           console.error("Failed to fetch alerts in getAlerts:", error);
@@ -123,14 +120,17 @@ const Alert: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => {
             label: "טרם נקראו",
             children: (
               <div className="tab-content">
-                <Collapse
+                {renderAlerts(false).length === 0? 
+                (<p className="text-gray-500 font-thin">אין לך הודעות שלא נקראו</p>)
+                :
+                (<Collapse
                   items={renderAlerts(false).map((alert) => ({
                     ...alert,
                     readen: "true",
                     status: "true",
                   }))}
                   onChange={(key) => handlePanelAlertsChange(key)}
-                />
+                />)}
               </div>
             ),
           },
@@ -139,19 +139,24 @@ const Alert: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => {
             label: "הודעות שנקראו",
             children: (
               <div className="tab-content">
-                <Collapse
+                {renderAlerts(true).length === 0? 
+                (<p className="text-gray-500 font-thin">אין לך הודעות שנקראו</p>)
+                :
+                (<Collapse
                   items={renderAlerts(true).map((alert) => ({
                     ...alert,
                     readen: "true",
                     status: "true",
                   }))}
                   onChange={(key) => handlePanelAlertsChange(key)}
-                />
+                />)
+               }
               </div>
             ),
           },
         ]}
       />
+
     </div>
   );
 };

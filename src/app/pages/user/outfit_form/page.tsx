@@ -1,11 +1,10 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { IOutfitType, outfitSchemaZod } from '@/app/types/IOutfit'
 import Image from "next/image";
 import { Rate } from "antd";
 import useUser from "@/app/store/userStore";
 import { validSeasons, tags, rangeWheatherDeescription } from "@/app/data/staticArrays"
-import { cloudinaryUploud } from "@/app/services/image/saveToCloudinary";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useCanvasStore from "@/app/store/canvasStore";
@@ -16,7 +15,7 @@ import ButtonNavigathion from '@/app/components/createOutfit/ButtonNavigathion'
 
 const OutfitForm: React.FC = () => {
     const { _id: userId } = useUser((state) => state);
-    const { garments, canvasUrl, setCanvas, setGarments, setSelectedObject } = useCanvasStore();
+    const { garments, canvasUrl, setCanvas, setGarments, setSelectedObject, setCanvasurl } = useCanvasStore();
 
     // State for form fields
     const [season, setSeason] = useState("");
@@ -24,32 +23,12 @@ const OutfitForm: React.FC = () => {
     const [rangeWeather, setRangeWeather] = useState(4);
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [rate, setRate] = useState(0);
-    // img
-    const [outfitFromCloudinary, setOutfitFromCloudinary] = useState("");
-    const [isImageLoading, setIsImageLoading] = useState(true);
-    // error messege
+    // messeges
     const [errormessege, setErrormessege] = useState("");
+    const [isLoading, setIsLoading] = useState(false); // מצב טעינה
+
 
     const router = useRouter()
-
-    useEffect(() => {
-        const saveImageToCloudinary = async () => {
-            try {
-                setIsImageLoading(true);
-                const { imageUrl } = await cloudinaryUploud(canvasUrl); // שם מתוקן
-                setOutfitFromCloudinary(imageUrl);
-                setIsImageLoading(false);
-
-            } catch (error) {
-                console.error("Image upload error:", error);
-                toast.error("שגיאה בטעינת הלוק");
-            }
-        };
-
-        saveImageToCloudinary();
-
-    }, [canvasUrl]);
-
 
     const handleTagChange = (tag: string, checked: boolean) => {
         setSelectedTags((prevTags) =>
@@ -59,6 +38,7 @@ const OutfitForm: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true)
 
         const outfitFinal: IOutfitType = {
             userId: String(userId),
@@ -66,7 +46,7 @@ const OutfitForm: React.FC = () => {
             desc: description,
             season: season,
             tags: selectedTags,
-            img: outfitFromCloudinary,
+            img: canvasUrl,
             favorite: rate,
             rangeWheather: rangeWeather,
         };
@@ -76,6 +56,7 @@ const OutfitForm: React.FC = () => {
             await createOutfit(outfitFinal);
             toast.success("לוק נוצר בהצלחה!");
             // לנקות את הקנבס?
+            setCanvasurl("")
             setCanvas(null)
             setGarments([])
             setSelectedObject(null)
@@ -102,23 +83,18 @@ const OutfitForm: React.FC = () => {
                 {/* Image Preview */}
                 <div className="relative flex flex-col items-center">
                     <div className="relative w-full max-w-sm h-64 overflow-hidden rounded-lg border shadow-sm mb-4">
-                        {isImageLoading ? (
-                            <div className="flex items-center justify-center w-full h-full bg-gray-200">
-                                <p className="text-gray-600">טוען תמונה...</p>
-                            </div>
-                        ) : outfitFromCloudinary ? (
-                            <Image
-                                src={outfitFromCloudinary}
-                                layout="fill"
-                                style={{ objectFit: "contain" }}
-                                alt="תמונה ללא רקע"
-                                className="rounded-lg"
-                            />
-                        ) : (
-                            <div className="flex items-center justify-center w-full h-full bg-gray-100">
-                                <p className="text-gray-500">תמונה לא זמינה</p>
-                            </div>
-                        )}
+
+                        {canvasUrl ? <Image
+                            src={canvasUrl}
+                            layout="fill"
+                            style={{ objectFit: "contain" }}
+                            alt="תמונה ללא רקע"
+                            className="rounded-lg"
+                        /> : <div className="flex items-center justify-center w-full h-full bg-gray-100">
+                            <p className="text-gray-500">תמונה לא זמינה</p>
+                        </div>}
+
+
                     </div>
                 </div>
 
@@ -200,14 +176,15 @@ const OutfitForm: React.FC = () => {
                 {/* Submit Button */}
                 <button
                     type="submit"
-                    disabled={!outfitFromCloudinary || isImageLoading}
-                    className={`w-full py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 ${!outfitFromCloudinary || isImageLoading
+                    disabled={!canvasUrl || isLoading}
+                    className={`w-full py-2 px-4 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 ${!canvasUrl || isLoading
                         ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-indigo-600 text-white hover:bg-indigo-700"
+                        : "bg-indigo-600 hover:bg-indigo-700"
                         }`}
                 >
-                    צור לבוש
+                    {isLoading ? "טוען..." : "צור לבוש"}
                 </button>
+            
             </form>
         </>
     );

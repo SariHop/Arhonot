@@ -34,22 +34,52 @@ const Layout = ({ children }: Readonly<{ children: React.ReactNode; }>) => {
   // token
   return (
     <div className="min-h-[100dvh] grid grid-rows-[auto,1fr,auto] lg:grid-rows-[auto,1fr] grid-cols-[minmax(0,1fr)]">
-      {/* Header */}
-      <div className="sticky top-0 z-50">
+      {/* Header and navBar for big screens */}
+      <div className="hidden lg:block lg:sticky lg:top-0 lg:z-50 lg:bg-white lg:shadow-md">
+        <div className="flex flex-col">
+          <HeaderArhonot />
+          <NavBar />
+        </div>
+      </div>
+
+       {/* Header for small screens */}
+       <div className="lg:hidden sticky top-0 z-50">
         <HeaderArhonot />
       </div>
 
-      {/* NavBar */}
-      <div className="sticky bottom-0 z-40 bg-white shadow-lg lg:fixed lg:top-[calc(100px)] lg:left-0 lg:right-0 lg:h-[50px]">
+      {/* NavBar for small screens */}
+      <div className="lg:hidden sticky bottom-0 z-40 bg-white shadow-lg">
         <NavBar />
       </div>
 
       {/* Body */}
-      <div className="row-start-2 lg:mt-[calc(80px)]">
+      <div className="row-start-2 overflow-hidden">
         {children}
       </div>
+
+      {/* <div className="sticky top-0 z-50">
+        <HeaderArhonot />
+      </div>
+
+      {/* NavBar */}
+      {/* <div className="sticky bottom-0 z-40 bg-white shadow-lg lg:fixed lg:top-[calc(100px)] lg:left-0 lg:right-0 lg:h-[50px]">
+        <NavBar />
+      </div> */} 
+
+      {/* Body */}
+      {/* <div className="row-start-2 lg:mt-[calc(80px)]">
+        {children}
+      </div> */}
     </div>
-  );
-}
+
+
+
+
+     
+
+      
+
+      
+  );}
 
 export default Layout

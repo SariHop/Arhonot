@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 import Image from 'next/image'
 import { cloudinaryUploud } from '@/app/services/image/saveToCloudinary';
 import { ModalImageProps } from '@/app/types/props';
+import { CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -55,7 +56,7 @@ const Modal: FC<ModalImageProps> = ({ isOpen, onClose, fileWithNoBG, setCloudina
                         </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center space-y-3">
-                            <div className="w-6 h-6 border-4 border-white border-t-cyan-500 rounded-full animate-spin"></div>
+                            <CircularProgress />
                             <p className=" font-medium text-2xl text-black"> מסירים את הרקע בשבילך</p>
                         </div>
                     )}
@@ -67,7 +68,7 @@ const Modal: FC<ModalImageProps> = ({ isOpen, onClose, fileWithNoBG, setCloudina
                         disabled={fileWithNoBG == null}
                         onClick={handleAccept}
                         className="
-                            text-white bg-gradient-to-r from-cyan-500 to-blue-500 
+                            text-white bg-gradient-to-r from-cyan-500 to-blue-500 m-3
                             hover:bg-gradient-to-bl focus:ring-4 focus:outline-none 
                             focus:ring-cyan-300 dark:focus:ring-cyan-800 
                             font-medium rounded-lg text-sm px-5 py-2.5 
@@ -81,7 +82,7 @@ const Modal: FC<ModalImageProps> = ({ isOpen, onClose, fileWithNoBG, setCloudina
 
                         onClick={onClose}
                         className="
-                            text-white bg-gradient-to-br from-green-400 to-blue-600 
+                            text-white bg-gradient-to-br from-green-400 to-blue-600 m-3
                             hover:bg-gradient-to-bl focus:ring-4 focus:outline-none 
                             focus:ring-green-200 dark:focus:ring-green-800 
                             font-medium rounded-lg text-sm px-5 py-2.5

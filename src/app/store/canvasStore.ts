@@ -3,7 +3,6 @@ import { persist } from "zustand/middleware";
 import { fabric } from "fabric";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import IOutfit from "../types/IOutfit";
 
 type CanvasStore = {
   canvas: fabric.Canvas | null;
@@ -16,10 +15,8 @@ type CanvasStore = {
   setGarments: (newGarments: string[]) => void;
   selectedObject: fabric.Object | null;
   setSelectedObject: (obj: fabric.Object | null) => void;
-  editOutfit: IOutfit | null;
   canvasUrl: string
   setCanvasurl: (url: string) => void
-  setEditOutfit: (outfit: IOutfit | null) => void;
   loadImage: (garmentURL: string, garmentId: string) => Promise<void>;
   addImageToCanvasFromGallery: (garmentURL: string, garmentId: string | unknown) => Promise<void>;
 };
@@ -32,28 +29,31 @@ const useCanvasStore = create<CanvasStore>()(
       setCanvas: (canvas: fabric.Canvas | null) => set({ canvas }),
       // הצג גלריה
       OpenGallery: false, // הצגת גלריה
-      toggleOpenGallery: (flag: boolean) => set({ OpenGallery:flag }),
+      toggleOpenGallery: (flag: boolean) => set({ OpenGallery: flag }),
       // מערך בגדים נבחרים
       garments: [],
+      // בפונקציות עידכון של מערך הבגדים למחוק את הניתוב, 
+      // כי ברגע שיש שינוי המערך התמונה ששמורה חטופס לא נכונה 
+      // וימנע חלק מהמקרי קצה שקשורים בניתוב לעמוד עריכה
       addGarment: (garmentId: string) => {
         if (!get().garments.includes(garmentId)) {
           set((state) => ({ garments: [...state.garments, garmentId] }));
+          set(() => ({ canvasUrl: "" }))
         }
       },
       deleteGarment: (garmentId: string) => {
-        set((state) => ({
-          garments: state.garments.filter((id) => id !== garmentId),
-        }));
+        set((state) => ({ garments: state.garments.filter((id) => id !== garmentId), }));
+        set(() => ({ canvasUrl: "" }))
       },
-      setGarments: (newGarments: string[]) => set({ garments: newGarments }),
+      setGarments: (newGarments: string[]) => {
+        set({ garments: newGarments })
+        set(() => ({ canvasUrl: "" }))
+      },
       // אובייקט נבחר בקנבס לעריכה
       selectedObject: null,
       setSelectedObject: (obj: fabric.Object | null) => {
         set({ selectedObject: obj });
       },
-      // אאוטפיט קיים פתוח לעריכה
-      editOutfit: null,
-      setEditOutfit: (outfit: IOutfit | null) => set({ editOutfit: outfit }),
       // ייצוא של הקנבס לתמונה
       canvasUrl: "",
       setCanvasurl: async (url: string) => set({ canvasUrl: url }),
@@ -108,7 +108,6 @@ const useCanvasStore = create<CanvasStore>()(
       partialize: (state) => ({
         canvasUrl: state.canvasUrl,
         garments: state.garments,
-        editOutfit: state.editOutfit,
         canvasJSON: state.canvas?.toJSON(["garmentId"])
       }),
     }
