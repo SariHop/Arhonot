@@ -175,7 +175,7 @@ const NavBar = () => {
           count={AlertsCounter}
           offset={[0, 2]}
         >
-          <FaBell className="text-2xl" />
+          <FaBell className={`text-2xl ${selectedPage === "alerts" ? " text-blue-600" : ""}`}/>
         </Badge>
         <span className="text-xs text-center md:ml-2 md:text-base ">
           התראות
