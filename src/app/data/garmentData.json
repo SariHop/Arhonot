@@ -1,0 +1,122 @@
+[
+  {
+    "userId": "64b3f892d5a4a82e7c9e5f4a",
+    "img": "https://res.cloudinary.com/dtnvgjdcx/image/upload/v1734439892/Arhonot/goetlufim9rxkabdk0no.png",
+    "desc": "חולצה קצרה ליום חם",
+    "season": "קיץ",
+    "category": "חולצה",
+    "range": 2,
+    "color": "כחול",
+    "link": "https://example.com/products/shirt1",
+    "price": 79.99,
+    "tags": ["יומיומי", "ספורטיבי"]
+  },
+  {
+    "userId": "64b3f892d5a4a82e7c9e5f4a",
+    "img": "https://res.cloudinary.com/dtnvgjdcx/image/upload/v1734511939/Arhonot/wetrmljotkp0powqw7wp.png",
+    "desc": "שמלה קלילה לערב קיצי",
+    "season": "אביב",
+    "category": "שמלה",
+    "range": 3,
+    "color": "אדום",
+    "link": "https://example.com/products/dress1",
+    "price": 129.99,
+    "tags": ["אלגנטי", "ערב"]
+  },
+  {
+    "userId": "64b3f892d5a4a82e7c9e5f4b",
+    "img": "https://res.cloudinary.com/dtnvgjdcx/image/upload/v1734439790/Arhonot/sdud8isj6tk4tlqjke2w.png",
+    "desc": "ג'קט אלגנטי לימים קרירים",
+    "season": "סתיו",
+    "category": "ג'קט",
+    "range": 5,
+    "color": "שחור",
+    "link": "https://example.com/products/jacket1",
+    "price": 199.99,
+    "tags": ["אלגנטי", "יומיומי"]
+  },
+  {
+    "userId": "64b3f892d5a4a82e7c9e5f4c",
+    "img": "https://res.cloudinary.com/dtnvgjdcx/image/upload/v1734507440/Arhonot/tq7wi3qqhdsazxmga8x8.png",
+    "desc": "מעיל מחמם לימי חורף קרים",
+    "season": "חורף",
+    "category": "מעיל",
+    "range": 6,
+    "color": "אפור",
+    "link": "https://example.com/products/coat1",
+    "price": 299.99,
+    "tags": ["חגיגי", "אלגנטי"]
+  },
+  {
+    "userId": "64b3f892d5a4a82e7c9e5f4d",
+    "img": "https://res.cloudinary.com/dtnvgjdcx/image/upload/v1734512158/Arhonot/vpqlcjepsrf3atglwwbw.png",
+    "desc": "נעליים נוחות להליכה יומיומית",
+    "season": "כללי",
+    "category": "נעליים",
+    "range": 4,
+    "color": "לבן",
+    "link": "https://example.com/products/shoes1",
+    "price": 149.99,
+    "tags": ["יומיומי", "ספורטיבי"]
+  },
+  {
+    "userId": "64b3f892d5a4a82e7c9e5f4e",
+    "img": "https://res.cloudinary.com/dtnvgjdcx/image/upload/v1734511617/Arhonot/fv8jtbelod6spwadb5id.png",
+    "desc": "מכנסיים קלילים ונעימים ליום אביבי",
+    "season": "אביב",
+    "category": "מכנסיים",
+    "range": 3,
+    "color": "ירוק",
+    "link": "https://example.com/products/pants1",
+    "price": 99.99,
+    "tags": ["יומיומי", "חגיגי"]
+  },
+  {
+    "userId": "64b3f892d5a4a82e7c9e5f4f",
+    "img": "https://res.cloudinary.com/dtnvgjdcx/image/upload/v1734439719/Arhonot/sexhpyxymqrsvwnvgssf.png",
+    "desc": "חצאית אלגנטית לערב",
+    "season": "סתיו",
+    "category": "חצאית",
+    "range": 4,
+    "color": "סגול",
+    "link": "https://example.com/products/skirt1",
+    "price": 119.99,
+    "tags": ["אלגנטי", "ערב"]
+  },
+  {
+    "userId": "64b3f892d5a4a82e7c9e5f50",
+    "img": "https://res.cloudinary.com/dtnvgjdcx/image/upload/v1734506711/Arhonot/kxxtaqphdfnplqqhgugq.png",
+    "desc": "חולצה ארוכה נעימה לימי חורף",
+    "season": "חורף",
+    "category": "חולצה",
+    "range": 5,
+    "color": "בז'",
+    "link": "https://example.com/products/shirt2",
+    "price": 89.99,
+    "tags": ["יומיומי"]
+  },
+  {
+    "userId": "64b3f892d5a4a82e7c9e5f51",
+    "img": "https://res.cloudinary.com/dtnvgjdcx/image/upload/v1734506711/Arhonot/kxxtaqphdfnplqqhgugq.png",
+    "desc": "סוודר מחמם ליום קר",
+    "season": "חורף",
+    "category": "מעיל",
+    "range": 6,
+    "color": "חום",
+    "link": "https://example.com/products/sweater1",
+    "price": 179.99,
+    "tags": ["יומיומי", "חגיגי"]
+  },
+  {
+    "userId": "64b3f892d5a4a82e7c9e5f52",
+    "img": "https://res.cloudinary.com/dtnvgjdcx/image/upload/v1734439620/Arhonot/vtzxkjosh7zf7dkjzrzl.png",
+    "desc": "חצאית קלילה ליום קיץ חם",
+    "season": "קיץ",
+    "category": "חצאית",
+    "range": 2,
+    "color": "צהוב",
+    "link": "https://example.com/products/skirt2",
+    "price": 109.99,
+    "tags": ["יומיומי", "חגיגי"]
+  }
+]

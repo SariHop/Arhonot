@@ -17,7 +17,7 @@ const WeeklyCalendar: React.FC<{ saveChanges: () => void, changed:boolean, setCh
     const today = new Date();
     const daysOfWeek: Date[] = [];
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 6; i++) {
       const newDate = new Date(today);
       newDate.setDate(today.getDate() + i); // הוספת יום לכל תאריך
       daysOfWeek.push(newDate);
@@ -89,7 +89,7 @@ const WeeklyCalendar: React.FC<{ saveChanges: () => void, changed:boolean, setCh
   };
 
   return (
-    <div className="flex justify-between flex-wrap max-w-full gap-0.5">
+    <div className="flex justify-around flex-wrap max-w-full gap-0.5">
       {weekDates.map((date, index) => {
         const avgTemp = weatherData && weatherData.list
           ? getAverageTemperatureForDate(weatherData.list, date)
@@ -97,7 +97,7 @@ const WeeklyCalendar: React.FC<{ saveChanges: () => void, changed:boolean, setCh
         return (
           <div
             key={index}
-            className={`bg-gray-200 rounded-lg p-4 text-blue-950 text-center shadow-md w-[calc(100%/7.5)] h-[90px] flex flex-col items-center justify-center cursor-pointer relative
+            className={`bg-gray-200 rounded-lg p-4 text-blue-950 text-center shadow-md w-[calc(100%/7)] h-[90px] flex flex-col items-center justify-center cursor-pointer relative
     ${isSameDate(selectedDate, date) ? 'after:content-[""] after:block after:w-full after:h-1 after:bg-blue-950 after:absolute after:bottom-0 after:rounded-b-lg' : ''}`}
             onClick={() => {
               if (!isSameDate(selectedDate, date) && !pendingDate && changed) {
@@ -113,7 +113,7 @@ const WeeklyCalendar: React.FC<{ saveChanges: () => void, changed:boolean, setCh
 
             {avgTemp !== null && (
               <div className="text-s text-gray-500 mt-2">
-                {avgTemp.toFixed(1)}°C
+                {avgTemp.toFixed(1)}°
               </div>
             )}
           </div>
