@@ -83,27 +83,27 @@ const NavBar = () => {
   ];
 
   return (
-    <div className="bg-white left-0 w-full h-[10vh] flex justify-around lg:justify-around items-center border-t-2 border-blue-600 lg:border-none">
+    <div className="bg-white left-0 w-full h-[10vh] flex justify-around md:justify-around items-center border-t-2 border-blue-600 md:border-none">
      
       {/* פרטי משתמש */}
       <div
-        className={`cursor-pointer flex flex-col items-center justify-center  w-full h-full hover:border-t-2 hover:border-t-blue-600 hover:text-blue-600 text-xl gap-1 lg:flex-row md:text-3xl
+        className={`cursor-pointer flex flex-col items-center justify-center  w-full h-full hover:border-t-2 hover:border-t-blue-600 hover:text-blue-600 text-xl gap-1 md:flex-row md:text-3xl
            ${selectedPage === "personal_area" ? "border-t-blue-600 border-t-2 text-blue-600" : ""}`}
         onClick={() => handleClick("personal_area")}
       >
         <FaUser className="text-2xl" />
-        <span className="text-xs text-center lg:ml-2 md:text-base">משתמש</span>
+        <span className="text-xs text-center md:ml-2 md:text-base">משתמש</span>
       </div>
 
       {/* גלריה */}
       <div
-        className={`cursor-pointer flex flex-col items-center justify-center  w-full h-full hover:border-t-2 hover:border-t-blue-600 hover:text-blue-600 text-xl gap-1 lg:flex-row md:text-3xl
+        className={`cursor-pointer flex flex-col items-center justify-center  w-full h-full hover:border-t-2 hover:border-t-blue-600 hover:text-blue-600 text-xl gap-1 md:flex-row md:text-3xl
            ${selectedPage === "gallery" ? "border-t-blue-600 border-t-2 text-blue-600" : ""
           }`}
         onClick={() => handleClick("gallery")}
       >
         <AiFillProduct className="text-2xl" />
-        <span className="text-xs text-center lg:ml-2 md:text-base">גלריה</span>
+        <span className="text-xs text-center md:ml-2 md:text-base">גלריה</span>
       </div>
 
       {/* כפץתור הוספה מרכזי */}
@@ -116,7 +116,7 @@ const NavBar = () => {
       {/* הוסף בגד */}
       {/* {isLargeScreen && ( */}
       <div
-        className={`cursor-pointer hidden md:flex flex-col items-center justify-center  w-full h-full hover:border-t-2 hover:border-t-blue-600 hover:text-blue-600 text-xl gap-1 lg:flex-row md:text-3xl
+        className={`cursor-pointer hidden md:flex flex-col items-center justify-center  w-full h-full hover:border-t-2 hover:border-t-blue-600 hover:text-blue-600 text-xl gap-1 md:flex-row md:text-3xl
            ${selectedPage === "garment_form" ? "border-t-blue-600 border-t-2 text-blue-600" : ""
           }`}
         onClick={() => handleClick("garment_form")}
@@ -125,7 +125,7 @@ const NavBar = () => {
           <FaShirt className="text-2xl" />
           <BsPlus className="text-sm" />
         </div>
-        <span className="text-xs text-center lg:ml-2 md:text-base">
+        <span className="text-xs text-center md:ml-2 md:text-base">
           יצירת בגד
         </span>
       </div>
@@ -134,7 +134,7 @@ const NavBar = () => {
       {/* צור לבוש */}
       {/* {isLargeScreen && ( */}
       <div
-        className={`cursor-pointer hidden md:flex flex-col items-center justify-center  w-full h-full hover:border-t-2 hover:border-t-blue-600 hover:text-blue-600 text-xl  gap-1 lg:flex-row md:text-3xl 
+        className={`cursor-pointer hidden md:flex flex-col items-center justify-center  w-full h-full hover:border-t-2 hover:border-t-blue-600 hover:text-blue-600 text-xl  gap-1 md:flex-row md:text-3xl 
           ${selectedPage === "outfit_canvas" ? "border-t-blue-600 border-t-2 text-blue-600" : ""
           }`}
         onClick={() => handleClick("outfit_canvas")}
@@ -143,7 +143,7 @@ const NavBar = () => {
           <GiClothes className="text-2xl hover:text-blue-600" />
           <BsPlus className="text-sm" />
         </div>
-        <span className="text-xs text-center lg:ml-2 md:text-base">
+        <span className="text-xs text-center md:ml-2 md:text-base">
           יצירת לוק
         </span>
       </div>
@@ -151,20 +151,20 @@ const NavBar = () => {
 
       {/* לוח שנה   */}
       <div
-        className={`cursor-pointer flex flex-col items-center justify-center  w-full h-full hover:border-t-2 hover:border-t-blue-600 hover:text-blue-600  text-xl gap-1 lg:flex-row md:text-3xl 
+        className={`cursor-pointer flex flex-col items-center justify-center  w-full h-full hover:border-t-2 hover:border-t-blue-600 hover:text-blue-600  text-xl gap-1 md:flex-row md:text-3xl 
           ${selectedPage === "calendar" ? "border-t-blue-600 border-t-2 text-blue-600" : ""
           }`}
         onClick={() => handleClick("calendar")}
       >
         <IoCalendarSharp className="text-3xl" />
-        <span className="text-xs text-center lg:ml-2 md:text-base">
+        <span className="text-xs text-center md:ml-2 md:text-base">
           היסטוריה
         </span>
       </div>
 
       {/* התראות */}
       <div
-        className={`cursor-pointer flex flex-col items-center justify-center  w-full h-full hover:border-t-2 hover:border-t-blue-600 hover:text-blue-600 text-xl gap-1 lg:flex-row md:text-3xl group
+        className={`cursor-pointer flex flex-col items-center justify-center  w-full h-full hover:border-t-2 hover:border-t-blue-600 hover:text-blue-600 text-xl gap-1 md:flex-row md:text-3xl group
            ${selectedPage === "alerts" ? "border-t-blue-600 border-t-2 text-blue-600" : ""
           }`}
         onClick={() => handleClick("alerts")}
@@ -177,7 +177,7 @@ const NavBar = () => {
         >
           <FaBell className="text-2xl" />
         </Badge>
-        <span className="text-xs text-center lg:ml-2 md:text-base ">
+        <span className="text-xs text-center md:ml-2 md:text-base ">
           התראות
         </span>
       </div>
