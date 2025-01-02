@@ -15,7 +15,7 @@ const customDayNames = ["יום א", "יום ב", "יום ג", "יום ד", "י�
 
 
 const Page: React.FC = () => {
-  const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth()); // חודש נבחר
+  const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth()+1); // חודש נבחר
   const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear()); // שנה נבחרת
   const [cellHeight, setCellHeight] = useState<string>(""); // גובה התא
   const [calendarMode, setCalendarMode] = useState<CalendarProps<Dayjs>["mode"]>("month"); // מצב היומן (חודש/שנה)
@@ -88,7 +88,7 @@ const Page: React.FC = () => {
 
   const fullCellRender = (current: Dayjs) => {
     const isInDisplayedMonth =
-      current.month() === currentMonth && current.year() === currentYear;
+      current.month() === currentMonth-1 && current.year() === currentYear;
 
     // בדוק אם התאריך שייך לחודש הנוכחי
     if (isInDisplayedMonth) {
