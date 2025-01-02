@@ -35,7 +35,7 @@ const Layout = ({ children }: Readonly<{ children: React.ReactNode; }>) => {
   return (
     <div className="min-h-[100dvh] grid grid-rows-[auto,1fr,auto] lg:grid-rows-[auto,1fr] grid-cols-[minmax(0,1fr)]">
       {/* Header and navBar for big screens */}
-      <div className="hidden lg:block lg:sticky lg:top-0 z-50 lg:bg-white lg:shadow-md">
+      <div className="hidden md:block md:sticky md:top-0 z-50 md:bg-white md:shadow-md">
         <div className="flex flex-col">
           <div className="z-50">
             <HeaderArhonot />
@@ -47,12 +47,12 @@ const Layout = ({ children }: Readonly<{ children: React.ReactNode; }>) => {
       </div>
 
       {/* Header for small screens */}
-      <div className="lg:hidden sticky top-0 z-50">
+      <div className="md:hidden sticky top-0 z-50">
         <HeaderArhonot />
       </div>
 
       {/* NavBar for small screens */}
-      <div className="lg:hidden sticky bottom-0 z-40 bg-white shadow-lg">
+      <div className="md:hidden sticky bottom-0 z-40 bg-white shadow-lg">
         <NavBar />
       </div>
 
