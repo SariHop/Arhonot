@@ -7,9 +7,19 @@ import startCronJob from "@/app/lib/lib/corn";
 import { Types } from "mongoose";
 import axios from "axios";
 
-// import jwt from "jsonwebtoken";
-// import { generateToken } from "@/app/api/signIn/route";
-
+import jwt from "jsonwebtoken";
+function generateToken(email: string): string {
+  const secretKey = process.env.SECRET_KEY;
+  if (!secretKey) {
+    throw new Error('SECRET_KEY is not defined in .env file');
+  }
+  const token = jwt.sign(
+    { email },
+    secretKey,
+    { expiresIn: '1d' }
+  );
+  return token;
+}
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const apiUrl = `${baseUrl}/api/staticData`;
 
@@ -98,25 +108,6 @@ export async function POST(request: NextRequest) {
       const savedUser = await newUser.save();
       console.log("Saved User:", savedUser);
       console.log("Saved User after save:", savedUser.toObject());
-
-      // try {
-      //   const token = generateToken(newUser.email);
-      //   const response = NextResponse.json(
-      //     { success: true, data: savedUser },
-      //     { status: 201 }
-      //   );
-      //   console.log("Generated Token:", token);
-
-      //   response.cookies.set("auth_token", token, {          
-      //     httpOnly: true, // הקוקי לא נגיש ל-JavaScript בצד הלקוח
-      //     secure: process.env.NODE_ENV === "production", // רק ב-HTTPS בפרודקשן
-      //     path: "/", // זמין בכל הדפים
-      //     maxAge: 60 * 60 * 24, // תוקף ליום אחד
-      //   });
-      // } catch (error) {
-      //   console.error("Error generating token:", error);
-      // }
-
       const formattedDesc =
         "אנחנו כאן כדי לעזור לך לבחור את הלוק המושלם לכל יום, בהתאמה למזג האוויר! בין אם השמש זורחת או שמיים מעוננים, אנחנו נספק לך את ההמלצות הכי טרנדיות ונוחות לפי תחזית מזג האוויר באזור שלך.\nהתחל לחקור ולהתלבש בהתאם למזג האוויר – כי כל יום הוא הזדמנות חדשה לבלות בו בסטייל!";
       const welcomeAlert = new Alert({
@@ -128,6 +119,23 @@ export async function POST(request: NextRequest) {
       });
       welcomeAlert.save();
       startCronJob(savedUser._id as Types.ObjectId);
+      try {
+        const token = generateToken(newUser.email);
+        console.log("Generated Token:", token);
+        const response = NextResponse.json(
+          { success: true, data: savedUser },
+          { status: 201 }
+        );
+        response.cookies.set('auth_token', token, {
+          httpOnly: true, // הקוקי לא נגיש ל-JavaScript בצד הלקוח
+          secure: process.env.NODE_ENV === 'production', // רק ב-HTTPS בפרודקשן
+          path: '/', // זמין בכל הדפים
+          maxAge: 60 * 60 * 24, // תוקף ליום אחד
+        });
+        return response;
+      } catch (error) {
+        console.error("Error generating token:", error);
+      }
       return NextResponse.json(
         { success: true, data: savedUser.toObject() },
         { status: 201 }

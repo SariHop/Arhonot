@@ -166,7 +166,7 @@ const NavBar = () => {
       <div
         className={`flex flex-col items-center justify-center  w-full h-full hover:border-2 hover:border-blue-600 text-xl gap-1 lg:flex-row md:text-3xl group ${
           selectedPage === "alerts" ? "bg-blue-600 text-white" : ""
-        }`}
+        } `}
         onClick={() => handleClick("alerts")}
       >
         <Badge
@@ -174,8 +174,9 @@ const NavBar = () => {
           color="gold"
           count={AlertsCounter}
           offset={[0, 2]}
+          className="-z-1"
         >
-          <FaBell className="text-3xl hover:text-blue-600" />
+          <FaBell className="text-3xl hover:text-blue-600 -z-1" />
         </Badge>
         <span className="text-sm text-center lg:ml-2 md:text-base ">
           התראות
