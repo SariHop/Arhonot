@@ -105,7 +105,7 @@ const WeatherHeader: React.FC = () => {
       </div>
 
       {expanded && (
-        <div className="absolute top-full left-0 w-full bg-white shadow-md z-[9999] pointer-events-auto">
+        <div className="absolute top-full left-0 w-full bg-white shadow-md z-50 pointer-events-auto">
           <div className="flex justify-between overflow-x-auto p-2">
             {hourlyWeather.slice(0, 8).map((hourlyData) => {
               const hourTime = new Date(hourlyData.dt_txt);
