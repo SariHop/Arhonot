@@ -13,10 +13,13 @@ if (!mongoose.models.Outfit) {
 export async function POST(request: NextRequest) {
   try {
     await connect(); // חיבור לבסיס הנתונים
-    const { userId, month, year }:{userId:string, month:number, year:number} = await request.json();
+    const { userId, month, year }:{userId: string, month:number, year:number} = await request.json();
 
-    if(!userId || !month || !year)
+    if(!userId || 0 > month || month > 11 || !year){
+      console.log("userId", userId, "month", month, "year", year);
+      
       return NextResponse.json({status:false, message: "שגיאה בקבלת נתונים"}, { status: 400 }); 
+    }
 
     const startDate = new Date(Date.UTC(year, month, 1));  // החודש 0-based
     const endDate = new Date(Date.UTC(year, month + 1, 0));        // סוף החודש הנוכחי
