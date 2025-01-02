@@ -1,17 +1,13 @@
 import useDay from "@/app/store/currentDayStore";
 import Image from "next/image";
-import Carusela from "./Carusela";
 
 const LooksList: React.FC<{ saveChanges: () => void, changed:boolean, setChanged:(c: boolean) => void }> = ({ saveChanges, changed, setChanged }) => {
     const { selectedLooks, selectLook } = useDay();
 
     return (
-        <div className="flex flex-col h-full gap-6">
-            <div >
-              <Carusela setChanged={setChanged}/>
-            </div>
+        <div className="flex flex-col h-full gap-6 px-3">
             {/* הצגת הלוקים הנבחרים */}
-            <div className="flex flex-wrap gap-3 justify-center">
+            <div className="flex  gap-3 justify-center">
                 {selectedLooks.map((look) => (
                     <div
                         key={look?._id || look.id}
@@ -31,8 +27,12 @@ const LooksList: React.FC<{ saveChanges: () => void, changed:boolean, setChanged
             {/* {changed &&  */}
             <button
                 disabled={!changed}
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-all duration-300 self-end mt-auto w-full"
-                onClick={() => {saveChanges(); setChanged(false)}} // פונקציה לשמירת השינויים
+                className={`py-2 px-4 rounded-lg transition-all duration-300 self-end mt-auto w-full 
+                  ${changed ? "bg-blue-500 text-white hover:bg-blue-600" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
+                onClick={() => {
+                    saveChanges();
+                    setChanged(false);
+                }}
             >
                 שמור שינויים
             </button>
