@@ -99,8 +99,6 @@ const WeatherHeader: React.FC = () => {
             } text-gray-600 text-sm`}
           />
           </div>
-
-         
         </div>
       </div>
 
@@ -110,7 +108,6 @@ const WeatherHeader: React.FC = () => {
             {hourlyWeather.slice(0, 8).map((hourlyData) => {
               const hourTime = new Date(hourlyData.dt_txt);
               const isCurrentHour = hourlyData.dt_txt === closestHour.dt_txt;
-
               return (
                 <div
                   key={hourlyData.dt}
