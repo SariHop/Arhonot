@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 //קבלת כל הלוקים ש המשתמש לחודש זה
 export const userLooks = async (month: number, year: number, userId: Types.ObjectId | null) => {
   try {
-    const response = await axios.post(`/api/dayRoute/daysOutfits/`, { userId: userId, month, year });
+    const response = await axios.post(`/api/dayRoute/daysOutfits/`, { userId: String(userId), month, year });
     const days: IDayWithLooks[] = response.data;
     const daysMap: Record<string, IDayWithLooks> = {};
 
