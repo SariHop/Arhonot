@@ -83,7 +83,7 @@ const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
     return (
         <>
             <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-7 bg-white rounded shadow-md space-y-4 ">
-                <h1 className="text-2xl font-semibold text-center">{outfit ? "עריכת לבוש" : "יצירת לבוש"} </h1>
+                <h1 className="text-2xl font-semibold text-center">עריכת לוק </h1>
 
                 {/* Season Selector */}
                 <select
@@ -169,7 +169,7 @@ const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
                         : "bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500"
                         }`}
                 >
-                    {isUpdating ? "מעדכן..." : "עדכן לבוש"}
+                    {isUpdating ? "מעדכן..." : "עדכן לוק"}
                 </button>
 
 

@@ -15,13 +15,13 @@ const ExamplePage: React.FC = () => {
         <div className="flex flex-col items-center justify-center pb-20 animate-fade-up">
           {/* hero */}
           <Image src="/logo.png" width={250} height={100} alt="ארעונות" />
-          <h3 className="text-xl font-bold text-gray-900 mt-3">
+          <h3 className="text-xl font-bold text-gray-900 ">
             אופנה פוגשת תחזית
           </h3>
-          <p className="text-sm font-bold text-gray-700 mb-7">
+          <p className="text-sm font-bold text-gray-700 mb-5">
             צלמו, ערכו וקבלו המלצות
           </p>
-          <p className="text-sm text-gray-700 mb-7 mx-auto text-justify max-w-xs sm:max-w-md lg:max-w-lg w-full px-4 sm:px-6 lg:px-8">
+          <p className="text-sm text-gray-700 mb-5 mx-auto text-justify max-w-xs sm:max-w-md lg:max-w-lg w-full px-4 sm:px-6 lg:px-8">
             ארעונות נוצרה כדי לעזור לכם להתאים את הלוקים היומיים/ שבועיים שלכם
             לתחזית מזג האוויר הצפויה באזורכם. תוכלו ליצור קשרים עם משתמשים אחרים
             וליצור עבורם התאמות ולוקים. תוכלו גם ליצור חשבונות-בן עבור ילדיכם,

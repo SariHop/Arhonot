@@ -78,7 +78,7 @@ const OutfitForm: React.FC = () => {
         <>
             <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-7 bg-white rounded shadow-md space-y-4 ">
                 <ButtonNavigathion value="חזרה לעמוד עריכה" path="outfit_canvas" />
-                <h1 className="text-2xl font-semibold text-center">יצירת לבוש </h1>
+                <h1 className="text-2xl font-semibold text-center">יצירת לוק </h1>
 
                 {/* Image Preview */}
                 <div className="relative flex flex-col items-center">
@@ -182,7 +182,7 @@ const OutfitForm: React.FC = () => {
                         : "bg-indigo-600 hover:bg-indigo-700"
                         }`}
                 >
-                    {isLoading ? "טוען..." : "צור לבוש"}
+                    {isLoading ? "טוען..." : "צור לוק"}
                 </button>
             
             </form>
