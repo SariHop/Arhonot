@@ -40,15 +40,15 @@ const UserOutfits: React.FC<IUserOutfits> = ({ looks }) => {
       {outfits.map((look: IOutfit, index: number) => (
         <div
           key={index}
-          className="m-6 flex flex-col items-center justify-center w-[150px] shrink-0"
+          className="my-4 ml-1 shadow-md p-1 flex flex-col items-center justify-center w-[145px] shrink-0"
         >
           <Image
             src={look.img}
             alt={`Look ${index + 1}`}
-            width={200}
-            height={300}
+            width={120}
+            height={180}
           />
-          <span className="mt-2 text-sm">עונה: {look.season}</span>
+          <span className="my-2 text-sm">עונה: {look.season}</span>
           <Rate
             onChange={(value: number) => updateRate(String(look._id), value)}
             value={look.favorite}

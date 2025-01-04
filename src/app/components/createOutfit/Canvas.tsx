@@ -100,7 +100,7 @@ const Canvas = () => {
   return (
     <div className="flex flex-col justify-center mt-3">
 
-      <div className="block lg:hidden ">
+      <div className="block md:hidden ">
         <ButtonNavigathion value="חזרה לדף הבית" path="" />
       </div>
 

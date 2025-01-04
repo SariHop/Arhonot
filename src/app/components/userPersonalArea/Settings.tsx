@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import useUser from "@/app/store/userStore";
 import { useRouter } from "next/navigation";
 import { useCityQuery } from "@/app/hooks/cityQueryHook";
+import { CircularProgress } from "@mui/material";
 
 const Settings = () => {
   const {
@@ -32,8 +33,8 @@ const Settings = () => {
     city: storedCity || "ירושלים",
     sensitive:
       storedSensitive === "cold" ||
-      storedSensitive === "heat" ||
-      storedSensitive === "none"
+        storedSensitive === "heat" ||
+        storedSensitive === "none"
         ? storedSensitive
         : "none", // המרה
   });
@@ -83,8 +84,25 @@ const Settings = () => {
     }
   };
 
-  if (isLoading) return <div>טוען...</div>;
-  if (error) return <div>שגיאה בטעינת ערים{String(error)}</div>;
+  if (isLoading)
+    return (
+      <div className={`flex justify-center items-center h-full`}>
+        <CircularProgress />
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="flex justify-center items-center h-full">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative max-w-md text-center shadow-md">
+          <strong className="font-bold">שגיאה!</strong>
+          <span className="block sm:inline mt-2">
+            שגיאה בטעינת ערים: {String(error)}
+          </span>
+        </div>
+      </div>
+    );
+
 
   return (
     <div className="flex justify-center items-center h-full py-10 px-4">
@@ -271,8 +289,8 @@ const Settings = () => {
               city: storedCity || "ירושלים",
               sensitive:
                 storedSensitive === "cold" ||
-                storedSensitive === "heat" ||
-                storedSensitive === "none"
+                  storedSensitive === "heat" ||
+                  storedSensitive === "none"
                   ? storedSensitive
                   : "none",
             })

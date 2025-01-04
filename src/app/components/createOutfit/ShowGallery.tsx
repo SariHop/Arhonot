@@ -37,7 +37,7 @@ export default function SwipeableEdgeDrawer() {
       />
       <Box sx={{ textAlign: 'center' }}>
         <Button size="large" variant="outlined" className='text-lg' sx={{ width: "100%", borderRadius: "0", fontWeight: 'bold', marginY: "5px" }} onClick={() => { toggleOpenGallery(true) }}>
-          לחץ כאן כדי לפתוח את הגלריה ולהוסיף פריטים ללבוש
+          לחץ כאן כדי לפתוח את הגלריה ולהוסיף פריטים ללוק
         </Button>
       </Box>
       <SwipeableDrawer
