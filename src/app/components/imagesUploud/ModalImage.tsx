@@ -38,7 +38,7 @@ const Modal: FC<ModalImageProps> = ({ isOpen, onClose, fileWithNoBG, setCloudina
 
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overflow-hidden">
             <div className="relative w-full h-full md:max-w-3xl md:h-3/4 p-4 bg-white flex flex-col">
                 {/* Body */}
                 <div className="flex-grow flex items-center justify-center overflow-hidden mb-4">

@@ -17,7 +17,7 @@ const HeaderArhonot = () => {
           onClick={() => {
             router.push(`/pages/user`);
           }}
-          className="cursor-pointer flex items-center"
+          className="cursor-pointer flex items-center pr-1"
         >
           <Image
             src="/logoNoBGblack.png"

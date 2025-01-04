@@ -4,10 +4,11 @@ import Card from "./Card";
 import useOutfit from '../../../store/outfitsStore';
 import IOutfit from "@/app/types/IOutfit";
 import { numberOfItemsInPage } from "@/app/services/galleryService";
+import Link from "next/link";
 
 let ITEMS_PER_PAGE = 24;
 
-const OutfitsGallary = ({ isSelectForDay , setChanged= () => {}}: { isSelectForDay: boolean, setChanged?: (b:boolean)=>void }) => {
+const OutfitsGallary = ({ isSelectForDay, setChanged = () => { } }: { isSelectForDay: boolean, setChanged?: (b: boolean) => void }) => {
   const { sortedOutfits } = useOutfit();
   const [currentPage, setCurrentPage] = useState(1);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -25,10 +26,16 @@ const OutfitsGallary = ({ isSelectForDay , setChanged= () => {}}: { isSelectForD
   const goToNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   return (
     <>
-      {!sortedOutfits.length && <p>לא נמצאו לוקים עבור לקוח זה.</p>}
+      {!sortedOutfits.length &&
+        <div className="px-6">
+          <p>לא נמצאו לוקים עבור משתמש זה </p>
+          <Link href="/pages/user/outfit_canvas" className="text-blue-500 hover:text-blue-700 underline font-medium">
+              מעבר לעמוד יצירת לוק
+          </Link>
+        </div>}
       <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 2xl:grid-cols-9 gap-4 px-4">
-        {currentItems.map((outfit:IOutfit) => (
-          <Card key={String(outfit._id)} outfit={outfit} isSelectForDay={isSelectForDay} setChanged={setChanged}/>
+        {currentItems.map((outfit: IOutfit) => (
+          <Card key={String(outfit._id)} outfit={outfit} isSelectForDay={isSelectForDay} setChanged={setChanged} />
         ))}
       </div>
       {sortedOutfits.length > ITEMS_PER_PAGE && (

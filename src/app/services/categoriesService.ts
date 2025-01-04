@@ -25,7 +25,7 @@ export const fetchTypes =async () => {
         return response.data.types;
     } catch (error) {
         console.error("Error getting types:", error);
-        toast.error("שגיאה בקבלת קטגוריות לבוש");
+        toast.error("שגיאה בקבלת קטגוריות לוקים");
         return [];
     }
 }
