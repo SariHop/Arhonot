@@ -10,7 +10,6 @@ import { FaBell, FaUser } from "react-icons/fa";
 import { IoCalendarSharp } from "react-icons/io5";
 import { BsPlus } from "react-icons/bs";
 import { AiFillProduct } from "react-icons/ai";
-
 import { FaShirt } from "react-icons/fa6";
 
 const NavBar = () => {
@@ -34,22 +33,8 @@ const NavBar = () => {
     setSelectedPage(currentPath || "");
   }, [user._id, pathname]);
 
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     setIsLargeScreen(window.innerWidth >= 1024);
-  //   };
-
-  //   window.addEventListener('resize', handleResize);
-  //   handleResize(); // initial check
-
-  //   return () => {
-  //     window.removeEventListener('resize', handleResize);
-  //   };
-  // }, []);
-
   const handleClick = (key: string) => {
     router.push(`/pages/user/${key}`);
-    // setSelectedPage(key); 
   };
 
   const onClick: MenuProps["onClick"] = ({ key }) => {

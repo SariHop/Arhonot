@@ -133,7 +133,7 @@ const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
                             <label
                                 key={tag}
                                 className={`flex items-center p-2 border rounded cursor-pointer ${selectedTags.includes(tag)
-                                    ? "bg-indigo-600 text-white"
+                                    ? "bg-blue-600 text-white"
                                     : "bg-gray-200"
                                     }`}
                             >
@@ -166,7 +166,7 @@ const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
                     disabled={isUpdating} // חסום את הכפתור בזמן עדכון
                     className={`w-full py-2 px-4 rounded-md focus:outline-none focus:ring-2 ${isUpdating
                         ? "bg-gray-400 text-white cursor-not-allowed"
-                        : "bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500"
+                        : "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500"
                         }`}
                 >
                     {isUpdating ? "מעדכן..." : "עדכן לבוש"}

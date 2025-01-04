@@ -48,14 +48,10 @@ const ConnectionList = () => {
     if (!senderId || !selectedUser) return;
     try {
       await removeConnectionRequest(senderId, selectedUser);
-      // if (response?.success) {
         toast.success("החיבור הוסר בהצלחה");
         setChildren((prevChildren) =>
           prevChildren.filter((child) => child._id !== selectedUser)
         ); // עדכון הרשימה לאחר הסרה
-      // } else {
-      //   toast.error("שגיאה בהסרת החיבור");
-      // }
     } catch (error) {
       console.log("error deleting the connection: ", error);
     } finally {
@@ -120,7 +116,7 @@ const ConnectionList = () => {
             </p>
             <div className="flex justify-center space-x-4">
               <button
-                className="bg-indigo-500 text-white font-bold ml-4 px-4 py-2 rounded hover:bg-indigo-800"
+                className=" bg-gradient-to-br from-green-400 to-blue-600 text-white font-bold ml-4 px-4 py-2 rounded hover:bg-gray-800"
                 onClick={handleCancelConnection}
               >
                 V

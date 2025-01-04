@@ -258,7 +258,7 @@ const CreateGarment = ({garment, closeModal= () => {} }:{garment: IGarment|null,
             <label
               key={tag}
               className={`flex items-center p-2 border rounded cursor-pointer ${formData.tags.includes(tag)
-                ? "bg-indigo-600 text-white"
+                ? "bg-blue-600 text-white"
                 : "bg-gray-200"
                 }`}
             >
@@ -276,7 +276,7 @@ const CreateGarment = ({garment, closeModal= () => {} }:{garment: IGarment|null,
       </div>
       <button
         type="submit"
-        className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        className="w-full font-semibold bg-gradient-to-br from-green-400 to-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         {isGalleryPage? "עדכן בגד":"צור בגד"}
       </button>

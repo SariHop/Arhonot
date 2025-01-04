@@ -146,7 +146,7 @@ const OutfitForm: React.FC = () => {
                             <label
                                 key={tag}
                                 className={`flex items-center p-2 border rounded cursor-pointer ${selectedTags.includes(tag)
-                                    ? "bg-indigo-600 text-white"
+                                    ? "bg-blue-600 text-white"
                                     : "bg-gray-200"
                                     }`}
                             >
@@ -177,9 +177,9 @@ const OutfitForm: React.FC = () => {
                 <button
                     type="submit"
                     disabled={!canvasUrl || isLoading}
-                    className={`w-full py-2 px-4 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 ${!canvasUrl || isLoading
+                    className={`w-full py-2 px-4 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${!canvasUrl || isLoading
                         ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-indigo-600 hover:bg-indigo-700"
+                        : "bg-gradient-to-br from-green-400 to-blue-600 hover:bg-blue-700"
                         }`}
                 >
                     {isLoading ? "טוען..." : "צור לבוש"}

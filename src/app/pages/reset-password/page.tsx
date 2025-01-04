@@ -58,7 +58,7 @@ export default function ResetPasswordPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="הזן כתובת מייל"
-            className="mt-1 mb-4 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder:italic"
+            className="mt-1 mb-4 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder:italic"
             required
           />
           <div className="flex justify-between items-center my-4">
@@ -74,7 +74,7 @@ export default function ResetPasswordPage() {
             className={`w-full py-2 px-4 text-white rounded-md ${
               isLoading
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-indigo-500 hover:bg-indigo-600"
+                : "bg-blue-500 hover:bg-blue-600"
             }`}
             disabled={isLoading}
           >

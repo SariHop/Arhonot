@@ -58,7 +58,7 @@ const SignUp = () => {
   const buttonSubmit = isSignUpPage
     ? "התחברות:"
     : isUserPage
-    ? "יצירת חשבון מקושר"
+    ? ""
     : "ברוך הבא";
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -184,7 +184,7 @@ const SignUp = () => {
               name="userName"
               value={formData.userName}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-600 focus:border-blue-600"
             />
 
             {errors.userName && (
@@ -205,7 +205,7 @@ const SignUp = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-600 focus:border-blue-600"
             />
             {errors.email && (
               <p className="text-red-500 text-sm">{errors.email}</p>
@@ -229,7 +229,7 @@ const SignUp = () => {
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, password: e.target.value }))
               }
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-600 focus:border-blue-600"
             />
             {/* Icon */}
             <button
@@ -258,7 +258,7 @@ const SignUp = () => {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-600 focus:border-blue-600"
             />
             {/* Icon */}
             <button
@@ -287,7 +287,7 @@ const SignUp = () => {
               name="gender"
               value={formData.gender}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500  h-10"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-600 focus:border-blue-600  h-10"
             >
               <option value="זכר">זכר</option>
               <option value="נקבה">נקבה</option>
@@ -325,7 +325,7 @@ const SignUp = () => {
                     .split("T")[0];
                 }
               }}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500  h-10"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-600 focus:border-blue-600  h-10"
             />
             {errors.dateOfBirth && (
               <p className="text-red-500 text-sm">{errors.dateOfBirth}</p>
@@ -348,7 +348,7 @@ const SignUp = () => {
               onChange={handleCityChange}
               options={cityOptions}
               placeholder="בחר עיר"
-              className="w-full mt-1 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 h-10"
+              className="w-full mt-1 border-gray-300 rounded-md focus:ring-blue-600 focus:border-blue-600 h-10"
             />
             {errors.city && (
               <p className="text-red-500 text-sm">{errors.city}</p>
@@ -367,7 +367,7 @@ const SignUp = () => {
               name="sensitive"
               value={formData.sensitive}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-600 focus:border-blue-600"
             >
               <option value="none">ללא</option>
               <option value="cold">קור</option>
@@ -385,7 +385,7 @@ const SignUp = () => {
           className={`w-full py-2 px-4 text-white rounded-md ${
             isSubmitting
               ? "bg-gray-400 cursor-not-allowed"
-              : "bg-indigo-500 hover:bg-indigo-600"
+              : "bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gray-600"
           }`}
           disabled={isSubmitting}
         >

@@ -127,7 +127,7 @@ const Settings = () => {
               name="userName"
               value={formData.userName}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             />
             {errors.userName && (
               <p className="text-red-500 text-sm">{errors.userName}</p>
@@ -148,7 +148,7 @@ const Settings = () => {
               type="email"
               value={formData.email}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             />
             {errors.email && (
               <p className="text-red-500 text-sm">{errors.email}</p>
@@ -168,7 +168,7 @@ const Settings = () => {
               name="gender"
               value={formData.gender}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="זכר">זכר</option>
               <option value="נקבה">נקבה</option>
@@ -200,7 +200,7 @@ const Settings = () => {
                   dateOfBirth: new Date(e.target.value),
                 })
               }
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             />
             {errors.dateOfBirth && (
               <p className="text-red-500 text-sm">{errors.dateOfBirth}</p>
@@ -225,7 +225,7 @@ const Settings = () => {
                 name="city"
                 value={formData.city}
                 onChange={handleChange}
-                className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               >
                 {cities.map((city: string) => (
                   <option key={city} value={city}>
@@ -252,7 +252,7 @@ const Settings = () => {
               name="sensitive"
               value={formData.sensitive}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="none">ללא</option>
               <option value="cold">לקור</option>
@@ -267,7 +267,7 @@ const Settings = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="mt-6 w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-indigo-700"
+          className="mt-6 w-full py-2 px-4 bg-gradient-to-br from-green-400 to-blue-600 text-white rounded-md hover:bg-gray-700"
         >
           שמירה
         </button>

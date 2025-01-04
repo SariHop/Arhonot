@@ -94,7 +94,7 @@ const SwitchAccounts = ({ currentId: localCurrentId, setcurrentId: setLocalCurre
       {localCurrentId!==originId && (
         <div className="text-left mb-4">
           <button
-            className="bg-indigo-500 text-white font-bold px-4 py-2 rounded hover:bg-indigo-800"
+            className="bg-gradient-to-br from-green-400 to-blue-600 text-white font-bold px-4 py-2 rounded hover:bg-blue-800"
             onClick={handleSwitchToOriginUser}
           >
             חזרה למשתמש מקורי
@@ -151,7 +151,7 @@ const SwitchAccounts = ({ currentId: localCurrentId, setcurrentId: setLocalCurre
             </p>
             <div className="flex justify-center space-x-4">
               <button
-                className="bg-indigo-500 text-white font-bold ml-4 px-4 py-2 rounded hover:bg-indigo-800"
+                className="bg-gradient-to-br from-green-400 to-blue-600 text-white font-bold ml-4 px-4 py-2 rounded hover:bg-gray-800"
                 onClick={() => handleSwitchAccount(selectedUser)} // עטיפה של הקריאה
               >
                 V

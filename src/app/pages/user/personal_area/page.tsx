@@ -119,8 +119,8 @@ const PersonalArea = () => {
               onClick={() => handleTogglePanel(key)}
               className={`w-full flex items-center  p-3 rounded-md text-right transition-colors duration-300 ${
                 activeKey === key
-                  ? "bg-indigo-500 text-white"
-                  : "bg-white hover:bg-gray-200"
+                  ? "rounded-lg bg-gradient-to-br from-green-400 to-blue-600 text-white"
+                  : "bg-white hover:bg-gray-300"
               }`}
             >
               <span
@@ -142,13 +142,8 @@ const PersonalArea = () => {
       </div>
 
       {/*  תוכן הקומפוננטה המוצגת כעת*/}
-      {/* <div className="flex content-end"> */}
       <div
-        className={`transition-all duration-500 bg-white shadow-inner flex-1 relative overflow-auto m-0 w-full `}
-          // ${
-        //   isMobile && activeKey ? "w-3/4" : "w-2/3"
-        // }
-        
+        className={`transition-all duration-500 bg-white shadow-inner flex-1 relative overflow-auto m-0 w-full `}  
       >
         {activeKey && (
           <>

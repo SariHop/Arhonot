@@ -62,7 +62,7 @@ export default function SignInPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-gray-900"
               required
             />
           </div>
@@ -75,7 +75,7 @@ export default function SignInPage() {
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-gray-900"
               required
             />
             {/* Icon */}
@@ -103,8 +103,9 @@ export default function SignInPage() {
           </div>
           <button
             type="submit"
-            className={`w-full py-2 px-4 text-white rounded-md ${isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-500 hover:bg-indigo-600"
-              }`}
+            className={`w-full py-2 px-4 text-white rounded-md ${isSubmitting ? "bg-gray-400 cursor-not-allowed" : "rounded-lg bg-gradient-to-br from-green-400 to-blue-600"
+              
+            }`}
             disabled={isSubmitting}
           >
             {isSubmitting ? "מתחבר..." : "התחבר/י"}
