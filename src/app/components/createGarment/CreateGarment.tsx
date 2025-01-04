@@ -183,7 +183,7 @@ const CreateGarment = ({garment, closeModal= () => {} }:{garment: IGarment|null,
       )}
       <textarea
         name="desc"
-        placeholder="הוסף תאור (אופציונלי)"
+        placeholder="הוסף תאור (מומלץ להוסיף תיאור על מנת לקבל המלצות מדוייקות יותר)"
         value={formData.desc}
         onChange={handleChange}
         className="w-full p-2 border rounded"
