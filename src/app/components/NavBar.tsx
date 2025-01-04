@@ -164,9 +164,11 @@ const NavBar = () => {
 
       {/* התראות */}
       <div
-        className={`cursor-pointer flex flex-col items-center justify-center  w-full h-full hover:border-t-2 hover:border-t-blue-600 hover:text-blue-600 text-xl gap-1 md:flex-row md:text-3xl group
-           ${selectedPage === "alerts" ? "border-t-blue-600 border-t-2 text-blue-600" : ""
-          }`}
+        // className={`cursor-pointer flex flex-col items-center justify-center  w-full h-full hover:border-t-2 hover:border-t-blue-600 hover:text-blue-600 text-xl gap-1 md:flex-row md:text-3xl group
+        //    ${selectedPage === "alerts" ? "border-t-blue-600 border-t-2 text-blue-600" : ""
+        //   }`}
+        className={`group cursor-pointer flex flex-col items-center justify-center w-full h-full hover:border-t-2 hover:border-t-blue-600 hover:text-blue-600 text-xl gap-1 md:flex-row md:text-3xl
+          ${selectedPage === "alerts" ? "border-t-blue-600 border-t-2 text-blue-600" : ""}`}
         onClick={() => handleClick("alerts")}
       >
         <Badge
@@ -174,7 +176,7 @@ const NavBar = () => {
           color="gold"
           count={AlertsCounter}
           offset={[0, 2]}
-          className={`${selectedPage === "alerts" ? " text-blue-600" : ""} hover:text-blue-600`}
+          className={`${selectedPage === "alerts" ? " text-blue-600" : ""} group-hover:text-blue-600`}
         >
           <FaBell className={`text-2xl ${selectedPage === "alerts" ? " text-blue-600" : ""}`} />
         </Badge>
