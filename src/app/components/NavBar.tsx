@@ -84,7 +84,7 @@ const NavBar = () => {
 
   return (
     <div className="bg-white left-0 w-full h-[10vh] flex justify-around md:justify-around items-center border-t-2 border-blue-600 md:border-none">
-     
+
       {/* פרטי משתמש */}
       <div
         className={`cursor-pointer flex flex-col items-center justify-center  w-full h-full hover:border-t-2 hover:border-t-blue-600 hover:text-blue-600 text-xl gap-1 md:flex-row md:text-3xl
@@ -123,7 +123,7 @@ const NavBar = () => {
       >
         <div className="flex flex-row items-center">
           <FaShirt className="text-2xl" />
-          <BsPlus className="text-sm" />
+          <BsPlus className="text-2xl" />
         </div>
         <span className="text-xs text-center md:ml-2 md:text-base">
           יצירת בגד
@@ -141,7 +141,7 @@ const NavBar = () => {
       >
         <div className="flex flex-row items-center">
           <GiClothes className="text-2xl hover:text-blue-600" />
-          <BsPlus className="text-sm" />
+          <BsPlus className="text-2xl" />
         </div>
         <span className="text-xs text-center md:ml-2 md:text-base">
           יצירת לוק
@@ -156,7 +156,7 @@ const NavBar = () => {
           }`}
         onClick={() => handleClick("calendar")}
       >
-        <IoCalendarSharp className="text-3xl" />
+        <IoCalendarSharp className="text-2xl" />
         <span className="text-xs text-center md:ml-2 md:text-base">
           היסטוריה
         </span>
@@ -175,7 +175,7 @@ const NavBar = () => {
           count={AlertsCounter}
           offset={[0, 2]}
         >
-          <FaBell className={`text-2xl ${selectedPage === "alerts" ? " text-blue-600" : ""}`}/>
+          <FaBell className={`text-2xl ${selectedPage === "alerts" ? " text-blue-600" : ""}`} />
         </Badge>
         <span className="text-xs text-center md:ml-2 md:text-base ">
           התראות

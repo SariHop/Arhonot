@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import { IDayWithLooks, IOutfitsModalProps } from "../../types/IDay";
 import UserOutfits from "./UserOutfits";
 import { getChildrenLooks } from "@/app/services/daysService";
+import { CircularProgress } from "@mui/material";
 
 
-const OutfitsModal: React.FC<IOutfitsModalProps> = ({isOpen, setIsOpen, dateDetails, date}) => {
+const OutfitsModal: React.FC<IOutfitsModalProps> = ({ isOpen, setIsOpen, dateDetails, date }) => {
   const [childrensLooks, setChildrensLooks] = useState<Record<string, IDayWithLooks>>({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -38,10 +39,13 @@ const OutfitsModal: React.FC<IOutfitsModalProps> = ({isOpen, setIsOpen, dateDeta
       open={isOpen}
       onCancel={handleClose}
       footer={null}
-      style={{maxHeight: '75vh', overflowY: "auto"}}
+      style={{ maxHeight: '75vh', overflowY: "auto" }}
     >
       {isLoading ? (
-        <p className="text-center">טוען נתונים...</p>
+        <div>
+          <CircularProgress />
+          <p className="text-center">טוען נתונים...</p></div>
+
       ) : (
         <>
           <UserOutfits looks={dateDetails?.looks || []} />
