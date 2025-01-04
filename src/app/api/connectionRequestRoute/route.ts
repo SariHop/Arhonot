@@ -37,12 +37,12 @@ export async function POST(request: NextRequest) {
     const { userIdSender } = connectionRequestBody;
 
     const userReciver = await User.findOne({ email: { $regex: new RegExp(`^${email}$`, "i") } });
-    if(!userReciver)
+    if (!userReciver)
       return NextResponse.json(
         { message: "Error add connectionRequest", error: "no user with this email to recive the request" },
         { status: 404 }
       );
-    
+
     const reciverId = userReciver._id;
     if (!reciverId)
       return NextResponse.json(
@@ -98,6 +98,25 @@ export async function POST(request: NextRequest) {
 
       await newconnectionRequest.validate();
       const savedconnectionRequest = await newconnectionRequest.save();
+      const senderFormattedDesc = `בקשת החיבור שלך ל${email} נשלחה בהצלחה`;
+      const senderAlert = new Alert({
+        userId: userIdSender,
+        title: "בקשת התחברות נשלחה",
+        desc: senderFormattedDesc,
+        date: new Date(),
+        readen: false,
+      });
+      senderAlert.save();
+      console.log("sender alert: ",senderAlert);
+      const formattedDesc = "יש לך בקשת התחברות חדשה ברשימת החיבורים שלך";
+      const reciverAlert = new Alert({
+        userId: reciverId,
+        title: "בקשת התחברות חדשה",
+        desc: formattedDesc,
+        date: new Date(),
+        readen: false,
+      });
+      reciverAlert.save();
       return NextResponse.json(
         {
           success: true,

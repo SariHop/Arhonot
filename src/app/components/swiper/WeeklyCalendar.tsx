@@ -7,12 +7,12 @@ import "react-toastify/dist/ReactToastify.css";
 import { useWeatherQuery } from '@/app/hooks/weatherQueryHook';
 import { getAverageTemperatureForDate } from '@/app/services/weatherService';
 
-const WeeklyCalendar: React.FC<{ saveChanges: () => void, changed:boolean, setChanged: (b:boolean)=> void }> = ({ saveChanges, changed, setChanged }) => {
+const WeeklyCalendar: React.FC<{ saveChanges: () => void, changed: boolean, setChanged: (b: boolean) => void }> = ({ saveChanges, changed, setChanged }) => {
   const [weekDates, setWeekDates] = useState<Date[]>([]);
   const { selectedDate, setSelectedDate } = useDay();
   const [pendingDate, setPendingDate] = useState<Date | null>(null); // תאריך זמני
   const { data: weatherData } = useWeatherQuery();
-
+  const [clicked, setClicked] = useState(false);
   useEffect(() => {
     const today = new Date();
     const daysOfWeek: Date[] = [];
@@ -56,22 +56,30 @@ const WeeklyCalendar: React.FC<{ saveChanges: () => void, changed:boolean, setCh
         <div className="flex gap-4 mt-2">
           <button
             onClick={async () => {
+              if (clicked) return; // מניעת לחיצה אם clicked הוא true
+              setClicked(true);
               await saveChanges(); // קריאה לשרת לאחר האישור
               setPendingDate(null); // איפוס התאריך הזמני
               toast.dismiss(); // סגירת הטוסט
               setSelectedDate(newDate);
+              setClicked(false);
             }}
-            className="bg-blue-500 text-white py-1 px-4 rounded"
+            className={`py-1 px-4 rounded ${clicked ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-blue-500 text-white"
+              }`}
           >
             כן
           </button>
           <button
             onClick={() => {
+              if (clicked) return; // מניעת לחיצה אם clicked הוא true
+              setClicked(true);
               setPendingDate(null); // ביטול התאריך הזמני
               toast.dismiss(); // סגירת הטוסט
               setSelectedDate(newDate);
+              setClicked(false);
             }}
-            className="bg-gray-500 text-white py-1 px-4 rounded"
+            className={`py-1 px-4 rounded ${clicked ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-red-400 text-white"
+              }`}
           >
             לא
           </button>
@@ -83,6 +91,7 @@ const WeeklyCalendar: React.FC<{ saveChanges: () => void, changed:boolean, setCh
         closeOnClick: false,
         draggable: false,
         pauseOnHover: true,
+        closeButton: false, // ביטול כפתור הסגירה
       }
     );
     setChanged(false);

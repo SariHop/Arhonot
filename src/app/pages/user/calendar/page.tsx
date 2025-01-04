@@ -15,7 +15,7 @@ const customDayNames = ["יום א", "יום ב", "יום ג", "יום ד", "י�
 
 
 const Page: React.FC = () => {
-  const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth()+1); // חודש נבחר
+  const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth()); // חודש נבחר
   const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear()); // שנה נבחרת
   const [cellHeight, setCellHeight] = useState<string>(""); // גובה התא
   const [calendarMode, setCalendarMode] = useState<CalendarProps<Dayjs>["mode"]>("month"); // מצב היומן (חודש/שנה)
@@ -27,10 +27,14 @@ const Page: React.FC = () => {
 
 
   useEffect(() => {
+    if (!user._id) {
+      console.log("Waiting for user ID to load...");
+      return;
+    }
     calculateCellHeight();
     loadDayLooks();
     updateDayHeaders();
-  }, [currentMonth, currentYear]);
+  }, [currentMonth, currentYear, user._id]);
 
 
   const calculateCellHeight = () => {
@@ -88,7 +92,7 @@ const Page: React.FC = () => {
 
   const fullCellRender = (current: Dayjs) => {
     const isInDisplayedMonth =
-      current.month() === currentMonth-1 && current.year() === currentYear;
+      current.month() === currentMonth && current.year() === currentYear;
 
     // בדוק אם התאריך שייך לחודש הנוכחי
     if (isInDisplayedMonth) {
@@ -96,24 +100,26 @@ const Page: React.FC = () => {
       const dayLooks = dayData[dateKey] || []; // קבלת תמונות לוקים ליום זה
       return (
         <div className="ant-picker-calendar-date w-full" style={{ height: cellHeight }}>
-          <div className="ant-picker-calendar-date-content flex flex-col xl:flex-row xl:items-start justify-between items-center overflow-hidden text-base text-center ">
-            <p className="ant-picker-calendar-date-value text-right text-sm">{current.date()}</p>
-            <div className=" flex flex-col h-[65%] md:flex-row justify-center align-middle items-center  overflow-hidden">
+          <div className="ant-picker-calendar-date-content flex flex-col xl:flex-row xl:items-start items-center overflow-hidden text-base text-center ">
+            <p className="ant-picker-calendar-date-value h-2/5 text-right text-sm self-start lg:w-2/5 lg:h-full">{current.date()}</p>
+            <div className=" flex flex-col h-3/5 md:flex-row justify-start lg:justify-center align-middle items-center lg:w-3/5 lg:h-full overflow-hidden ">
               {dayLooks.looks && dayLooks.looks.map((look: IOutfit, index) => (
                 index < 1 ?
                   (<Image
                     key={index}
                     src={look.img}
                     alt={`Look ${index + 1}`}
-                    className="w-7 h-7 rounded-full  object-cover m-1 inline-block border-2"
+                    className="w-7 h-7 rounded-full object-cover m-1 inline-block border-2"
                     width={25}
                     height={25}
-                  />) : (index === 1 && <p key={index} className="text-xs text-gray-500">+{dayLooks.looks.length - 1}</p>)
+                  />) : (index === 1 && <p key={index} className="text-xs text-gray-500 ">+{dayLooks.looks.length - 1}</p>)
               ))}
             </div>
           </div>
         </div>
       );
+
+
     }
     //בדוק אם התאריך משלים את השבועות של החודש הנוכחי
     if (isFillerDay(current)) {
@@ -161,17 +167,19 @@ const Page: React.FC = () => {
 
 
   return (
+    <div className="h-full">
     <ConfigProvider locale={heIL}>
-      <div className=" w-full max-w-[800px] m-auto h-full">
+      <div className=" w-full max-w-[800px] m-auto">
         <Calendar
           onPanelChange={onPanelChange}
           fullCellRender={calendarMode === "month" ? fullCellRender : undefined}
-          className="md:h-[75vh] h-[79vh] flex flex-col justify-center  "
+          className="md:h-3/4 h-4/5 flex flex-col justify-center  "
           onSelect={onSelect}
         />
         {selectedDay !== "" && <OutfitsModal isOpen={isModalVisible} setIsOpen={setIsModalVisible} dateDetails={dayData[selectedDay]} date={selectedDay} />}
       </div>
     </ConfigProvider>
+    </div>
   );
 };
 
