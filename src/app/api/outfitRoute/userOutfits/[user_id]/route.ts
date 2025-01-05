@@ -32,7 +32,7 @@ export async function GET(request: NextRequest,{ params }: { params: { user_id: 
   
       if (!days || days.length === 0) {
         // אם אין ימים לחודש האחרון, נחזיר את הלוקים כמו שהם
-        return NextResponse.json({ success: true, data: outfits }, { status: 200 });
+        return NextResponse.json({ success: true, data: outfits.map((outfit) => ({...outfit.toObject(), appearanceCount: 0 })) }, { status: 200 });
       }
   
       // יצירת מיפוי של כמות הופעות לכל לוק
