@@ -1,11 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import {fetchWeatherData} from '@/app/services/weatherService'
-import { WeatherResponse} from '@/app/types/IWeather'
+import { fetchWeatherData } from '@/app/services/weatherService'
+import { WeatherResponse } from '@/app/types/IWeather'
 import { toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
-
-export const useWeatherQuery = (/*{ enabled }: { enabled: boolean }*/)  => {
+export const useWeatherQuery = (/*{ enabled }: { enabled: boolean }*/) => {
   return useQuery<WeatherResponse, Error>({
     queryKey: ['weatherData'],
     queryFn: async () => {
@@ -16,7 +15,7 @@ export const useWeatherQuery = (/*{ enabled }: { enabled: boolean }*/)  => {
       } catch (error: unknown) {
         const errorMessage = (error instanceof Error) ? error.message : 'שגיאה לא ידועה';
         toast.error(`לא הצלחנו למשוך את נתוני מזג האוויר: ${errorMessage}`);
-        return {}; 
+        return {};
       }
     },
     staleTime: 24 * 60 * 60 * 1000, // נתונים תקפים ל-24 שעות

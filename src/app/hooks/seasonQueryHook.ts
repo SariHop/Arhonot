@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchSeasons } from '../services/categoriesService';
 
-
 export const useSeasonQuery = () => {
   return useQuery({
     queryKey: ['seasons'],

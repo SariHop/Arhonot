@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchTags } from '../services/categoriesService';
 
-
 export const useTagQuery = () => {
   return useQuery({
     queryKey: ['tags'],
