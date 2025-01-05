@@ -114,8 +114,6 @@ const Page = () => {
   return (
     <div className='flex gap-10 flex-col  py-5  h-full' >
       <WeeklyCalendar saveChanges={saveChanges} changed={changed} setChanged={setChanged} />
-      {/* <ImageCaruseka looks={looks} /> */}
-      {/* <SwiperComponent /> */}
       <div >
         <Carusela setChanged={setChanged} />
       </div>

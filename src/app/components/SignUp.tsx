@@ -52,14 +52,14 @@ const SignUp = () => {
   const title = isSignUpPage
     ? "הרשמה:"
     : isUserPage
-    ? "יצירת חשבון מקושר"
-    : "ברוך הבא";
+      ? "יצירת חשבון מקושר"
+      : "ברוך הבא";
 
   const buttonSubmit = isSignUpPage
     ? "התחברות:"
     : isUserPage
-    ? "יצירת חשבון מקושר"
-    : "ברוך הבא";
+      ? "יצירת חשבון מקושר"
+      : "ברוך הבא";
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -127,8 +127,8 @@ const SignUp = () => {
 
   if (isLoading)
     return (
-      <div className={`flex justify-center items-center h-full ${isUserPage? "":"bg-gradient-to-br from-green-200 to-blue-300"}`}>
-        <CircularProgress/>
+      <div className={`flex justify-center items-center h-full ${isUserPage ? "" : "bg-gradient-to-br from-green-200 to-blue-300"}`}>
+        <CircularProgress />
       </div>
     );
 
@@ -157,17 +157,15 @@ const SignUp = () => {
 
   return (
     <div
-      className={`flex h-full ${
-        isUserPage ? "py-10 px-2 bg-gray-50" : " bg-gradient-to-br from-green-200 to-blue-300 justify-center items-center"
-      }`}
+      className={`flex h-full ${isUserPage ? "py-10 px-2 bg-gray-50" : " bg-gradient-to-br from-green-200 to-blue-300 justify-center items-center"
+        }`}
     >
       <form
         onSubmit={(e) => {
           handleSubmit(e);
         }}
-        className={`bg-white  shadow-md rounded-md w-full max-w-md  ${
-          isUserPage ? "p-4" : "m-5 p-8"
-        }`}
+        className={`bg-white  shadow-md rounded-md w-full max-w-md  ${isUserPage ? "p-4" : "m-5 p-8"
+          }`}
       >
         <h2 className="text-2xl font-bold mb-4 text-gray-800">{title}</h2>
         <div className="grid grid-cols-2 gap-4 mb-4">
@@ -382,11 +380,10 @@ const SignUp = () => {
         {/* Submit */}
         <button
           type="submit"
-          className={`w-full py-2 px-4 text-white rounded-md ${
-            isSubmitting
+          className={`w-full py-2 px-4 text-white rounded-md ${isSubmitting
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-indigo-500 hover:bg-indigo-600"
-          }`}
+            }`}
           disabled={isSubmitting}
         >
           {isSubmitting ? "נרשם..." : "יצירת משתמש"}

@@ -87,13 +87,12 @@ const Garment = ({ garment, closeModal }: GarmentProps) => {
 
   return (
     <>
-      
+
       <div
-          className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 ${
-            isDeleting ? "pointer-events-none" : ""
+        className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 ${isDeleting ? "pointer-events-none" : ""
           }`}
-          onClick={!isDeleting?handleCloseClick: ()=>{}} // הוספת מאזין ללחיצה על הרקע
-        >
+        onClick={!isDeleting ? handleCloseClick : () => { }} // הוספת מאזין ללחיצה על הרקע
+      >
         {/* שכבה נוספת לאינטראקציות */}
         {isDeleting && (
           <div className="absolute inset-0 bg-gray-500 bg-opacity-50 z-40 pointer-events-auto" />

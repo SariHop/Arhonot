@@ -41,7 +41,7 @@ const ConnectExisting = () => {
       // יצירת בקשת חיבור
       const response = await createNewConnectionRequest(connectionRequest, emailInput);
       console.log("Response:", response); // להדפיס את התשובה מהשרת
-      if (response?.success ===true){
+      if (response?.success === true) {
         setEmailInput("");
       }
     } catch (error) {

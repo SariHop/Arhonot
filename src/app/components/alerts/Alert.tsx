@@ -6,108 +6,106 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const Alert: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => {
+const Alert: React.FC<AlertProps> = ({ userId, decreaseAlertCounter }) => {
 
-    const [alerts, setAlerts] = useState<AlertTypeFotCollapse[]>([]);
+  const [alerts, setAlerts] = useState<AlertTypeFotCollapse[]>([]);
 
-    useEffect(() => {
-        const fetchAlertsAndRequests = async () => {
-          const fetchedAlerts = await getAlerts();
-          setAlerts(fetchedAlerts);
-        };
+  useEffect(() => {
+    const fetchAlertsAndRequests = async () => {
+      const fetchedAlerts = await getAlerts();
+      setAlerts(fetchedAlerts);
+    };
 
-        fetchAlertsAndRequests();
-      },[userId]); 
+    fetchAlertsAndRequests();
+  }, [userId]);
 
-      
+  const getAlerts = async () => {
+    console.log(userId);
+    const returnAlerts: AlertTypeFotCollapse[] = [];
+    try {
+      const alerts: IAlertTypeWithId[] = await fetchUserAlerts(userId);
 
-      const getAlerts = async () => {
-        console.log(userId);
-        const returnAlerts: AlertTypeFotCollapse[] = [];
-        try {
-          const alerts: IAlertTypeWithId[] = await fetchUserAlerts(userId);
-    
-          alerts.map((alert: IAlertTypeWithId) =>
-            returnAlerts.push({
-              key: alert._id,
-              title: alert.title,
-              label: (
-                <span style={{ fontWeight: alert.readen ? "normal" : "bold" }}>
-                  {alert.title}
-                </span>
-              ),
-              children: <p>{alert.desc}</p>,
-              readen: alert.readen,
-              date: alert.date,
-              status: alert.readen,
-            }));
-          return returnAlerts;
-        } catch (error) {
-          console.error("Failed to fetch alerts in getAlerts:", error);
-          if (axios.isAxiosError(error)) {
-            const serverError = error.response?.data?.error || "Unknown server error";
-            const status = error.response?.status || 500;
-      
-            // מציג הודעה מפורטת למשתמש
-            if (status === 400) {
-              toast.error("שגיאה בקבלת נתונים, נסה שוב.");
-            } else {
-              toast.error(`שגיאת שרת: ${serverError}`);
-            }
-          } else {
-            toast.error("שגיאה בטעינת התראות משתמש");
-          }
-          return []; // החזרת מערך ריק במקרה של שגיאה
-        }
-      };
+      alerts.map((alert: IAlertTypeWithId) =>
+        returnAlerts.push({
+          key: alert._id,
+          title: alert.title,
+          label: (
+            <span style={{ fontWeight: alert.readen ? "normal" : "bold" }}>
+              {alert.title}
+            </span>
+          ),
+          children: <p>{alert.desc}</p>,
+          readen: alert.readen,
+          date: alert.date,
+          status: alert.readen,
+        }));
+      return returnAlerts;
+    } catch (error) {
+      console.error("Failed to fetch alerts in getAlerts:", error);
+      if (axios.isAxiosError(error)) {
+        const serverError = error.response?.data?.error || "Unknown server error";
+        const status = error.response?.status || 500;
 
-      const handlePanelAlertsChange = async (key: string | string[]) => {
-        try{
-          if (Array.isArray(key)) {
-            key = key[key.length - 1];
-          }
-          if (typeof key !== "string") {
-            return;
-          }
-      
-          const updatedAlerts = alerts.map((alert) => {
-            if (alert.key === key && !alert.readen) {
-              decreaseAlertCounter();
-              updateAlertStatus(key); 
-              return { ...alert, readen: true, label: <span>{alert.title}</span> };
-            }
-            return alert;
-          });
-          setAlerts(updatedAlerts);
-      }catch(error){
-        console.error(
-          "Error fetching alerts:",
-          error || "Invalid response format"
-        );
-        if (axios.isAxiosError(error)) {
-          const serverError = error.response?.data?.error || "אירעה שגיאה בלתי צפויה";
-          toast.error(`שגיאת שרת: ${serverError}`);
+        // מציג הודעה מפורטת למשתמש
+        if (status === 400) {
+          toast.error("שגיאה בקבלת נתונים, נסה שוב.");
         } else {
-          toast.error(" אירעה שגיאה בלתי צפויה בעדכון התראה" );
+          toast.error(`שגיאת שרת: ${serverError}`);
         }
-        toast.error("שגיאה בעדכון התראה");
+      } else {
+        toast.error("שגיאה בטעינת התראות משתמש");
       }
-      };
+      return []; // החזרת מערך ריק במקרה של שגיאה
+    }
+  };
 
-      const renderAlerts = (status: boolean) =>
-        alerts
-          .filter((alert) => alert.status === status)
-          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const handlePanelAlertsChange = async (key: string | string[]) => {
+    try {
+      if (Array.isArray(key)) {
+        key = key[key.length - 1];
+      }
+      if (typeof key !== "string") {
+        return;
+      }
 
-          
-          const handleTabChange = () => {
-            setAlerts((prevAlerts) =>
-              prevAlerts.map((alert) =>
-                !alert.readen ? alert : { ...alert, status: true }
-              )
-            );
-        };
-      
+      const updatedAlerts = alerts.map((alert) => {
+        if (alert.key === key && !alert.readen) {
+          decreaseAlertCounter();
+          updateAlertStatus(key);
+          return { ...alert, readen: true, label: <span>{alert.title}</span> };
+        }
+        return alert;
+      });
+      setAlerts(updatedAlerts);
+    } catch (error) {
+      console.error(
+        "Error fetching alerts:",
+        error || "Invalid response format"
+      );
+      if (axios.isAxiosError(error)) {
+        const serverError = error.response?.data?.error || "אירעה שגיאה בלתי צפויה";
+        toast.error(`שגיאת שרת: ${serverError}`);
+      } else {
+        toast.error(" אירעה שגיאה בלתי צפויה בעדכון התראה");
+      }
+      toast.error("שגיאה בעדכון התראה");
+    }
+  };
+
+  const renderAlerts = (status: boolean) =>
+    alerts
+      .filter((alert) => alert.status === status)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+
+  const handleTabChange = () => {
+    setAlerts((prevAlerts) =>
+      prevAlerts.map((alert) =>
+        !alert.readen ? alert : { ...alert, status: true }
+      )
+    );
+  };
+
   return (
     <div className="rtl-tabs h-full flex flex-col">
       <Tabs
@@ -120,17 +118,17 @@ const Alert: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => {
             label: "טרם נקראו",
             children: (
               <div className="tab-content">
-                {renderAlerts(false).length === 0? 
-                (<p className="text-gray-500 font-thin">אין לך הודעות שלא נקראו</p>)
-                :
-                (<Collapse
-                  items={renderAlerts(false).map((alert) => ({
-                    ...alert,
-                    readen: "true",
-                    status: "true",
-                  }))}
-                  onChange={(key) => handlePanelAlertsChange(key)}
-                />)}
+                {renderAlerts(false).length === 0 ?
+                  (<p className="text-gray-500 font-thin">אין לך הודעות שלא נקראו</p>)
+                  :
+                  (<Collapse
+                    items={renderAlerts(false).map((alert) => ({
+                      ...alert,
+                      readen: "true",
+                      status: "true",
+                    }))}
+                    onChange={(key) => handlePanelAlertsChange(key)}
+                  />)}
               </div>
             ),
           },
@@ -139,18 +137,18 @@ const Alert: React.FC<AlertProps> = ({userId, decreaseAlertCounter}) => {
             label: "הודעות שנקראו",
             children: (
               <div className="tab-content">
-                {renderAlerts(true).length === 0? 
-                (<p className="text-gray-500 font-thin">אין לך הודעות שנקראו</p>)
-                :
-                (<Collapse
-                  items={renderAlerts(true).map((alert) => ({
-                    ...alert,
-                    readen: "true",
-                    status: "true",
-                  }))}
-                  onChange={(key) => handlePanelAlertsChange(key)}
-                />)
-               }
+                {renderAlerts(true).length === 0 ?
+                  (<p className="text-gray-500 font-thin">אין לך הודעות שנקראו</p>)
+                  :
+                  (<Collapse
+                    items={renderAlerts(true).map((alert) => ({
+                      ...alert,
+                      readen: "true",
+                      status: "true",
+                    }))}
+                    onChange={(key) => handlePanelAlertsChange(key)}
+                  />)
+                }
               </div>
             ),
           },

@@ -21,7 +21,7 @@ const OutfitForm = ({ outfit, closeModal }: IOutfitProps) => {
     const [errormessege, setErrormessege] = useState("");
     const [isUpdating, setIsUpdating] = useState(false);
 
-    const {updateOutfitS} = useOutfits()
+    const { updateOutfitS } = useOutfits()
 
     useEffect(() => {
         if (outfit) {

@@ -35,7 +35,7 @@ const Logout = () => {
     <div className="flex flex-col items-center justify-center min-h-full">
       <PiUserCircleDuotone className="text-8xl mb-14" />
       <h2 className="text-center font-bold text-2xl">
-       את/ה בטוח/ה שברצונך להתנתק?
+        את/ה בטוח/ה שברצונך להתנתק?
       </h2>
       <button
         onClick={handleLogout}

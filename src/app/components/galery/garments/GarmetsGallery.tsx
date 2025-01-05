@@ -80,13 +80,13 @@ const GarmentsGallery = ({ isForOutfit }: { isForOutfit: boolean }) => {
     const goToNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
     return (
         <>
-            {!sortedGarments.length && 
-             <div className="px-6">
-             <p>לא נמצאו בגדים עבור משתמש זה </p>
-             <Link href="/pages/user/garment_form" className="text-blue-500 hover:text-blue-700 underline font-medium">
-                 מעבר לעמוד יצירת בגד
-             </Link>
-           </div>}
+            {!sortedGarments.length &&
+                <div className="px-6">
+                    <p>לא נמצאו בגדים עבור משתמש זה </p>
+                    <Link href="/pages/user/garment_form" className="text-blue-500 hover:text-blue-700 underline font-medium">
+                        מעבר לעמוד יצירת בגד
+                    </Link>
+                </div>}
             <div className="grid  grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 2xl:grid-cols-9 gap-4 px-4">
                 {currentItems.map((garment) => (
                     <Card key={String(garment._id)} garment={garment} isForOutfit={isForOutfit} />

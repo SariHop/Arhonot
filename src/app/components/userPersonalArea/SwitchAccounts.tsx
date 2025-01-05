@@ -8,21 +8,19 @@ import "react-toastify/dist/ReactToastify.css";
 import { UpdateUserTypeForStore } from "@/app/types/IUser";
 import { PiUserCircleDuotone } from "react-icons/pi";
 interface SwitchAccountsProps {
-  currentId: string|null;
-  setcurrentId: (id: string|null) => void;
+  currentId: string | null;
+  setcurrentId: (id: string | null) => void;
 }
 
 const SwitchAccounts = ({ currentId: localCurrentId, setcurrentId: setLocalCurrentId }: SwitchAccountsProps) => {
-  const { _id: senderId, userName: originUserName} = useOriginUser();
+  const { _id: senderId, userName: originUserName } = useOriginUser();
   const { _id: currentId } = useUser();
 
   const [children, setChildren] = useState<UpdateUserTypeForStore[]>([]);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [confirmDialog, setConfirmDialog] = useState(false);
   const [isSwitching, setIsSwitching] = useState(false);
-  // const [localCurrentId, setLocalCurrentId] = useState<string | null>(
-  //   currentId ? currentId.toString() : null
-  // );
+
   const [originId, setOriginId] = useState<string | null>(
     senderId ? senderId.toString() : null
   );
@@ -63,7 +61,7 @@ const SwitchAccounts = ({ currentId: localCurrentId, setcurrentId: setLocalCurre
       const response = await switchAccount(senderId, receiverId);
       if (response?.success) {
         console.log("החלפת חשבון בהצלחה");
-        setLocalCurrentId(receiverId); 
+        setLocalCurrentId(receiverId);
       } else {
         console.error("תקלה בהחלפת חשבון");
       }
@@ -89,9 +87,9 @@ const SwitchAccounts = ({ currentId: localCurrentId, setcurrentId: setLocalCurre
   return (
     <div className="max-w-4xl mx-auto py-10 min-h-full px-3 md:px-0">
       <h3 className="text-xl font-bold text-center mb-4">
-      {currentId === senderId? "החיבורים שלי": ` החיבורים של ${originUserName}`}
+        {currentId === senderId ? "החיבורים שלי" : ` החיבורים של ${originUserName}`}
       </h3>
-      {localCurrentId!==originId && (
+      {localCurrentId !== originId && (
         <div className="text-left mb-4">
           <button
             className="bg-indigo-500 text-white font-bold px-4 py-2 rounded hover:bg-indigo-800"
@@ -102,17 +100,15 @@ const SwitchAccounts = ({ currentId: localCurrentId, setcurrentId: setLocalCurre
         </div>
       )}
       <ul
-        className={`grid gap-4 ${
-          children.length > 0 ? "grid-cols-1 sm:grid-cols-2" : ""
-        }`}
+        className={`grid gap-4 ${children.length > 0 ? "grid-cols-1 sm:grid-cols-2" : ""
+          }`}
       >
         {children.map((child) => {
           return (
             <li
               key={child._id as string}
-              className={`border p-4 rounded-lg shadow-md ${
-                selectedUser === child._id ? "bg-gray-200" : "bg-white"
-              } cursor-pointer hover:bg-gray-100`}
+              className={`border p-4 rounded-lg shadow-md ${selectedUser === child._id ? "bg-gray-200" : "bg-white"
+                } cursor-pointer hover:bg-gray-100`}
               onClick={() => handleUserClick(child._id)}
             >
               <p className="flex justify-between items-center text-lg font-medium">
@@ -140,12 +136,12 @@ const SwitchAccounts = ({ currentId: localCurrentId, setcurrentId: setLocalCurre
             onClick={(e) => e.stopPropagation()}
           >
             <p className="mb-4 text-center">
-              האם לעבור לחשבון של {}
+              האם לעבור לחשבון של { }
               <strong>
-                {selectedUser?.toString()=== senderId?.toString()
+                {selectedUser?.toString() === senderId?.toString()
                   ? originUserName // שם המשתמש המקורי
                   : children.find((child) => child._id === selectedUser)
-                      ?.userName}
+                    ?.userName}
               </strong>
               ?
             </p>

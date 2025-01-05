@@ -233,7 +233,6 @@ const FilterModal: React.FC<IFilterModalProps> = ({ visible, onClose, activeTab 
                         <Rate
                             value={localOutfitSelectedRate}
                             onChange={(value) => setOutfitLocalSelectedRate(value)}
-                        // className="w-full"
                         />
                     </div>
                 }

@@ -15,10 +15,10 @@ const UserOutfits: React.FC<IUserOutfits> = ({ looks }) => {
     try {
       setOutfits((prevOutfits: IOutfit[]) => {
         return prevOutfits.map((outfit: IOutfit) => {
-            if (String(outfit._id) === outfitId) {
-                return {...outfit, favorite: value} as IOutfit
-            }
-            return outfit;
+          if (String(outfit._id) === outfitId) {
+            return { ...outfit, favorite: value } as IOutfit
+          }
+          return outfit;
         });
       });
       const response = await updateOutfitFavorite(outfitId, value);

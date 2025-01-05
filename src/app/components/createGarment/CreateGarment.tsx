@@ -11,7 +11,7 @@ import { ColorPicker } from 'antd';
 import { usePathname } from 'next/navigation';
 import useGarments from '@/app/store/garmentsStore';
 
-const CreateGarment = ({garment, closeModal= () => {} }:{garment: IGarment|null, closeModal?: ()=> void}) => {
+const CreateGarment = ({ garment, closeModal = () => { } }: { garment: IGarment | null, closeModal?: () => void }) => {
   const { _id } = useUser((state) => state);
   console.log("User ID from store:", _id);
 
@@ -26,14 +26,11 @@ const CreateGarment = ({garment, closeModal= () => {} }:{garment: IGarment|null,
     tags: garment?.tags || [],
   });
 
-
-  // const { data: tags, isLoading: isLoadingTag, error: errorTag } = useTagQuery();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [imageUrl, setImageUrl] = useState<string>(garment?.img || "");
   const pathname = usePathname();
-  const isGalleryPage = pathname?.endsWith("/user/gallery"); 
-  const { updateGarment: updateGarmentStore, addGarment} = useGarments();
-  
+  const isGalleryPage = pathname?.endsWith("/user/gallery");
+  const { updateGarment: updateGarmentStore, addGarment } = useGarments();
 
 
   const handleChange = (
@@ -43,7 +40,7 @@ const CreateGarment = ({garment, closeModal= () => {} }:{garment: IGarment|null,
       >
       | { target: { name: string; value: string } } // סמן שינוי
   ) => {
-    const { name, value } = e.target;    
+    const { name, value } = e.target;
 
     setFormData((prev) => ({
       ...prev,
@@ -100,17 +97,16 @@ const CreateGarment = ({garment, closeModal= () => {} }:{garment: IGarment|null,
       console.log("Garment object with User ID:", garmentWithUserId);
 
       try {
-        if(isGalleryPage && garment){
+        if (isGalleryPage && garment) {
           const updatedGarment = await updateGarment(garmentWithUserId, String(garment?._id));
-          // const updatedGarment:IGarment = {  ...(garment ? JSON.parse(JSON.stringify(garment)) : {}), ...garmentWithUserId};
           updateGarmentStore(updatedGarment);
           closeModal();
         }
-        else{
+        else {
           const newGarment = await createGarment(garmentWithUserId);
           addGarment(newGarment);
         }
-        toast.success(isGalleryPage? "הבגד עודכן בהצלחה": "הבגד נוצר בהצלחה, ונוסף לגלריה שלך");
+        toast.success(isGalleryPage ? "הבגד עודכן בהצלחה" : "הבגד נוצר בהצלחה, ונוסף לגלריה שלך");
         setFormData({
           desc: "",
           season: "",
@@ -123,33 +119,31 @@ const CreateGarment = ({garment, closeModal= () => {} }:{garment: IGarment|null,
         });
         setImageUrl("");
       } catch (error) {
-        console.error(isGalleryPage? "Error updating garment: ":"Error creating garment:", error);
+        console.error(isGalleryPage ? "Error updating garment: " : "Error creating garment:", error);
       }
     }
   };
 
-
-
   return (
     <form
       onSubmit={handleSubmit}
-      className={isGalleryPage?"max-w-4xl mx-auto p-7 bg-white rounded shadow-md space-y-4 overflow-y-scroll max-h-[90vh]":
+      className={isGalleryPage ? "max-w-4xl mx-auto p-7 bg-white rounded shadow-md space-y-4 overflow-y-scroll max-h-[90vh]" :
         "max-w-4xl mx-auto p-7 bg-white rounded shadow-md space-y-4"
       }
     >
-      <h1 className="text-2xl font-semibold text-center">{isGalleryPage? "עריכת בגד":"יצירת בגד"}</h1>
+      <h1 className="text-2xl font-semibold text-center">{isGalleryPage ? "עריכת בגד" : "יצירת בגד"}</h1>
       <UploadImage setCloudinary={setImageUrl} />
       {imageUrl && (
         <div className="flex justify-center">
-        <Image
-          width="120"
-          height="75"
-          src={imageUrl}
-          sizes="100vw"
-          alt="Description of my image"
-        />
+          <Image
+            width="120"
+            height="75"
+            src={imageUrl}
+            sizes="100vw"
+            alt="Description of my image"
+          />
         </div>
-      )} 
+      )}
       <select
         name="season"
         value={formData.season}
@@ -241,7 +235,7 @@ const CreateGarment = ({garment, closeModal= () => {} }:{garment: IGarment|null,
       <div className="space-y-2">
         <h3 className="text-lg font-medium">צבע הבגד</h3>
         <ColorPicker
-        value={formData.color}
+          value={formData.color}
           onChangeComplete={
             (color) =>
               handleChange({
@@ -278,7 +272,7 @@ const CreateGarment = ({garment, closeModal= () => {} }:{garment: IGarment|null,
         type="submit"
         className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
       >
-        {isGalleryPage? "עדכן בגד":"צור בגד"}
+        {isGalleryPage ? "עדכן בגד" : "צור בגד"}
       </button>
       {isGalleryPage && <button
         type="button"
