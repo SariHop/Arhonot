@@ -11,7 +11,7 @@ export async function GET(
     await connect();
     const email = params.email;
     console.log(email);
-    
+
     console.log("Params:", params);
 
     if (!email) {

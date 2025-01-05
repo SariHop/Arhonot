@@ -7,7 +7,7 @@ export async function GET() {
   try {
     await connect();
     const garments = await Garment.find({});
-    console.log("garments:",garments);
+    console.log("garments:", garments);
     return NextResponse.json({ message: "success", data: garments });
   } catch (error: unknown) {
     console.error("Error fetching garments:", error);
@@ -35,16 +35,16 @@ export async function POST(request: NextRequest) {
     const validTags = await fetchTags();
 
     if (!validSeasons.includes(body.season)) {
-      return NextResponse.json({ success: false, message:  "Invalid season value"},{ status: 400 });
+      return NextResponse.json({ success: false, message: "Invalid season value" }, { status: 400 });
     }
     if (!validCategories.includes(body.category)) {
-      return NextResponse.json({ success: false, message:  "Invalid category value"},{ status: 400 });
+      return NextResponse.json({ success: false, message: "Invalid category value" }, { status: 400 });
     }
     if (!body.tags.every((tag: string) => validTags.includes(tag))) {
-      return NextResponse.json({ success: false, message:  "Invalid tag value"},{ status: 400 });
+      return NextResponse.json({ success: false, message: "Invalid tag value" }, { status: 400 });
     }
     const newgarment = new Garment(body);
-    
+
     await newgarment.validate();
     const savedgarment = await newgarment.save();
     return NextResponse.json(

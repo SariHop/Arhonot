@@ -166,7 +166,7 @@ export async function PUT(request: Request) {
 
     // שלב 6: החזרת תשובה ללקוח
     return NextResponse.json(
-      { message: "Password changed successfully!" }, 
+      { message: "Password changed successfully!" },
       { status: 200 }
     );
   } catch (error) {

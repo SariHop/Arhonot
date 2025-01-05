@@ -113,12 +113,12 @@ export async function PUT(
         { error: "Email already in use by another user" },
         { status: 404 }
       );
-    }    
+    }
     const response = await axios.get(`${apiUrl}/coordinates/`, {
       params: { city },
     });
     console.log("response of cageCoordinates", response);
-    
+
     // וידוא שהתקבלו קואורדינטות תקינות
     if (!response.data || !response.data.lat || !response.data.lon) {
       return NextResponse.json(
@@ -128,7 +128,7 @@ export async function PUT(
     }
 
     console.log(`Coordinates for ${city}:`, response.data.lat, response.data.lon);
-    const finalBody={
+    const finalBody = {
       ...otherFields,
       city,
       lat: response.data.lat,

@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       params: { city },
     });
     console.log("response of cageCoordinates", response);
-    
+
     // וידוא שהתקבלו קואורדינטות תקינות
     if (!response.data || !response.data.lat || !response.data.lon) {
       return NextResponse.json(
@@ -81,8 +81,8 @@ export async function POST(request: NextRequest) {
     alert.save();
     // חיפוש לשם עדכון משתמש מקורי
     const creator = await User.findById(originUserId);
-    console.log(creator?._id,'creator.id');
-    
+    console.log(creator?._id, 'creator.id');
+
     if (!creator) {
       return NextResponse.json(
         { message: "Creator user not found" },
@@ -94,16 +94,16 @@ export async function POST(request: NextRequest) {
     if (creator) {
       creator.children = creator.children || [];
       creator.children.push(savedUser._id as Types.ObjectId);
-      console.log(creator.children,'creator.children');
-      
+      console.log(creator.children, 'creator.children');
+
       await creator.save();
     }
 
     if (savedUser) {
       savedUser.children = savedUser.children || [];
       savedUser.children.push(creator._id as Types.ObjectId);
-      console.log(savedUser.children,'savedUser.children');
-      
+      console.log(savedUser.children, 'savedUser.children');
+
       await savedUser.save();
     }
 

@@ -6,7 +6,7 @@ import User from "@/app/lib/models/userSchema";
 
 export async function GET(req: Request) {
   try {
-    const apiKey = process.env.OPENWEATHER_API_KEY; 
+    const apiKey = process.env.OPENWEATHER_API_KEY;
     const { searchParams } = new URL(req.url);
 
     let lat = searchParams.get("lat");
@@ -16,11 +16,11 @@ export async function GET(req: Request) {
     if (!lat || !lon) {
       console.log("Attempting to get coordinates from user data...");
       const cookieHeader = req.headers.get("cookie");
-    
+
       if (!cookieHeader) {
         return NextResponse.json({ error: "Missing cookies" }, { status: 401 });
       }
-    
+
       const token = cookieHeader.match(/auth_token=([^;]+)/)?.[1];
 
       if (!token) {
@@ -29,22 +29,22 @@ export async function GET(req: Request) {
           { status: 401 }
         );
       }
-    
+
       const secretKey = process.env.SECRET_KEY;
       if (!secretKey) {
         throw new Error("SECRET_KEY is not defined in .env file");
       }
-    
+
       let decoded;
       try {
         decoded = jwt.verify(token, secretKey) as { email: string };
         console.log("Decoded token:", decoded);
       } catch (error) {
         return NextResponse.json(
-          {error: "Invalid token", details: error instanceof Error ? error.message : "Unknown error",},
+          { error: "Invalid token", details: error instanceof Error ? error.message : "Unknown error", },
           { status: 401 });
       }
-    
+
       await connect();
       const user = await User.findOne({ email: { $regex: new RegExp(`^${decoded.email}$`, "i") } });
       if (user && user.lat && user.lon) {
@@ -55,7 +55,7 @@ export async function GET(req: Request) {
         console.log("No user data available or missing coordinates.");
       }
     }
-    
+
     if (!lat || !lon) {
       console.log("Attempting to get coordinates from IP...");
       const ipLocation = await getLocationByIP();
@@ -71,7 +71,7 @@ export async function GET(req: Request) {
         );
       }
     }
-    
+
 
     const response = await axios.get(
       `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&lang=he&units=metric&cnt=40`
@@ -82,17 +82,17 @@ export async function GET(req: Request) {
       if (error.response?.status === 401) {
         // טיפול בשגיאה 401 - מפתח API או אימות לא תקינים
         return NextResponse.json(
-          {error: "הגישה נדחתה: מפתח ה-API או האימות לא תקינים.", details: error.response?.data || error.message, },
+          { error: "הגישה נדחתה: מפתח ה-API או האימות לא תקינים.", details: error.response?.data || error.message, },
           { status: 401 });
       }
       return NextResponse.json(
-        {error: "Failed to fetch weather data", details: error.response?.data || error.message, },
+        { error: "Failed to fetch weather data", details: error.response?.data || error.message, },
         { status: error.response?.status || 500 });
     }
 
     return NextResponse.json(
       { error: "Unexpected error occurred", details: error instanceof Error ? error.message : "Unknown error", },
-      { status: 500 } );
+      { status: 500 });
   }
 }
 

@@ -9,8 +9,8 @@ export async function POST(request: NextRequest) {
     await connect(); // חיבור לבסיס הנתונים
     const { userId, date }: { userId: string; date: Date } = await request.json();
     console.log(date);
-    if(!userId || !date)
-      return NextResponse.json({success: false ,message: "שגיאה בקבלת נתונים" }, { status: 400 });
+    if (!userId || !date)
+      return NextResponse.json({ success: false, message: "שגיאה בקבלת נתונים" }, { status: 400 });
 
     // מציאת הילדים של המשתמש
     const user = await User.findById(userId)
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       .populate<{ children: { _id: Types.ObjectId; userName: string }[] }>("children", "userName"); // הגדרת טיפוס מותאם
 
     if (!user) {
-      return NextResponse.json({success:false,  message: "User not found" }, { status: 404 });
+      return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
     }
 
     const childrenIds: string[] = user.children.map((child) => String(child._id));
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     const days = await Day.find({
       userId: { $in: childrenIds }, // מציאת ימים ששייכים לילדים
       date: { $gte: startDate, $lte: endDate }, // סינון לפי תאריך
-    }).populate("looks") .lean();
+    }).populate("looks").lean();
 
     // הוספת שמות הילדים לאובייקטים של days
     const childrenMap = new Map(

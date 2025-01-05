@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
         readen: false,
       });
       senderAlert.save();
-      console.log("sender alert: ",senderAlert);
+      console.log("sender alert: ", senderAlert);
       const formattedDesc = "יש לך בקשת התחברות חדשה ברשימת החיבורים שלך";
       const reciverAlert = new Alert({
         userId: reciverId,

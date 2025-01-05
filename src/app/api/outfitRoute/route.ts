@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const newOutfit = new Outfit(body);
     console.log(newOutfit);
-    
+
     await newOutfit.validate();
     const savedOutfit = await newOutfit.save();
     return NextResponse.json(
