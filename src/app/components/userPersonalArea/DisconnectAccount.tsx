@@ -11,7 +11,7 @@ import useUser from "@/app/store/userStore";
 
 const ConnectionList = () => {
   const { _id: senderId, userName: originUsersName } = useOriginUser();
-  const {_id: userId} = useUser();
+  const { _id: userId } = useUser();
   const [children, setChildren] = useState<UpdateUserTypeForStore[]>([]);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [confirmDialog, setConfirmDialog] = useState(false);
@@ -49,13 +49,11 @@ const ConnectionList = () => {
     try {
       await removeConnectionRequest(senderId, selectedUser);
       // if (response?.success) {
-        toast.success("החיבור הוסר בהצלחה");
-        setChildren((prevChildren) =>
-          prevChildren.filter((child) => child._id !== selectedUser)
-        ); // עדכון הרשימה לאחר הסרה
-      // } else {
-      //   toast.error("שגיאה בהסרת החיבור");
-      // }
+      toast.success("החיבור הוסר בהצלחה");
+      setChildren((prevChildren) =>
+        prevChildren.filter((child) => child._id !== selectedUser)
+      ); // עדכון הרשימה לאחר הסרה
+
     } catch (error) {
       console.log("error deleting the connection: ", error);
     } finally {
@@ -71,20 +69,18 @@ const ConnectionList = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-10 min-h-full px-3 md:px-0">
-      <h3 className="text-xl font-bold text-center mb-4">{userId === senderId? "החיבורים שלי": ` החיבורים של ${originUsersName}`}</h3>
+      <h3 className="text-xl font-bold text-center mb-4">{userId === senderId ? "החיבורים שלי" : ` החיבורים של ${originUsersName}`}</h3>
       <ul
-        className={`grid gap-4 ${
-          children.length > 0 ? "grid-cols-1 sm:grid-cols-2" : ""
-        }`}
+        className={`grid gap-4 ${children.length > 0 ? "grid-cols-1 sm:grid-cols-2" : ""
+          }`}
       >
         {children.map((child) => {
           console.log("Rendering child:", child);
           return (
             <li
               key={child._id as string}
-              className={`border p-4 rounded-lg shadow-md ${
-                selectedUser === child._id ? "bg-gray-200" : "bg-white"
-              } cursor-pointer hover:bg-gray-100`}
+              className={`border p-4 rounded-lg shadow-md ${selectedUser === child._id ? "bg-gray-200" : "bg-white"
+                } cursor-pointer hover:bg-gray-100`}
               onClick={() => handleUserClick(child._id)}
             >
               <p className="flex justify-between items-center text-lg font-medium">

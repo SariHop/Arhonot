@@ -16,7 +16,7 @@ type GarmentsStore = {
     setGarments: (garments: IGarment[]) => void;
     deleteGarment: (garment: IGarment) => void;
     resetGarments: () => void;
-    updateGarment:(garment:IGarment) => void;
+    updateGarment: (garment: IGarment) => void;
 
     setGarmentSelectedColors: (colors: string[]) => void;
     setGarmentSelectedCategory: (category: string | undefined) => void;

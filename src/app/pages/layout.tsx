@@ -39,7 +39,7 @@ export default function RootLayout({
 
   return (
     <QueryClientProvider client={queryClient}>
-        {children}
+      {children}
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

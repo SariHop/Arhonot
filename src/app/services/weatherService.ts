@@ -36,72 +36,72 @@ export const fetchWeatherData = async () => {
 // פונקציה לחישוב הטמפרטורה המקסימלית ליום מסוים
 export const getMaxTemperatureForDate = (list: WeatherData[], targetDate: Date) => {
   // return 5;
-  try{
-  const dailyForecasts = list.filter((entry) => {
-    // חילוץ התאריך (ללא השעה) מהשדה dt_txt
-    const date = entry.dt_txt.split(" ")[0];
-    return date === targetDate.toISOString().split("T")[0];
-  });
+  try {
+    const dailyForecasts = list.filter((entry) => {
+      // חילוץ התאריך (ללא השעה) מהשדה dt_txt
+      const date = entry.dt_txt.split(" ")[0];
+      return date === targetDate.toISOString().split("T")[0];
+    });
 
-  // אם אין נתונים ליום המבוקש, נחזיר null
-  if (dailyForecasts.length === 0) {
-    return null;
+    // אם אין נתונים ליום המבוקש, נחזיר null
+    if (dailyForecasts.length === 0) {
+      return null;
+    }
+
+    const maxTemp = dailyForecasts.reduce((max, entry) => {
+      return Math.max(max, entry.main.temp_max);
+    }, -Infinity);
+    return maxTemp;
+  } catch (error) {
+    console.log("error geting the max temperature: ", error);
+    toast.error("שגיאה בקבלת הטמפרטורה המקסימלית ליום המבוקש");
+    throw error;
   }
-
-  const maxTemp = dailyForecasts.reduce((max, entry) => {
-    return Math.max(max, entry.main.temp_max);
-  }, -Infinity);
-  return maxTemp;
-}catch(error){
-  console.log("error geting the max temperature: ", error);
-  toast.error("שגיאה בקבלת הטמפרטורה המקסימלית ליום המבוקש");
-  throw error;
-}
 };
 
 export const getMinTemperatureForDate = (list: WeatherData[], targetDate: Date) => {
-  try{
-  const dailyForecasts = list.filter((entry) => {
-    const date = entry.dt_txt.split(" ")[0];
-    return date === targetDate.toISOString().split("T")[0];
-  });
+  try {
+    const dailyForecasts = list.filter((entry) => {
+      const date = entry.dt_txt.split(" ")[0];
+      return date === targetDate.toISOString().split("T")[0];
+    });
 
-  // אם אין נתונים ליום המבוקש, נחזיר null
-  if (dailyForecasts.length === 0) {
-    return null;
+    // אם אין נתונים ליום המבוקש, נחזיר null
+    if (dailyForecasts.length === 0) {
+      return null;
+    }
+
+    const minTemp = dailyForecasts.reduce((min, entry) => {
+      return Math.min(min, entry.main.temp_min); // שימוש במפתח temp_min
+    }, Infinity); // ערך התחלתי חיובי אינסופי
+    return minTemp;
+  } catch (error) {
+    console.log("error geting the min temperature: ", error);
+    toast.error("שגיאה בקבלת הטמפרטורה המינימלית ליום המבוקש");
+    throw error;
   }
-
-  const minTemp = dailyForecasts.reduce((min, entry) => {
-    return Math.min(min, entry.main.temp_min); // שימוש במפתח temp_min
-  }, Infinity); // ערך התחלתי חיובי אינסופי
-  return minTemp;
-}catch(error){
-  console.log("error geting the min temperature: ", error);
-  toast.error("שגיאה בקבלת הטמפרטורה המינימלית ליום המבוקש");
-  throw error;
-}
 };
 
 
 export const getAverageTemperatureForDate = (list: WeatherData[], targetDate: Date) => {
-  try{
-  const minTemp = getMinTemperatureForDate(list, targetDate);
-  const maxTemp = getMaxTemperatureForDate(list, targetDate);
+  try {
+    const minTemp = getMinTemperatureForDate(list, targetDate);
+    const maxTemp = getMaxTemperatureForDate(list, targetDate);
 
-  if (minTemp === null || maxTemp === null) {
-    return null; // אין נתונים ליום הזה
+    if (minTemp === null || maxTemp === null) {
+      return null; // אין נתונים ליום הזה
+    }
+
+    // להבטיח שהערכים הם מספרים
+    const minTempNum = parseFloat(minTemp.toString());
+    const maxTempNum = parseFloat(maxTemp.toString());
+
+    return Math.round((minTempNum + maxTempNum) / 2);
+  } catch (error) {
+    console.log("error geting the average temperature: ", error);
+    toast.error("שגיאה בקבלת הטמפרטורה הממוצעת ליום המבוקש");
+    return 0;
   }
-
-  // להבטיח שהערכים הם מספרים
-  const minTempNum = parseFloat(minTemp.toString());
-  const maxTempNum = parseFloat(maxTemp.toString());
-
-  return Math.round((minTempNum + maxTempNum) / 2);
-}catch(error){
-  console.log("error geting the average temperature: ", error);
-  toast.error("שגיאה בקבלת הטמפרטורה הממוצעת ליום המבוקש");
-  return 0;
-}
 };
 
 export const fetchUserOutfits = async (userId: Types.ObjectId | null) => {

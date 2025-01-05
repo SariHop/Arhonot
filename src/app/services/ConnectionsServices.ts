@@ -173,7 +173,7 @@ export const createNewConnectionRequest = async (
 
       const response = await axios.post(
         "/api/connectionRequestRoute",
-        {formData, email}
+        { formData, email }
       );
       if (
         response &&
@@ -212,9 +212,9 @@ export const createNewConnectionRequest = async (
 
       if (status === 404) {
         toast.error("לא נמצא משתמש עם כתובת המייל שהוזנה");
-      }else if (status === 403) {
+      } else if (status === 403) {
         toast.error("המשתמש שנמצא לא תקין. חסר מזהה ייחודי.");
-      }else if (status === 500) {
+      } else if (status === 500) {
         toast.error(`שגיאת שרת: ${serverError}`);
       } else {
         toast.error("אירעה שגיאה לא צפויה בשרת");
@@ -260,7 +260,7 @@ export const removeConnectionRequest = async (
         useOriginUser.getState().updateChildren(updatedSender.children);
         return response.data;
       }
-    }else {
+    } else {
       // משתמש שאינו מורשה
       toast.error("אין לך הרשאה לבצע פעולה זו.");
       const error = new Error("אין לך הרשאה לבצע פעולה זו.");

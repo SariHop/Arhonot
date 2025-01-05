@@ -21,7 +21,7 @@ export async function GET(
 
     // חיפוש ההתראות של המשתמש
     const alerts = await Alert.find({ userId: _idUser });
-    
+
     return NextResponse.json({ success: true, data: alerts }, { status: 200 });
   } catch (error: unknown) {
     console.error("Error get alerts:", error);
@@ -34,7 +34,7 @@ export async function GET(
         { status: error.response?.status || 500 } // Use status from Axios if available
       );
     }
-    
+
     if (error instanceof Error) {
       return NextResponse.json(
         { message: "Error getting alerts", error: error.message },

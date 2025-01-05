@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchCities } from '../services/categoriesService';
 
-
 export const useCityQuery = () => {
   return useQuery({
     queryKey: ['cities'],

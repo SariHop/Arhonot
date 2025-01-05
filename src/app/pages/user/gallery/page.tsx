@@ -4,7 +4,7 @@ import React from 'react'
 const page = () => {
   return (
     <div className='h-full'>
-      <Galery viewMode={"view"}/>
+      <Galery viewMode={"view"} />
     </div>
   )
 }

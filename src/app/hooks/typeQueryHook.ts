@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchTypes } from '../services/categoriesService';
 
-
 export const useTypeQuery = () => {
   return useQuery({
     queryKey: ['types'],

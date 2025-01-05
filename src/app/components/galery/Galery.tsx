@@ -10,7 +10,7 @@ import useUser from "@/app/store/userStore";
 import useOutfits from "@/app/store/outfitsStore";
 import { CircularProgress } from "@mui/material";
 
-const Gallery = ({ viewMode, setChanged = () => {} }: { viewMode: ("view" | "createOtfit" | "selectForDay") , setChanged?: (b:boolean) => void}) => {
+const Gallery = ({ viewMode, setChanged = () => { } }: { viewMode: ("view" | "createOtfit" | "selectForDay"), setChanged?: (b: boolean) => void }) => {
   const { setGarments } = useGarments();
   const { setOutfits } = useOutfits();
   const { _id } = useUser((state) => state);
@@ -55,7 +55,7 @@ const Gallery = ({ viewMode, setChanged = () => {} }: { viewMode: ("view" | "cre
       <CircularProgress />
     </div>
   );
-  
+
 
   if (viewMode === "createOtfit") {
     return (
@@ -73,7 +73,7 @@ const Gallery = ({ viewMode, setChanged = () => {} }: { viewMode: ("view" | "cre
     return (
       <>
         < GaleryHeader activeTab={"outfits"} setActiveTab={setActiveTab} isForOutfit={true} />
-        <OutfitsGallary isSelectForDay={true} setChanged={setChanged}/>
+        <OutfitsGallary isSelectForDay={true} setChanged={setChanged} />
       </>
     )
   }

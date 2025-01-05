@@ -8,15 +8,7 @@ import { Plus } from 'lucide-react';
 
 export default function SwipeableEdgeDrawer({ setChanged = () => { } }: { setChanged?: (b: boolean) => void }) {
   const { openGalery, toggleDrawer, selectedDate } = useDay();
-  // const DAYS_IN_HEBREW = [
-  //   "ראשון",
-  //   "שני",
-  //   "שלישי",
-  //   "רביעי",
-  //   "חמישי",
-  //   "שישי",
-  //   "שבת"
-  // ];
+
 
   const formatDate = (date: Date | null) => {
 
@@ -24,11 +16,11 @@ export default function SwipeableEdgeDrawer({ setChanged = () => { } }: { setCha
 
     const today = new Date();
     if (
-        today.getDate() === date.getDate() &&
-        today.getMonth() === date.getMonth() &&
-        today.getFullYear() === date.getFullYear()
+      today.getDate() === date.getDate() &&
+      today.getMonth() === date.getMonth() &&
+      today.getFullYear() === date.getFullYear()
     ) {
-        return " להיום ";
+      return " להיום ";
     }
 
     const daysOfWeek = ["א'", "ב'", "ג'", "ד'", "ה'", "ו'", "שבת"];
@@ -61,7 +53,7 @@ export default function SwipeableEdgeDrawer({ setChanged = () => { } }: { setCha
           <Plus size={37} strokeWidth={2.5} />
         </div>
         <span className="text-emerald-700 font-medium text-lg text-center px-3">
-           בחר לוק 
+          בחר לוק
           {formatDate(selectedDate)}
         </span>
       </div>

@@ -28,7 +28,7 @@ export const userLooks = async (month: number, year: number, userId: Types.Objec
 
       if (status === 400) {
         toast.error("שגיאה בקבלת נתונים בשרת, נסה שוב.");
-      } else if(status===500){
+      } else if (status === 500) {
         toast.error(`שגיאת שרת: ${serverError}`);
       }
     } else {
@@ -65,9 +65,9 @@ export const getChildrenLooks = async (userId: string, date: string) => {
 
       if (status === 400) {
         toast.error("שגיאה בקבלת נתונים בשרת, נסה שוב.");
-      } else if(status===404){
+      } else if (status === 404) {
         toast.error("משתמש זה לא נמצא במערכת")
-      } else if(status===500){
+      } else if (status === 500) {
         toast.error(`שגיאת שרת: ${serverError}`);
       }
     } else {
@@ -79,7 +79,7 @@ export const getChildrenLooks = async (userId: string, date: string) => {
 
 export const getDay = async (userId: Types.ObjectId | null, date: Date) => {
   try {
-    const response = await axios.post(`/api/dayRoute/${userId}`, {date});
+    const response = await axios.post(`/api/dayRoute/${userId}`, { date });
     console.log("response: ", response);
     return response;
   } catch (error: unknown) {

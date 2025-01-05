@@ -10,7 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { removeBackground } from "@/app/services/image/removeBG";
 import Modal from "@/app/components/imagesUploud/ModalImage";
 
-registerPlugin( FilePondPluginFileValidateType);
+registerPlugin(FilePondPluginFileValidateType);
 
 const UploadImage = ({ setCloudinary }: { setCloudinary: (url: string) => void }) => {
 

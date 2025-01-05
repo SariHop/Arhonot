@@ -1,5 +1,5 @@
 "use client";
-import {Divider } from "antd";
+import { Divider } from "antd";
 import useAlertsCounter, { initialize } from "@/app/store/alertsCounterStore";
 import useUser from "@/app/store/userStore";
 import ConnectionReq from "@/app/components/alerts/ConnectionReq";
@@ -13,12 +13,12 @@ const Page = () => {
 
   useEffect(() => {
     if (!user._id) {
-          console.log("Waiting for user ID to load...");
-          return;
-        }
+      console.log("Waiting for user ID to load...");
+      return;
+    }
     initialize(user._id);
   }, [user._id]);
-  
+
   return (
     <div className="pb-6 h-full">
       {/* התראות על מלאי */}
@@ -26,7 +26,7 @@ const Page = () => {
         <p className="font-sans text-base pb-2 font-thin">
           התראות
         </p>
-        {user._id && <Alert userId={user._id} decreaseAlertCounter={decreaseAlertCounter}/>}
+        {user._id && <Alert userId={user._id} decreaseAlertCounter={decreaseAlertCounter} />}
       </div>
 
       <Divider className="mb-0" />
@@ -36,7 +36,7 @@ const Page = () => {
         <p className="font-sans text-base font-thin">
           בקשות התחברות
         </p>
-        {user._id && <ConnectionReq userId={user._id} decreaseAlertCounter={decreaseAlertCounter}/>}
+        {user._id && <ConnectionReq userId={user._id} decreaseAlertCounter={decreaseAlertCounter} />}
       </div>
     </div>
   );

@@ -7,18 +7,18 @@ import { MdMoveDown } from "react-icons/md";
 
 const Layers: React.FC = () => {
   const { canvas, selectedObject } = useCanvasStore();
- 
+
   const bringForward = () => {
     if (canvas && selectedObject) {
-        selectedObject.bringForward();
-        canvas.renderAll();
+      selectedObject.bringForward();
+      canvas.renderAll();
     }
   };
 
   const sendBackwards = () => {
     if (canvas && selectedObject) {
-        selectedObject.sendBackwards();
-        canvas.renderAll();
+      selectedObject.sendBackwards();
+      canvas.renderAll();
     }
   };
 

@@ -168,17 +168,17 @@ const Page: React.FC = () => {
 
   return (
     <div className="h-full">
-    <ConfigProvider locale={heIL}>
-      <div className=" w-full max-w-[800px] m-auto">
-        <Calendar
-          onPanelChange={onPanelChange}
-          fullCellRender={calendarMode === "month" ? fullCellRender : undefined}
-          className="md:h-3/4 h-4/5 flex flex-col justify-center  "
-          onSelect={onSelect}
-        />
-        {selectedDay !== "" && <OutfitsModal isOpen={isModalVisible} setIsOpen={setIsModalVisible} dateDetails={dayData[selectedDay]} date={selectedDay} />}
-      </div>
-    </ConfigProvider>
+      <ConfigProvider locale={heIL}>
+        <div className=" w-full max-w-[800px] m-auto">
+          <Calendar
+            onPanelChange={onPanelChange}
+            fullCellRender={calendarMode === "month" ? fullCellRender : undefined}
+            className="md:h-3/4 h-4/5 flex flex-col justify-center  "
+            onSelect={onSelect}
+          />
+          {selectedDay !== "" && <OutfitsModal isOpen={isModalVisible} setIsOpen={setIsModalVisible} dateDetails={dayData[selectedDay]} date={selectedDay} />}
+        </div>
+      </ConfigProvider>
     </div>
   );
 };

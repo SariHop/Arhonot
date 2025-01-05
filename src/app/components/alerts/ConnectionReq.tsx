@@ -157,34 +157,34 @@ const ConnectionReq: React.FC<AlertProps> = ({
   };
 
   const handleReadTheRequest = async (key: string | string[]) => {
-    try{
-    if (Array.isArray(key)) {
-      key = key[key.length - 1];
-    }
+    try {
+      if (Array.isArray(key)) {
+        key = key[key.length - 1];
+      }
 
-    if (typeof key !== "string") {
-      return;
-    }
+      if (typeof key !== "string") {
+        return;
+      }
 
-    const updatedRequests = await Promise.all(
-      requests.map(async (request: RequestTypeFotCollapse) => {
-        if (request.key === key && !request.readen) {
-          await updateRequestReadable(key);
-          decreaseAlertCounter();
-          return {
-            ...request,
-            readen: true,
-            label: <span>{request.sender_name} wants to connect to you</span>,
-          };
-        }
-        return request;
-      })
-    );
-    setRequests(updatedRequests); // עדכון ה-state עם הסטטוס החדש
-  }
-  catch(error){
-    console.log("error updating the alerts is readen" , error);
-  }
+      const updatedRequests = await Promise.all(
+        requests.map(async (request: RequestTypeFotCollapse) => {
+          if (request.key === key && !request.readen) {
+            await updateRequestReadable(key);
+            decreaseAlertCounter();
+            return {
+              ...request,
+              readen: true,
+              label: <span>{request.sender_name} wants to connect to you</span>,
+            };
+          }
+          return request;
+        })
+      );
+      setRequests(updatedRequests); // עדכון ה-state עם הסטטוס החדש
+    }
+    catch (error) {
+      console.log("error updating the alerts is readen", error);
+    }
   };
 
   const acceptRequest = async (requestId: string, sender: string) => {
@@ -277,16 +277,16 @@ const ConnectionReq: React.FC<AlertProps> = ({
             label: "ממתינות",
             children: (
               <div className="tab-content">
-              {renderRequests("pending").length === 0? 
-                (<p className="text-gray-500 font-thin">אין לך בקשות חיבור שממתינות לך</p>)
-                :
-                (<Collapse
-                  items={renderRequests("pending").map((request) => ({
-                    ...request,
-                    readen: "true",
-                  }))}
-                  onChange={(key) => handleReadTheRequest(key)}
-                />)
+                {renderRequests("pending").length === 0 ?
+                  (<p className="text-gray-500 font-thin">אין לך בקשות חיבור שממתינות לך</p>)
+                  :
+                  (<Collapse
+                    items={renderRequests("pending").map((request) => ({
+                      ...request,
+                      readen: "true",
+                    }))}
+                    onChange={(key) => handleReadTheRequest(key)}
+                  />)
                 }
               </div>
             ),
@@ -297,16 +297,16 @@ const ConnectionReq: React.FC<AlertProps> = ({
             label: "אושרו",
             children: (
               <div className="tab-content">
-                {renderRequests("accepted").length === 0? 
-                (<p className="text-gray-500 font-thin">אין לך בקשות חיבור שאושרו</p>)
-                :
-                (<Collapse
-                  items={renderRequests("accepted").map((request) => ({
-                    ...request,
-                    readen: "true",
-                  }))}
-                  onChange={(key) => handleReadTheRequest(key)}
-                />)}
+                {renderRequests("accepted").length === 0 ?
+                  (<p className="text-gray-500 font-thin">אין לך בקשות חיבור שאושרו</p>)
+                  :
+                  (<Collapse
+                    items={renderRequests("accepted").map((request) => ({
+                      ...request,
+                      readen: "true",
+                    }))}
+                    onChange={(key) => handleReadTheRequest(key)}
+                  />)}
               </div>
             ),
           },
@@ -316,16 +316,16 @@ const ConnectionReq: React.FC<AlertProps> = ({
             label: "נדחו",
             children: (
               <div className="tab-content">
-                {renderRequests("rejected").length === 0? 
-                (<p className="text-gray-500 font-thin">אין לך בקשות חיבור שנדחו</p>)
-                :
-                (<Collapse
-                  items={renderRequests("rejected").map((request) => ({
-                    ...request,
-                    readen: "true",
-                  }))}
-                  onChange={(key) => handleReadTheRequest(key)}
-                />)}
+                {renderRequests("rejected").length === 0 ?
+                  (<p className="text-gray-500 font-thin">אין לך בקשות חיבור שנדחו</p>)
+                  :
+                  (<Collapse
+                    items={renderRequests("rejected").map((request) => ({
+                      ...request,
+                      readen: "true",
+                    }))}
+                    onChange={(key) => handleReadTheRequest(key)}
+                  />)}
               </div>
             ),
           },

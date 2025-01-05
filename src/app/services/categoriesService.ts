@@ -3,8 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 
-
-const baseUrl=process.env.NEXT_PUBLIC_BASE_URL;
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const apiUrl = `${baseUrl}/api/staticData`
 
 export const fetchSeasons = async () => {
@@ -19,7 +18,7 @@ export const fetchSeasons = async () => {
 };
 
 
-export const fetchTypes =async () => {
+export const fetchTypes = async () => {
     try {
         const response = await axios.get(`${apiUrl}/categories`);
         return response.data.types;
@@ -31,7 +30,7 @@ export const fetchTypes =async () => {
 }
 
 
-export const fetchTags =async () => {
+export const fetchTags = async () => {
     try {
         const response = await axios.get(`${apiUrl}/categories`);
         return response.data.tags;
@@ -43,9 +42,9 @@ export const fetchTags =async () => {
 }
 
 
-export const fetchCities =async () => {
+export const fetchCities = async () => {
     try {
-        const response = await axios.get(`${apiUrl}/cities`);        
+        const response = await axios.get(`${apiUrl}/cities`);
         return response.data.cities;
     } catch (error) {
         console.error("Error getting cities:", error);

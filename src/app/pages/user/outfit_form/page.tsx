@@ -184,7 +184,7 @@ const OutfitForm: React.FC = () => {
                 >
                     {isLoading ? "טוען..." : "צור לוק"}
                 </button>
-            
+
             </form>
         </>
     );

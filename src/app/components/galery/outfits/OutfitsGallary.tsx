@@ -30,7 +30,7 @@ const OutfitsGallary = ({ isSelectForDay, setChanged = () => { } }: { isSelectFo
         <div className="px-6">
           <p>לא נמצאו לוקים עבור משתמש זה </p>
           <Link href="/pages/user/outfit_canvas" className="text-blue-500 hover:text-blue-700 underline font-medium">
-              מעבר לעמוד יצירת לוק
+            מעבר לעמוד יצירת לוק
           </Link>
         </div>}
       <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 2xl:grid-cols-9 gap-4 px-4">

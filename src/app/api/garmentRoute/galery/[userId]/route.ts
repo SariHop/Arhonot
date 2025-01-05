@@ -5,7 +5,7 @@ import { Types } from "mongoose";
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { userId: string} }
+    { params }: { params: { userId: string } }
 ) {
     try {
         console.log("Request method:", request.method); //NextRequestשימוש סמלי ב
@@ -22,7 +22,7 @@ export async function GET(
         const objectId = new Types.ObjectId(userId);
 
         const garments = await Garment.find({ userId: objectId });
-        
+
         return NextResponse.json({ success: true, data: garments }, { status: 200 });
     } catch (error: unknown) {
         console.error("Error geting garments:", error);

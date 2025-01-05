@@ -94,10 +94,9 @@ const WeatherHeader: React.FC = () => {
             <span className="text-sm text-gray-500">{currentDesc}</span>
 
             <FaChevronDown
-            className={`transform transition-transform ${
-              expanded ? "rotate-180" : ""
-            } text-gray-600 text-sm`}
-          />
+              className={`transform transition-transform ${expanded ? "rotate-180" : ""
+                } text-gray-600 text-sm`}
+            />
           </div>
         </div>
       </div>
@@ -111,11 +110,10 @@ const WeatherHeader: React.FC = () => {
               return (
                 <div
                   key={hourlyData.dt}
-                  className={`text-center flex flex-col items-center p-2 ${
-                    isCurrentHour
+                  className={`text-center flex flex-col items-center p-2 ${isCurrentHour
                       ? "font-bold text-blue-600 bg-blue-100 rounded-md"
                       : "text-gray-700"
-                  }`}
+                    }`}
                 >
                   <div>{hourTime.getHours()}:00</div>
                   <Image

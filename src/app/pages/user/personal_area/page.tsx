@@ -32,10 +32,10 @@ const PersonalArea = () => {
     originUserId ? originUserId.toString() : null
   );
 
-  useEffect(()=>{
+  useEffect(() => {
     setOriginId(originUserId?.toString() || null);
     setcurrentId(currentUserId?.toString() || null);
-  },[originUserId, currentUserId]);
+  }, [originUserId, currentUserId]);
 
   const handleTogglePanel = (key: string | null) => {
     setActiveKey(key);
@@ -95,13 +95,12 @@ const PersonalArea = () => {
   ];
 
   return (
-    <div className={`flex h-full justify-self-end ${isMobile || isiPad ? (activeKey ? (isMobile? "w-4/5": "w-5/6") : "w-1/4") : "w-2/3"
-    }`}>
+    <div className={`flex h-full justify-self-end ${isMobile || isiPad ? (activeKey ? (isMobile ? "w-4/5" : "w-5/6") : "w-1/4") : "w-2/3"
+      }`}>
       {/* תפריט */}
       <div
-        className={`transition-all duration-500 bg-gray-100 shadow-lg overflow-y-hidden flex flex-col h-full items-center px-4 md:px-6 p-4  fixed right-0 z-20 ${
-          isMobile || isiPad ? (activeKey ? (isMobile? "w-1/5": "w-1/6") : isMobile? "w-3/4": "w-3/5") : "w-1/3"
-        }`}
+        className={`transition-all duration-500 bg-gray-100 shadow-lg overflow-y-hidden flex flex-col h-full items-center px-4 md:px-6 p-4  fixed right-0 z-20 ${isMobile || isiPad ? (activeKey ? (isMobile ? "w-1/5" : "w-1/6") : isMobile ? "w-3/4" : "w-3/5") : "w-1/3"
+          }`}
       >
         {currentUser && originUser && !isMobile && !isiPad && (
           <div>
@@ -112,44 +111,36 @@ const PersonalArea = () => {
           </div>
         )}
         <div className="flex flex-col gap-3 w-full">
-        {(originId === currentId ? menuItemsOriginUser : menuItemsCurrentUser).map(({ key, icon, label }) => (
-          <>
-            <button
-              key={key}
-              onClick={() => handleTogglePanel(key)}
-              className={`w-full flex items-center  p-3 rounded-md text-right transition-colors duration-300 ${
-                activeKey === key
-                  ? "bg-indigo-500 text-white"
-                  : "bg-white hover:bg-gray-200"
-              }`}
-            >
-              <span
-                className={`text-2xl ${
-                  activeKey && (isMobile || isiPad)
-                    ? "flex items-center justify-center w-full"
-                    : ""
-                }`}
+          {(originId === currentId ? menuItemsOriginUser : menuItemsCurrentUser).map(({ key, icon, label }) => (
+            <>
+              <button
+                key={key}
+                onClick={() => handleTogglePanel(key)}
+                className={`w-full flex items-center  p-3 rounded-md text-right transition-colors duration-300 ${activeKey === key
+                    ? "bg-indigo-500 text-white"
+                    : "bg-white hover:bg-gray-200"
+                  }`}
               >
-                {icon}
-              </span>
-              {!(isMobile || isiPad) || !activeKey ? (
-                <span className="truncate">{label}</span>
-              ) : null}
-            </button>
+                <span
+                  className={`text-2xl ${activeKey && (isMobile || isiPad)
+                      ? "flex items-center justify-center w-full"
+                      : ""
+                    }`}
+                >
+                  {icon}
+                </span>
+                {!(isMobile || isiPad) || !activeKey ? (
+                  <span className="truncate">{label}</span>
+                ) : null}
+              </button>
             </>
           ))}
         </div>
       </div>
 
       {/*  תוכן הקומפוננטה המוצגת כעת*/}
-      {/* <div className="flex content-end"> */}
       <div
-        className={`transition-all duration-500 bg-white shadow-inner flex-1 relative overflow-auto m-0 w-full `}
-          // ${
-        //   isMobile && activeKey ? "w-3/4" : "w-2/3"
-        // }
-        
-      >
+        className={`transition-all duration-500 bg-white shadow-inner flex-1 relative overflow-auto m-0 w-full `}>
         {activeKey && (
           <>
             {(isMobile || isiPad) && (

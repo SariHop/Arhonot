@@ -42,11 +42,11 @@ const OutfitsModal: React.FC<IOutfitsModalProps> = ({ isOpen, setIsOpen, dateDet
       style={{ maxHeight: '75vh', overflowY: "auto" }}
     >
       {isLoading ? (
-       <div className="flex flex-col items-center justify-center text-center">
-       <CircularProgress />
-       <p className="p-2">טוען נתונים...</p>
-     </div>
-     
+        <div className="flex flex-col items-center justify-center text-center">
+          <CircularProgress />
+          <p className="p-2">טוען נתונים...</p>
+        </div>
+
       ) : (
         <>
           <UserOutfits looks={dateDetails?.looks || []} />
