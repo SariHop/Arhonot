@@ -16,7 +16,7 @@ export async function createGarment(formData: IGarmentType) {
 
       if (status === 400) {
         toast.error("שלחת נתונים שגוים, בחר את הקטגוריות המתאימות");
-      } else if(status===500){
+      } else if (status === 500) {
         toast.error(`שגיאת שרת: ${serverError}`);
       }
     } else {
@@ -37,9 +37,9 @@ export async function updateGarment(formData: IGarmentType, garmentId: string) {
 
       if (status === 400) {
         toast.error("שגיאה בקבלת נתונים בשרת, נסה שוב.");
-      } else if(status===404){
+      } else if (status === 404) {
         toast.error("הבגד זה לא נמצא במערכת")
-      } else if(status===500){
+      } else if (status === 500) {
         toast.error(`שגיאת שרת: ${serverError}`);
       }
     } else {
@@ -62,9 +62,9 @@ export const fetchGarments = async (userId: Types.ObjectId) => {
 
       if (status === 400) {
         toast.error("שגיאה בקבלת נתונים בשרת, נסה שוב.");
-      } else if(status===500){
+      } else if (status === 500) {
         toast.error(`שגיאת שרת: ${serverError}`);
-      } else{
+      } else {
         toast.error("אירעה שגיאה לא צפויה בשרת");
       }
     } else {
@@ -85,11 +85,11 @@ export const deleteGarment = async (garmentId: string) => {
 
       if (status === 400) {
         toast.error("שגיאה בקבלת נתונים בשרת, נסה שוב.");
-      } else if(status===404){
+      } else if (status === 404) {
         toast.error("בגד זה לא נמצא במערכת")
-      } else if(status===500){
+      } else if (status === 500) {
         toast.error(`שגיאת שרת: ${serverError}`);
-      }else{
+      } else {
         toast.error("אירעה שגיאה לא צפויה בשרת");
       }
     } else {

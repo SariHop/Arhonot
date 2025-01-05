@@ -38,21 +38,21 @@ const useOriginUser = create(
         });
       },
 
-  // פונקציה לעדכון שדות יוזר קיימים
-  updateOriginUser: (updatedFields) =>
-    set((state) => ({
-      ...state,
-      ...updatedFields,
-      _id: updatedFields._id && Types.ObjectId.isValid(updatedFields._id)
-      ? new Types.ObjectId(updatedFields._id)
-      : state._id,
-    })),
-     // פונקציה לעדכון מערך ה-children בלבד
-     updateChildren: (children) =>
-      set((state) => ({
-        ...state,
-        children: children, 
-      })),
+      // פונקציה לעדכון שדות יוזר קיימים
+      updateOriginUser: (updatedFields) =>
+        set((state) => ({
+          ...state,
+          ...updatedFields,
+          _id: updatedFields._id && Types.ObjectId.isValid(updatedFields._id)
+            ? new Types.ObjectId(updatedFields._id)
+            : state._id,
+        })),
+      // פונקציה לעדכון מערך ה-children בלבד
+      updateChildren: (children) =>
+        set((state) => ({
+          ...state,
+          children: children,
+        })),
 
       // פונקציה לאיפוס היוזר לערכים ריקים
       resetOriginUser: () =>
