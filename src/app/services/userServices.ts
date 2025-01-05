@@ -5,7 +5,10 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useOriginUser from "@/app/store/originUserStore";
 import { Types } from "mongoose";
-import { isHandledError, printErrorsOfAuthenticationToUser } from "./errorServices";
+import {
+  isHandledError,
+  printErrorsOfAuthenticationToUser,
+} from "./errorServices";
 
 export const apiUrl = "/api/userRoute";
 
@@ -372,7 +375,7 @@ export const createSubAccount = async (formData: IUserType) => {
   } catch (error) {
     console.error("Error during create sub account:", error);
     if (isHandledError(error)) throw error;
-    
+
     if (axios.isAxiosError(error)) {
       const message = error.response?.data?.message || "שגיאה לא צפויה";
       const status = error.response?.status || 500;
@@ -415,6 +418,8 @@ export const switchAccount = async (
   try {
     //אימות משתמש
     const authResult = await getOriginUserDataWithAuthentication();
+    printErrorsOfAuthenticationToUser(authResult);
+
     if (authResult.success) {
       if (!selectedUser) {
         toast.error("יש לבחור יוזר.");
@@ -428,7 +433,7 @@ export const switchAccount = async (
       // בדיקת תגובת השרת
       if (data.success) {
         toast.success("הועברת לחשבון המבוקש");
-        setOriginUser(data.data.sender);//עדכון היוזר המקורי
+        setOriginUser(data.data.sender); //עדכון היוזר המקורי
         setUser(data.data.receiver); //עדכון יוזר מחובר כעת
 
         return {
@@ -454,7 +459,7 @@ export const switchAccount = async (
     }
   } catch (error: unknown) {
     console.error("Error during account switch:", error);
-
+    if (isHandledError(error)) throw error;
     if (axios.isAxiosError(error)) {
       const { response } = error;
       if (response?.data) {
